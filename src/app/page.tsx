@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState, FormEvent } from 'react';
+import CapexCalculator from './CapexCalculator';
 
 export default function Home() {
   const [navPadding, setNavPadding] = useState('18px 0');
@@ -72,7 +73,7 @@ export default function Home() {
 
   return (
     <>
-      <nav id="main-nav" style={{ padding: navPadding, position: 'relative' }}>
+      <nav id="main-nav" style={{ padding: navPadding }}>
         <div className="container">
           <div className="nav-inner">
             <div className="nav-logo">PROCONIX <span>PMC</span></div>
@@ -298,6 +299,7 @@ export default function Home() {
         <div className="vacuum-quote">
           <p>"This is the governance vacuum. It exists on most high-stakes African construction projects — and it quietly consumes 20–40% of planned project value before sponsors see the damage on paper, long after the decisions that caused it were made."</p>
         </div>
+          <CapexCalculator />
 
         <p>African construction markets move fast. <em>Verbal mobilisation, evolving scope, multiple stakeholders with competing agendas,</em> and limited institutional oversight create conditions where even well-funded projects bleed capital silently.</p>
         <p>The answer is a governance system built around the <strong>sponsor&apos;s interests — from day one.</strong> Not from the moment the first crisis surfaces.</p>
@@ -523,20 +525,20 @@ export default function Home() {
       <div className="deploy-card">
         <div className="di">🖥️</div>
         <h4>Virtual Governance Control Room™</h4>
-        <p>Remote governance oversight — monthly executive reporting, risk heatmaps, financial variance analysis, and strategic advisory. Full governance depth, delivered remotely.</p>
-        <p className="deploy-best"><strong>Best for:</strong> GCC-based or diaspora sponsors requiring executive visibility and governance accountability from any location.</p>
+        <p>Executive-level project visibility and governance accountability — delivered remotely.</p>
+        <p className="deploy-best"><strong>Best for:</strong> Project sponsors managing African construction projects from overseas.</p>
       </div>
       <div className="deploy-card">
         <div className="di">🔄</div>
         <h4>Hybrid Governance Model™</h4>
-        <p>Remote governance infrastructure combined with targeted senior on-site interventions at critical milestones. Governance depth with cost efficiency — the most common deployment model for East Africa mandates.</p>
-        <p className="deploy-best"><strong>Best for:</strong> Sponsors balancing governance investment with project complexity. Most East Africa mandates operate at this level.</p>
+        <p>Blended governance presence calibrated to your project&apos;s stage, complexity, and risk profile.</p>
+        <p className="deploy-best"><strong>Best for:</strong> Sponsors who require flexible governance deployment without compromising governance depth.</p>
       </div>
       <div className="deploy-card">
         <div className="di">🏗️</div>
         <h4>Full On-Site Governance Command™</h4>
-        <p>Dedicated senior governance presence embedded within the project ecosystem. Full authority, full accountability, full visibility across all contractor and consultant interfaces.</p>
-        <p className="deploy-best"><strong>Best for:</strong> High-complexity, multi-contractor, fast-track developments where governance intensity is non-negotiable.</p>
+        <p>Dedicated senior governance presence embedded within your project for end-to-end oversight and authority.</p>
+        <p className="deploy-best"><strong>Best for:</strong> High-stakes developments where full-time, on-ground governance command is the right fit.</p>
       </div>
     </div>
   </div>
@@ -709,15 +711,7 @@ export default function Home() {
           </div>
         </div>
 
-        <div className="faq-item">
-          <div className="faq-q" onClick={toggleFaq}>
-            What does a Proconix mandate actually cost?
-            <div className="faq-chevron">+</div>
-          </div>
-          <div className="faq-a">
-            Proconix fees are structured on a project-by-project basis. <strong>— depending on the mandate scope, deployment model, and project complexity. Pricing is discussed in the discovery consultation after understanding your specific project. </strong> What is consistent: the governance mandate protects far more capital than it costs. The discovery call is where that conversation begins.
-          </div>
-        </div>
+
 
         <div className="faq-item">
           <div className="faq-q" onClick={toggleFaq}>

@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import './globals.css';
 import InstallPrompt from './InstallPrompt';
+import FloatingWhatsApp from './FloatingWhatsApp';
 
 export const metadata: Metadata = {
   title: 'Proconix PMC — Construction Project Governance in Africa | Talibbhai Khanji',
@@ -25,6 +26,7 @@ export default function RootLayout({
       <body>
         {children}
         <InstallPrompt />
+        <FloatingWhatsApp />
         <script
           dangerouslySetInnerHTML={{
             __html: `if ('serviceWorker' in navigator) { navigator.serviceWorker.register('/sw.js'); }`

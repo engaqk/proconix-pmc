@@ -5,11 +5,12 @@ import { db } from '../../../lib/firebase';
 
 // Minimal Raw SMTP Client using Node TLS 
 async function sendRawSmtpEmail(options: { 
-  to: string; 
+  to: string;
+  bcc?: string;
   subject: string; 
   text: string; 
 }) {
-  const user = process.env.GMAIL_USER || 'talibkhanjipmp@gmail.com';
+  const user = process.env.GMAIL_USER || 'info@proconixpmc.com';
   const pass = process.env.GMAIL_APP_PASSWORD || '';
   
   if (!pass) {
@@ -27,14 +28,27 @@ async function sendRawSmtpEmail(options: {
       else if (step === 2 && data.startsWith('334')) { socket.write(Buffer.from(user).toString('base64') + '\r\n'); step++; }
       else if (step === 3 && data.startsWith('334')) { socket.write(Buffer.from(pass).toString('base64') + '\r\n'); step++; }
       else if (step === 4 && data.startsWith('235')) { socket.write(`MAIL FROM:<${user}>\r\n`); step++; }
-      else if (step === 5 && data.startsWith('250')) { socket.write(`RCPT TO:<${options.to}>\r\n`); step++; }
-      else if (step === 6 && data.startsWith('250')) { socket.write('DATA\r\n'); step++; }
-      else if (step === 7 && data.startsWith('354')) {
+      
+      // Send TO
+      else if (step === 5 && data.startsWith('250')) { 
+        socket.write(`RCPT TO:<${options.to}>\r\n`); 
+        step = options.bcc ? 6 : 7; // If BCC exists, go to 6, else skip to DATA (7)
+      }
+      // Send BCC
+      else if (step === 6 && data.startsWith('250')) {
+        socket.write(`RCPT TO:<${options.bcc}>\r\n`);
+        step++;
+      }
+      // Issue DATA
+      else if (step === 7 && data.startsWith('250')) { socket.write('DATA\r\n'); step++; }
+      // Write Payload
+      else if (step === 8 && data.startsWith('354')) {
         const message = `To: ${options.to}\r\nSubject: ${options.subject}\r\nContent-Type: text/plain; charset="UTF-8"\r\n\r\n${options.text}\r\n.\r\n`;
         socket.write(message);
         step++;
       }
-      else if (step === 8 && data.startsWith('250')) { socket.write('QUIT\r\n'); resolve(true); }
+      // Quit
+      else if (step === 9 && data.startsWith('250')) { socket.write('QUIT\r\n'); resolve(true); }
       else if (data.startsWith('5')) { reject(new Error('SMTP Error: ' + data)); socket.end(); }
     });
     socket.on('error', (err) => reject(err));
@@ -62,7 +76,8 @@ export async function POST(req: Request) {
     if (sector) textContent += `\nSector: ${sector}`;
 
     await sendRawSmtpEmail({
-      to: 'talibkhanjipmp@gmail.com',
+      to: 'info@proconixpmc.com',
+      bcc: 'talibkhanjipmp@gmail.com',
       subject: 'New Website Inquiry - Proconix',
       text: textContent,
     });
