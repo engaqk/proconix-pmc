@@ -13,10 +13,10 @@ export default function InstallPrompt() {
     // Detect iOS
     const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !(window as any).MSStream;
     
-    // Force show prompt after 3 seconds regardless of event (unless already standalone)
+    // Faster show prompt (1 second)
     const forceShowTimer = setTimeout(() => {
       setShowPrompt(true);
-    }, 3000);
+    }, 1000);
 
     const handleBeforeInstallPrompt = (e: Event) => {
       console.log('beforeinstallprompt event fired');
@@ -83,8 +83,12 @@ export default function InstallPrompt() {
       maxWidth: '400px'
     }}>
       <div style={{ display: 'flex', flexDirection: 'column', color: '#fff', flex: 1 }}>
-        <strong style={{ fontSize: '1rem', marginBottom: '4px', color: '#C9A84C' }}>Install Proconix App</strong>
-        <span style={{ fontSize: '0.85rem', color: '#DCE4EF' }}>Add to home screen for faster access.</span>
+        <strong style={{ fontSize: '1.05rem', marginBottom: '4px', color: '#C9A84C' }}>
+          {deferredPrompt ? "One-Click App Install" : "Install Proconix App"}
+        </strong>
+        <span style={{ fontSize: '0.85rem', color: '#DCE4EF' }}>
+          {deferredPrompt ? "Click below to install directly to your device." : "Experience full governance speed on your home screen."}
+        </span>
       </div>
       <div style={{ display: 'flex', gap: '10px' }}>
         <button 

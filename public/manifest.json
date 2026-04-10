@@ -22,5 +22,12 @@
   ],
   "orientation": "portrait",
   "prefer_related_applications": false,
-  "scope": "/"
+  "scope": "/",
+  "shortcuts": [
+    {
+      "name": "Features",
+      "url": "/features",
+      "icons": [{ "src": "/icon.png", "sizes": "192x192" }]
+    }
+  ]
 }
