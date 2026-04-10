@@ -7,12 +7,20 @@ export default function InstallPrompt() {
   const [showPrompt, setShowPrompt] = useState(false);
 
   useEffect(() => {
+    // Detect iOS
+    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !(window as any).MSStream;
+    const isStandalone = window.matchMedia('(display-mode: standalone)').matches || (window.navigator as any).standalone;
+    
+    if (isIOS && !isStandalone) {
+      // Show iOS specific instructions after a small delay
+      const timer = setTimeout(() => setShowPrompt(true), 2000);
+      return () => clearTimeout(timer);
+    }
+
     const handleBeforeInstallPrompt = (e: Event) => {
-      // Prevent Chrome 67 and earlier from automatically showing the prompt
+      console.log('beforeinstallprompt event fired');
       e.preventDefault();
-      // Stash the event so it can be triggered later.
       setDeferredPrompt(e);
-      // Update UI to notify the user they can add to home screen
       setShowPrompt(true);
     };
 
@@ -24,16 +32,17 @@ export default function InstallPrompt() {
   }, []);
 
   const handleInstallClick = async () => {
-    if (!deferredPrompt) return;
+    if (!deferredPrompt) {
+      // If it's iOS, show manual instructions
+      alert("To install Proconix on iOS:\n1. Tap the 'Share' icon (bottom square with arrow)\n2. Scroll down and tap 'Add to Home Screen'");
+      setShowPrompt(false);
+      return;
+    }
     
-    // Hide our user interface that shows our A2HS button
     setShowPrompt(false);
-    // Show the prompt
     deferredPrompt.prompt();
-    // Wait for the user to respond to the prompt
     const { outcome } = await deferredPrompt.userChoice;
     console.log(`User response to the install prompt: ${outcome}`);
-    // We've used the prompt, and can't use it again, throw it away
     setDeferredPrompt(null);
   };
 
