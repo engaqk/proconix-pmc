@@ -16,36 +16,36 @@ export default function InstallPrompt() {
     const ios = /iPad|iPhone|iPod/.test(navigator.userAgent) && !(window as any).MSStream;
     setIsIOS(ios);
     
-    // For iOS: Show prompt after 3 seconds since there is no native "beforeinstallprompt" event
-    if (ios) {
-      const timer = setTimeout(() => setShowPrompt(true), 3000);
-      return () => clearTimeout(timer);
-    }
+    // FORCE SHOW prompt after 2 seconds for first-load visibility
+    // This acts as the fallback if the browser event is slow
+    const timer = setTimeout(() => {
+      setShowPrompt(true);
+    }, 2000);
 
-    // For Android/Chrome: Wait for the ACTUAL system event before showing our UI
     const handleBeforeInstallPrompt = (e: Event) => {
-      console.log('beforeinstallprompt event fired - browser is ready for proper install UI');
+      console.log('beforeinstallprompt event fired - browser is ready');
       e.preventDefault();
       setDeferredPrompt(e);
-      // Show ONLY when the "Proper" install button is ready to work
       setShowPrompt(true);
+      // If event fired, we don't need the timer anymore
+      clearTimeout(timer);
     };
 
     window.addEventListener("beforeinstallprompt", handleBeforeInstallPrompt);
 
     return () => {
       window.removeEventListener("beforeinstallprompt", handleBeforeInstallPrompt);
+      clearTimeout(timer);
     };
   }, []);
 
   const handleInstallClick = async () => {
     if (!deferredPrompt) {
       if (isIOS) {
-        // iOS Manual Instructions with an elegant custom layout instead of ugly alert
-        // We'll let the UI state handle the display of instructions
+        // No action needed, user reads the guide in the card
       } else {
-        // If we're here and deferredPrompt is missing, the browser logic failed.
-        // But since we only show the button when it's present, this shouldn't happen.
+        // Android/Chrome Fallback
+        alert("To install Proconix App:\n1. Open your browser menu (three dots ⋮)\n2. Tap 'Install App' or 'Add to Home Screen'");
       }
       return;
     }
