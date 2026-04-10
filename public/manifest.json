@@ -20,6 +20,15 @@
       "purpose": "any maskable"
     }
   ],
+  "screenshots": [
+    {
+      "src": "/screenshot.png",
+      "sizes": "1080x1920",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "Proconix Governance Dashboard"
+    }
+  ],
   "orientation": "portrait",
   "prefer_related_applications": false,
   "scope": "/",

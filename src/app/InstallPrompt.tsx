@@ -5,47 +5,48 @@ import { useEffect, useState } from "react";
 export default function InstallPrompt() {
   const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
   const [showPrompt, setShowPrompt] = useState(false);
+  const [isIOS, setIsIOS] = useState(false);
 
   useEffect(() => {
+    // Check if app is already installed
     const isStandalone = window.matchMedia('(display-mode: standalone)').matches || (window.navigator as any).standalone;
     if (isStandalone) return;
 
     // Detect iOS
-    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !(window as any).MSStream;
+    const ios = /iPad|iPhone|iPod/.test(navigator.userAgent) && !(window as any).MSStream;
+    setIsIOS(ios);
     
-    // Faster show prompt (1 second)
-    const forceShowTimer = setTimeout(() => {
-      setShowPrompt(true);
-    }, 1000);
+    // For iOS: Show prompt after 3 seconds since there is no native "beforeinstallprompt" event
+    if (ios) {
+      const timer = setTimeout(() => setShowPrompt(true), 3000);
+      return () => clearTimeout(timer);
+    }
 
+    // For Android/Chrome: Wait for the ACTUAL system event before showing our UI
     const handleBeforeInstallPrompt = (e: Event) => {
-      console.log('beforeinstallprompt event fired');
+      console.log('beforeinstallprompt event fired - browser is ready for proper install UI');
       e.preventDefault();
       setDeferredPrompt(e);
+      // Show ONLY when the "Proper" install button is ready to work
       setShowPrompt(true);
-      // Clear the timer if event fired early
-      clearTimeout(forceShowTimer);
     };
 
     window.addEventListener("beforeinstallprompt", handleBeforeInstallPrompt);
 
     return () => {
       window.removeEventListener("beforeinstallprompt", handleBeforeInstallPrompt);
-      clearTimeout(forceShowTimer);
     };
   }, []);
 
   const handleInstallClick = async () => {
-    // Detect iOS again for the click handler
-    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !(window as any).MSStream;
-
     if (!deferredPrompt) {
       if (isIOS) {
-        alert("To install Proconix on iOS:\n1. Tap the 'Share' icon (bottom square with arrow)\n2. Scroll down and tap 'Add to Home Screen'");
+        // iOS Manual Instructions with an elegant custom layout instead of ugly alert
+        // We'll let the UI state handle the display of instructions
       } else {
-        alert("To install Proconix:\n1. Open the browser menu (three dots ⋮)\n2. Tap 'Install App' or 'Add to Home Screen'");
+        // If we're here and deferredPrompt is missing, the browser logic failed.
+        // But since we only show the button when it's present, this shouldn't happen.
       }
-      setShowPrompt(false);
       return;
     }
     
@@ -65,45 +66,81 @@ export default function InstallPrompt() {
   return (
     <div style={{
       position: 'fixed',
-      bottom: '20px',
+      bottom: '15px',
       left: '50%',
       transform: 'translateX(-50%)',
-      backgroundColor: 'rgba(11, 29, 53, 0.95)',
-      backdropFilter: 'blur(10px)',
+      backgroundColor: '#0B1D35',
       border: '1px solid #C9A84C',
-      padding: '16px 24px',
-      borderRadius: '8px',
-      boxShadow: '0 10px 25px rgba(0,0,0,0.5)',
+      padding: '12px 20px',
+      borderRadius: '12px',
+      boxShadow: '0 12px 40px rgba(0,0,0,0.6)',
       display: 'flex',
-      alignItems: 'center',
-      gap: '20px',
-      zIndex: 9999,
+      flexDirection: 'column',
+      gap: '12px',
+      zIndex: 10000,
       fontFamily: '"DM Sans", sans-serif',
-      width: '90%',
-      maxWidth: '400px'
+      width: '92%',
+      maxWidth: '380px',
+      animation: 'slideUp 0.5s ease-out'
     }}>
-      <div style={{ display: 'flex', flexDirection: 'column', color: '#fff', flex: 1 }}>
-        <strong style={{ fontSize: '1.05rem', marginBottom: '4px', color: '#C9A84C' }}>
-          {deferredPrompt ? "One-Click App Install" : "Install Proconix App"}
-        </strong>
-        <span style={{ fontSize: '0.85rem', color: '#DCE4EF' }}>
-          {deferredPrompt ? "Click below to install directly to your device." : "Experience full governance speed on your home screen."}
-        </span>
-      </div>
-      <div style={{ display: 'flex', gap: '10px' }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
+        <img 
+          src="/icon.png" 
+          alt="App Icon" 
+          style={{ width: '48px', height: '48px', borderRadius: '10px', boxShadow: '0 4px 10px rgba(0,0,0,0.3)' }} 
+        />
+        <div style={{ display: 'flex', flexDirection: 'column', color: '#fff', flex: 1 }}>
+          <strong style={{ fontSize: '1rem', color: '#C9A84C', fontWeight: 700 }}>Proconix App</strong>
+          <span style={{ fontSize: '0.82rem', color: '#DCE4EF', opacity: 0.9 }}>
+            {isIOS ? "Add to Home Screen" : "Install App Directly"}
+          </span>
+        </div>
         <button 
           onClick={handleClose}
-          style={{ background: 'transparent', border: 'none', color: '#8EA8C3', cursor: 'pointer', fontSize: '0.85rem' }}
+          style={{ background: 'transparent', border: 'none', color: '#8EA8C3', cursor: 'pointer', fontSize: '1.2rem', padding: '5px' }}
         >
-          Later
-        </button>
-        <button 
-          onClick={handleInstallClick}
-          style={{ background: '#C9A84C', color: '#0B1D35', border: 'none', padding: '8px 16px', borderRadius: '4px', fontWeight: 'bold', cursor: 'pointer', fontSize: '0.85rem' }}
-        >
-          Install
+          ✕
         </button>
       </div>
+
+      <div style={{ padding: '2px 0' }}>
+        {isIOS ? (
+          <div style={{ color: '#fff', fontSize: '0.8rem', lineHeight: '1.4', background: 'rgba(255,255,255,0.05)', padding: '10px', borderRadius: '8px', borderLeft: '3px solid #C9A84C' }}>
+             Tap the <img src="https://developer.apple.com/design/human-interface-guidelines/macos/images/icons/system-icons/share.png" style={{ height: '16px', verticalAlign: 'middle', filter: 'invert(1)' }} alt="share" /> icon, then scroll down and select <strong>&quot;Add to Home Screen&quot;</strong>.
+          </div>
+        ) : (
+          <p style={{ color: '#DCE4EF', fontSize: '0.85rem', margin: 0 }}>
+            Install the <strong>Proper Proconix App</strong> for 1-click access to governance tools.
+          </p>
+        )}
+      </div>
+
+      {!isIOS && (
+        <button 
+          onClick={handleInstallClick}
+          style={{ 
+            background: 'linear-gradient(135deg, #C9A84C 0%, #A68A3B 100%)', 
+            color: '#0B1D35', 
+            border: 'none', 
+            padding: '10px', 
+            borderRadius: '6px', 
+            fontWeight: 'bold', 
+            cursor: 'pointer', 
+            fontSize: '0.9rem',
+            boxShadow: '0 4px 15px rgba(201, 168, 76, 0.3)',
+            marginTop: '4px'
+          }}
+        >
+          Install Directly
+        </button>
+      )}
+
+      <style dangerouslySetInnerHTML={{ __html: `
+        @keyframes slideUp {
+          from { transform: translate(-50%, 100%); opacity: 0; }
+          to { transform: translate(-50%, 0); opacity: 1; }
+        }
+      `}} />
     </div>
   );
 }
