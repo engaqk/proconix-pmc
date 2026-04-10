@@ -807,6 +807,51 @@ footer{background:var(--navy-deep);border-top:1px solid var(--border);padding:56
 .footer-bottom p{font-size:0.73rem;color:rgba(142,168,195,0.45);}
 
 /* ─────────────────────────────────────────────────
+   MOBILE MENU STYLES
+───────────────────────────────────────────────── */
+.menu-toggle {
+  display: none;
+  background: transparent;
+  border: none;
+  color: var(--white);
+  font-size: 1.5rem;
+  cursor: pointer;
+  padding: 5px;
+}
+
+.mobile-menu {
+  display: none;
+  flex-direction: column;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: 100%;
+  background: rgba(11,29,53,0.98);
+  backdrop-filter: blur(14px);
+  border-bottom: 1px solid rgba(201,168,76,0.1);
+  padding: 20px 36px;
+  gap: 20px;
+  z-index: 100;
+}
+.mobile-menu.open {
+  display: flex;
+}
+.mobile-menu a {
+  font-size: 0.9rem;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-light);
+  border-bottom: 1px solid var(--border-sub);
+  padding-bottom: 12px;
+}
+.mobile-menu a.btn-gold {
+  border-bottom: none;
+  color: var(--navy);
+  margin-top: 10px;
+}
+
+/* ─────────────────────────────────────────────────
    ANIMATIONS
 ───────────────────────────────────────────────── */
 @keyframes fadeUp{from{opacity:0;transform:translateY(22px);}to{opacity:1;transform:translateY(0);}}
@@ -836,7 +881,10 @@ footer{background:var(--navy-deep);border-top:1px solid var(--border);padding:56
   .cases-grid{grid-template-columns:1fr;}
   .faq-grid{grid-template-columns:1fr;}
   .footer-grid{grid-template-columns:1fr 1fr;}
+  
   .nav-links{display:none;}
+  .nav-right{display:none;}
+  .menu-toggle{display:block;}
 }
 @media(max-width:680px){
   .container{padding:0 20px;}
@@ -847,6 +895,12 @@ footer{background:var(--navy-deep);border-top:1px solid var(--border);padding:56
   .cred-item{border-right:none!important;}
   .footer-grid{grid-template-columns:1fr;}
   .lifecycle{display:none;}
+  
+  /* Additional mobile padding adjustments to ensure full responsiveness */
+  .hero-identity, .hero-card, .mandate-box, .trap-box, .pain-card, .m-tile, .who-card, .lead-form-box, .quad-tile, .deploy-card, .about-card, .about-scarcity, .case-card {
+    padding-left: 20px;
+    padding-right: 20px;
+  }
 }
 
 /* Status messages for email form */
