@@ -4,7 +4,7 @@ self.addEventListener('install', (e) => {
   e.waitUntil(
     caches.open(CACHE_NAME).then((cache) => {
       // Base cache items
-      return cache.addAll(['/']);
+      return cache.addAll(['/', '/manifest.json', '/icon.png', '/talibbhai.png']);
     })
   );
   self.skipWaiting();

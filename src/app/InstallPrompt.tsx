@@ -7,34 +7,44 @@ export default function InstallPrompt() {
   const [showPrompt, setShowPrompt] = useState(false);
 
   useEffect(() => {
+    const isStandalone = window.matchMedia('(display-mode: standalone)').matches || (window.navigator as any).standalone;
+    if (isStandalone) return;
+
     // Detect iOS
     const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !(window as any).MSStream;
-    const isStandalone = window.matchMedia('(display-mode: standalone)').matches || (window.navigator as any).standalone;
     
-    if (isIOS && !isStandalone) {
-      // Show iOS specific instructions after a small delay
-      const timer = setTimeout(() => setShowPrompt(true), 2000);
-      return () => clearTimeout(timer);
-    }
+    // Force show prompt after 3 seconds regardless of event (unless already standalone)
+    const forceShowTimer = setTimeout(() => {
+      setShowPrompt(true);
+    }, 3000);
 
     const handleBeforeInstallPrompt = (e: Event) => {
       console.log('beforeinstallprompt event fired');
       e.preventDefault();
       setDeferredPrompt(e);
       setShowPrompt(true);
+      // Clear the timer if event fired early
+      clearTimeout(forceShowTimer);
     };
 
     window.addEventListener("beforeinstallprompt", handleBeforeInstallPrompt);
 
     return () => {
       window.removeEventListener("beforeinstallprompt", handleBeforeInstallPrompt);
+      clearTimeout(forceShowTimer);
     };
   }, []);
 
   const handleInstallClick = async () => {
+    // Detect iOS again for the click handler
+    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !(window as any).MSStream;
+
     if (!deferredPrompt) {
-      // If it's iOS, show manual instructions
-      alert("To install Proconix on iOS:\n1. Tap the 'Share' icon (bottom square with arrow)\n2. Scroll down and tap 'Add to Home Screen'");
+      if (isIOS) {
+        alert("To install Proconix on iOS:\n1. Tap the 'Share' icon (bottom square with arrow)\n2. Scroll down and tap 'Add to Home Screen'");
+      } else {
+        alert("To install Proconix:\n1. Open the browser menu (three dots ⋮)\n2. Tap 'Install App' or 'Add to Home Screen'");
+      }
       setShowPrompt(false);
       return;
     }
