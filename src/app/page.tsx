@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState, FormEvent } from 'react';
+import Link from 'next/link';
 import CapexCalculator from './CapexCalculator';
 
 export default function Home() {
@@ -80,6 +81,7 @@ export default function Home() {
 
             <ul className="nav-links">
               <li><a href="#identity" onClick={(e) => smoothScroll(e, "#identity")}>What We Are</a></li>
+              <li><Link href="/features">Features</Link></li>
               <li><a href="#problem" onClick={(e) => smoothScroll(e, "#problem")}>The Problem</a></li>
               <li><a href="#advantage" onClick={(e) => smoothScroll(e, "#advantage")}>Our Advantage</a></li>
               <li><a href="#about" onClick={(e) => smoothScroll(e, "#about")}>About</a></li>
@@ -113,6 +115,7 @@ export default function Home() {
         {/* Mobile Dropdown Menu */}
         <div className={`mobile-menu ${isMobileMenuOpen ? 'open' : ''}`}>
           <a href="#identity" onClick={(e) => smoothScroll(e, "#identity")}>What We Are</a>
+          <Link href="/features">Features</Link>
           <a href="#problem" onClick={(e) => smoothScroll(e, "#problem")}>The Problem</a>
           <a href="#advantage" onClick={(e) => smoothScroll(e, "#advantage")}>Our Advantage</a>
           <a href="#about" onClick={(e) => smoothScroll(e, "#about")}>About</a>
@@ -299,7 +302,6 @@ export default function Home() {
         <div className="vacuum-quote">
           <p>"This is the governance vacuum. It exists on most high-stakes African construction projects — and it quietly consumes 20–40% of planned project value before sponsors see the damage on paper, long after the decisions that caused it were made."</p>
         </div>
-          <CapexCalculator />
 
         <p>African construction markets move fast. <em>Verbal mobilisation, evolving scope, multiple stakeholders with competing agendas,</em> and limited institutional oversight create conditions where even well-funded projects bleed capital silently.</p>
         <p>The answer is a governance system built around the <strong>sponsor&apos;s interests — from day one.</strong> Not from the moment the first crisis surfaces.</p>
@@ -552,8 +554,13 @@ export default function Home() {
       
       <div>
         <div className="about-card">
-          
-          <div className="about-photo">👤</div>
+          <div className="about-photo">
+            <img 
+              src="/talibbhai.jpg" 
+              alt="Talibbhai Khanji" 
+              style={{ width: '100%', height: '100%', objectFit: 'cover' }} 
+            />
+          </div>
 
           <div className="aname">Talibbhai Khanji</div>
           <div className="arole">Founder &amp; Principal Consultant</div>
@@ -792,6 +799,7 @@ export default function Home() {
         <h4>Navigate</h4>
         <ul>
           <li><a href="#identity" onClick={(e) => smoothScroll(e, "#identity")}>What We Are</a></li>
+          <li><Link href="/features">Advanced Features</Link></li>
           <li><a href="#problem" onClick={(e) => smoothScroll(e, "#problem")}>The Governance Vacuum</a></li>
           <li><a href="#advantage" onClick={(e) => smoothScroll(e, "#advantage")}>Quad-Domain Advantage</a></li>
           <li><a href="#about" onClick={(e) => smoothScroll(e, "#about")}>About Talibbhai</a></li>
