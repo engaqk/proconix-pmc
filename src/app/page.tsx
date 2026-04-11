@@ -777,7 +777,7 @@ export default function Home() {
       <p>Every day a construction project runs without a structured governance architecture is a day of compounding exposure. The discovery call is where we determine whether Proconix is the right governance partner for your project — and whether your project falls within our current mandate window.</p>
       <div className="cta-pair">
         <a href="https://topmate.io/talibkhanji_pmp/2043275" target="_blank" rel="noopener noreferrer" className="btn-gold">Book a Discovery Call</a>
-        <a href="#lead-magnet" onClick={(e) => smoothScroll(e, "#lead-magnet")} className="btn-outline">Download Free Checklist Now</a>
+        <a href="https://checklist.gr8.com/" target="_blank" rel="noopener noreferrer" className="btn-outline">Download Free Checklist Now</a>
       </div>
       <p className="cta-scarcity"><strong>Mandate Availability:</strong> Maximum 4 active Tier-1 mandates. One new engagement per quarter. Enquire to confirm current availability.</p>
     </div>
