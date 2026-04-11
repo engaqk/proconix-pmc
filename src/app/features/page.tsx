@@ -36,7 +36,7 @@ export default function FeaturesPage() {
             </ul>
             <div className="nav-right">
               <a href="mailto:info@proconixpmc.com?subject=NDA%20Request" className="btn-outline">Request NDA</a>
-              <Link href="/#lead-magnet" className="btn-gold">Book Discovery Call</Link>
+              <a href="https://topmate.io/talibkhanji_pmp/2043275" target="_blank" rel="noopener noreferrer" className="btn-gold">Book Discovery Call</a>
             </div>
             <button className="menu-toggle" onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}>
               {isMobileMenuOpen ? '✕' : '☰'}
@@ -52,7 +52,7 @@ export default function FeaturesPage() {
           <Link href="/#advantage">Our Advantage</Link>
           <Link href="/#about">About</Link>
           <Link href="/#cases">Case Evidence</Link>
-          <Link href="/#lead-magnet" className="btn-gold" style={{ marginTop: '10px' }}>Book Discovery Call</Link>
+          <a href="https://topmate.io/talibkhanji_pmp/2043275" target="_blank" rel="noopener noreferrer" className="btn-gold" style={{ marginTop: '10px' }}>Book Discovery Call</a>
         </div>
       </nav>
 
@@ -79,14 +79,17 @@ export default function FeaturesPage() {
             * We engineer the governance structures that protect your project capital from day one.
           </p>
           <div style={{ marginTop: '40px' }}>
-            <Link href="/#lead-magnet" className="btn-gold" style={{ padding: '16px 32px' }}>Book Discovery Call</Link>
+            <a href="https://topmate.io/talibkhanji_pmp/2043275" target="_blank" rel="noopener noreferrer" className="btn-gold" style={{ padding: '16px 32px' }}>Book Discovery Call</a>
           </div>
         </div>
       </section>
 
       <footer style={{ background: 'var(--navy-deep)', padding: '40px 0', borderTop: '1px solid var(--border)', textAlign: 'center' }}>
         <div className="container">
-           <Link href="/" className="nav-logo" style={{ marginBottom: '20px', display: 'block' }}>PROCONIX <span>PMC</span></Link>
+           <Link href="/" className="nav-logo-wrapper" style={{ textDecoration: 'none', marginBottom: '20px', display: 'block' }}>
+             <div className="nav-logo" style={{ fontSize: '1.2rem' }}>PROCONIX</div>
+             <div className="nav-tagline" style={{ fontSize: '0.45rem' }}>Project Management Consultancy</div>
+           </Link>
            <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>© 2026 Proconix Project Management Consultancy. All rights reserved.</p>
         </div>
       </footer>

@@ -108,7 +108,7 @@ export default function Home() {
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
                 </a>
               </div>
-              <a href="mailto:info@proconixpmc.com?subject=Discovery%20Call%20Request" className="btn-gold">Book Discovery Call</a>
+              <a href="https://topmate.io/talibkhanji_pmp/2043275" target="_blank" rel="noopener noreferrer" className="btn-gold">Book Discovery Call</a>
             </div>
 
             <button className="menu-toggle" onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)} aria-label="Toggle Menu">
@@ -125,7 +125,7 @@ export default function Home() {
           <a href="#advantage" onClick={(e) => smoothScroll(e, "#advantage")}>Our Advantage</a>
           <a href="#about" onClick={(e) => smoothScroll(e, "#about")}>About</a>
           <a href="#cases" onClick={(e) => smoothScroll(e, "#cases")}>Case Evidence</a>
-          <a href="mailto:info@proconixpmc.com?subject=Discovery%20Call%20Request" className="btn-gold" style={{ marginTop: '10px' }}>Book Discovery Call</a>
+          <a href="https://topmate.io/talibkhanji_pmp/2043275" target="_blank" rel="noopener noreferrer" className="btn-gold" style={{ marginTop: '10px' }}>Book Discovery Call</a>
         </div>
       </nav>
       {/* Hero Section */}
@@ -165,7 +165,7 @@ export default function Home() {
         </p>
 
         <div className="hero-ctas">
-          <a href="mailto:info@proconixpmc.com?subject=Discovery%20Call%20Request" className="btn-gold">Book a Discovery Call</a>
+        <a href="https://topmate.io/talibkhanji_pmp/2043275" target="_blank" rel="noopener noreferrer" className="btn-gold">Book a Discovery Call</a>
           <a href="#hero-card" onClick={(e) => smoothScroll(e, "#hero-card")} className="btn-outline">Free Pre-Construction Checklist ↓</a>
         </div>
 
@@ -698,7 +698,7 @@ export default function Home() {
         <br/>
         <p>If you have a question not addressed here, the discovery call is the right place to ask it. There is no obligation and no pitch — only a structured conversation about whether Proconix is the right governance partner for your specific project.</p>
         <br/>
-        <a href="mailto:info@proconixpmc.com?subject=Discovery%20Call%20Request" className="btn-outline" style={{"marginTop":"8px"}}>Book the Discovery Call</a>
+        <a href="https://topmate.io/talibkhanji_pmp/2043275" target="_blank" rel="noopener noreferrer" className="btn-outline" style={{"marginTop":"8px"}}>Book the Discovery Call</a>
       </div>
 
       <div className="faq-list">
@@ -776,7 +776,7 @@ export default function Home() {
     <div>
       <p>Every day a construction project runs without a structured governance architecture is a day of compounding exposure. The discovery call is where we determine whether Proconix is the right governance partner for your project — and whether your project falls within our current mandate window.</p>
       <div className="cta-pair">
-        <a href="mailto:info@proconixpmc.com?subject=Discovery%20Call%20Request" className="btn-gold">Book a Discovery Call</a>
+        <a href="https://topmate.io/talibkhanji_pmp/2043275" target="_blank" rel="noopener noreferrer" className="btn-gold">Book a Discovery Call</a>
         <a href="#lead-magnet" onClick={(e) => smoothScroll(e, "#lead-magnet")} className="btn-outline">Download Free Checklist Now</a>
       </div>
       <p className="cta-scarcity"><strong>Mandate Availability:</strong> Maximum 4 active Tier-1 mandates. One new engagement per quarter. Enquire to confirm current availability.</p>
