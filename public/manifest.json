@@ -8,15 +8,15 @@
   "theme_color": "#0B1D35",
   "icons": [
     {
-      "src": "/icon.png",
+      "src": "/icon.jpg",
       "sizes": "192x192",
-      "type": "image/png",
+      "type": "image/jpeg",
       "purpose": "any maskable"
     },
     {
-      "src": "/icon.png",
+      "src": "/icon.jpg",
       "sizes": "512x512",
-      "type": "image/png",
+      "type": "image/jpeg",
       "purpose": "any maskable"
     }
   ],
@@ -36,7 +36,7 @@
     {
       "name": "Features",
       "url": "/features",
-      "icons": [{ "src": "/icon.png", "sizes": "192x192" }]
+      "icons": [{ "src": "/icon.jpg", "sizes": "192x192" }]
     }
   ]
 }
