@@ -55,6 +55,10 @@ export default function Home() {
     const formData = new FormData(e.currentTarget);
     const data = Object.fromEntries(formData.entries());
     setFormStatus(null);
+    
+    // Trigger download immediately on valid submit
+    window.open("https://checklist.gr8.com/", "_blank");
+
     try {
       const res = await fetch('/api/contact', {
         method: 'POST',
@@ -62,13 +66,11 @@ export default function Home() {
         body: JSON.stringify(data),
       });
       if (res.ok) {
-        setFormStatus({ type: 'success', message: 'Details submitted successfully. We will be in touch shortly.' });
+        setFormStatus({ type: 'success', message: 'Details captured. Your download has opened in a new tab.' });
         (e.target as HTMLFormElement).reset();
-      } else {
-        setFormStatus({ type: 'error', message: 'Failed to send message.' });
       }
     } catch {
-      setFormStatus({ type: 'error', message: 'Failed to send message.' });
+      // Silently ignore capture errors to ensure user gets the file
     }
   };
 
@@ -164,7 +166,7 @@ export default function Home() {
 
         <div className="hero-ctas">
           <a href="mailto:info@proconixpmc.com?subject=Discovery%20Call%20Request" className="btn-gold">Book a Discovery Call</a>
-          <a href="https://checklist.gr8.com/" target="_blank" rel="noopener noreferrer" className="btn-outline">Free Pre-Construction Checklist ↓</a>
+          <a href="#hero-card" onClick={(e) => smoothScroll(e, "#hero-card")} className="btn-outline">Free Pre-Construction Checklist ↓</a>
         </div>
 
         <div className="hero-metrics">
@@ -184,7 +186,7 @@ export default function Home() {
       </div>
 
       
-      <div className="hero-card">
+      <div className="hero-card" id="hero-card">
         <div className="card-tag">Free Resource — Download Instantly</div>
         <h3>Before You Break Ground:<br/>Pre-Construction Governance Checklist — Africa</h3>
         <p>13 diagnostic areas. 5 governance domains. Know exactly where you stand before your contractor mobilises.</p>
@@ -201,7 +203,7 @@ export default function Home() {
         <form className="capture-form" onSubmit={handleFormSubmit}>
           <input type="text" placeholder="Your Full Name" name="name" required/>
           <input type="email" placeholder="Your Email Address" name="email" required />
-          <a href="https://checklist.gr8.com/" target="_blank" rel="noopener noreferrer" className="btn-gold" style={{ display: 'block', textDecoration: 'none' }}>Download Free Checklist →</a>
+          <button type="submit" className="btn-gold">Download Free Checklist →</button>
           <p className="form-note">No spam. Built for $5M–$100M+ project sponsors in Africa.</p>
         
       {formStatus && <div className={`form-status ${formStatus.type}`}>{formStatus.message}</div>}
@@ -775,7 +777,7 @@ export default function Home() {
       <p>Every day a construction project runs without a structured governance architecture is a day of compounding exposure. The discovery call is where we determine whether Proconix is the right governance partner for your project — and whether your project falls within our current mandate window.</p>
       <div className="cta-pair">
         <a href="mailto:info@proconixpmc.com?subject=Discovery%20Call%20Request" className="btn-gold">Book a Discovery Call</a>
-        <a href="https://checklist.gr8.com/" target="_blank" rel="noopener noreferrer" className="btn-outline">Download Free Checklist Now</a>
+        <a href="#lead-magnet" onClick={(e) => smoothScroll(e, "#lead-magnet")} className="btn-outline">Download Free Checklist Now</a>
       </div>
       <p className="cta-scarcity"><strong>Mandate Availability:</strong> Maximum 4 active Tier-1 mandates. One new engagement per quarter. Enquire to confirm current availability.</p>
     </div>
