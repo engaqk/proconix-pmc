@@ -69,35 +69,36 @@ export default function InstallPrompt() {
       bottom: '15px',
       left: '50%',
       transform: 'translateX(-50%)',
-      backgroundColor: '#0B1D35',
-      border: '1px solid #C9A84C',
-      padding: '12px 20px',
-      borderRadius: '12px',
-      boxShadow: '0 12px 40px rgba(0,0,0,0.6)',
+      backgroundColor: 'rgba(11, 29, 53, 0.98)',
+      border: '1px solid rgba(201, 168, 76, 0.3)',
+      padding: '20px',
+      borderRadius: '16px',
+      boxShadow: '0 20px 50px rgba(0,0,0,0.7)',
       display: 'flex',
       flexDirection: 'column',
-      gap: '12px',
+      gap: '15px',
       zIndex: 10000,
       fontFamily: '"DM Sans", sans-serif',
-      width: '92%',
-      maxWidth: '380px',
-      animation: 'slideUp 0.5s ease-out'
+      width: '94%',
+      maxWidth: '400px',
+      animation: 'slideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1)',
+      backdropFilter: 'blur(10px)'
     }}>
       <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
         <img 
-          src="/icon.png" 
+          src="/icon.jpg" 
           alt="App Icon" 
-          style={{ width: '48px', height: '48px', borderRadius: '10px', boxShadow: '0 4px 10px rgba(0,0,0,0.3)' }} 
+          style={{ width: '56px', height: '56px', borderRadius: '12px', boxShadow: '0 8px 16px rgba(0,0,0,0.4)', border: '1px solid rgba(255,255,255,0.05)' }} 
         />
         <div style={{ display: 'flex', flexDirection: 'column', color: '#fff', flex: 1 }}>
-          <strong style={{ fontSize: '1rem', color: '#C9A84C', fontWeight: 700 }}>Proconix App</strong>
-          <span style={{ fontSize: '0.82rem', color: '#DCE4EF', opacity: 0.9 }}>
+          <strong style={{ fontSize: '1.1rem', color: '#C9A84C', fontWeight: 700, letterSpacing: '-0.5px' }}>Proconix App</strong>
+          <span style={{ fontSize: '0.85rem', color: '#DCE4EF', opacity: 0.8 }}>
             {isIOS ? "Add to Home Screen" : "Install App Directly"}
           </span>
         </div>
         <button 
           onClick={handleClose}
-          style={{ background: 'transparent', border: 'none', color: '#8EA8C3', cursor: 'pointer', fontSize: '1.2rem', padding: '5px' }}
+          style={{ background: 'transparent', border: 'none', color: '#8EA8C3', cursor: 'pointer', fontSize: '1.4rem', padding: '5px', opacity: 0.6 }}
         >
           ✕
         </button>
@@ -105,11 +106,11 @@ export default function InstallPrompt() {
 
       <div style={{ padding: '2px 0' }}>
         {isIOS ? (
-          <div style={{ color: '#fff', fontSize: '0.8rem', lineHeight: '1.4', background: 'rgba(255,255,255,0.05)', padding: '10px', borderRadius: '8px', borderLeft: '3px solid #C9A84C' }}>
-             Tap the <img src="https://developer.apple.com/design/human-interface-guidelines/macos/images/icons/system-icons/share.png" style={{ height: '16px', verticalAlign: 'middle', filter: 'invert(1)' }} alt="share" /> icon, then scroll down and select <strong>&quot;Add to Home Screen&quot;</strong>.
+          <div style={{ color: '#fff', fontSize: '0.85rem', lineHeight: '1.5', background: 'rgba(255,255,255,0.03)', padding: '12px', borderRadius: '10px', borderLeft: '3px solid #C9A84C' }}>
+             Tap the <img src="https://developer.apple.com/design/human-interface-guidelines/macos/images/icons/system-icons/share.png" style={{ height: '18px', verticalAlign: 'middle', filter: 'invert(1)' }} alt="share" /> icon, then scroll down and select <strong>&quot;Add to Home Screen&quot;</strong>.
           </div>
         ) : (
-          <p style={{ color: '#DCE4EF', fontSize: '0.85rem', margin: 0 }}>
+          <p style={{ color: '#DCE4EF', fontSize: '0.9rem', margin: 0, opacity: 0.9 }}>
             Install the <strong>Proper Proconix App</strong> for 1-click access to governance tools.
           </p>
         )}
@@ -122,22 +123,22 @@ export default function InstallPrompt() {
             background: 'linear-gradient(135deg, #C9A84C 0%, #A68A3B 100%)', 
             color: '#0B1D35', 
             border: 'none', 
-            padding: '10px', 
-            borderRadius: '6px', 
+            padding: '12px', 
+            borderRadius: '8px', 
             fontWeight: 'bold', 
             cursor: 'pointer', 
-            fontSize: '0.9rem',
-            boxShadow: '0 4px 15px rgba(201, 168, 76, 0.3)',
-            marginTop: '4px'
+            fontSize: '0.95rem',
+            boxShadow: '0 8px 20px rgba(201, 168, 76, 0.2)',
+            marginTop: '5px'
           }}
         >
-          Install Directly
+          Install Now
         </button>
       )}
 
       <style dangerouslySetInnerHTML={{ __html: `
         @keyframes slideUp {
-          from { transform: translate(-50%, 100%); opacity: 0; }
+          from { transform: translate(-50%, 40px); opacity: 0; }
           to { transform: translate(-50%, 0); opacity: 1; }
         }
       `}} />
