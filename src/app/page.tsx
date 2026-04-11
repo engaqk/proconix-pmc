@@ -77,7 +77,10 @@ export default function Home() {
       <nav id="main-nav" style={{ padding: navPadding }}>
         <div className="container">
           <div className="nav-inner">
-            <div className="nav-logo">PROCONIX <span>PMC</span></div>
+            <div className="nav-logo-wrapper">
+              <div className="nav-logo">PROCONIX</div>
+              <div className="nav-tagline">Project Management Consultancy</div>
+            </div>
 
             <ul className="nav-links">
               <li><a href="#identity" onClick={(e) => smoothScroll(e, "#identity")}>What We Are</a></li>
@@ -247,21 +250,21 @@ export default function Home() {
               <span className="dmi-icon">🏗️</span>
               <div className="dmi-content">
                 <h5>Full On-Site Governance Command™</h5>
-                <p>Embedded, full-lifecycle governance presence — total authority, total accountability.</p>
+                <p>Directing, managing, and executing governance on the sponsor's behalf — a dedicated senior presence embedded within the project environment in Africa.</p>
               </div>
             </div>
             <div className="deploy-mini-item">
               <span className="dmi-icon">🔄</span>
               <div className="dmi-content">
                 <h5>Hybrid Governance Model™</h5>
-                <p>On-site interventions at critical milestones, backed by remote governance infrastructure.</p>
+                <p>Continuously directing governance remotely, managing the project throughout, and executing direct oversight on-ground at the milestones that matter most.</p>
               </div>
             </div>
             <div className="deploy-mini-item">
               <span className="dmi-icon">🖥️</span>
               <div className="dmi-content">
                 <h5>Virtual Governance Control Room™</h5>
-                <p>Remote real-time oversight — executive reporting, risk heatmaps, financial variance.</p>
+                <p>Remotely directing project governance and managing executive-level oversight — delivering full visibility and structured advisory support from anywhere in the world.</p>
               </div>
             </div>
           </div>
@@ -527,20 +530,20 @@ export default function Home() {
       <div className="deploy-card">
         <div className="di">🖥️</div>
         <h4>Virtual Governance Control Room™</h4>
-        <p>Executive-level project visibility and governance accountability — delivered remotely.</p>
-        <p className="deploy-best"><strong>Best for:</strong> Project sponsors managing African construction projects from overseas.</p>
+        <p>Remotely directing project governance and managing executive-level oversight — ensuring the sponsor has full visibility of costs, risks, schedule, and decisions, with structured advisory support from anywhere in the world.</p>
+        <p className="deploy-best"><strong>Best for:</strong> Project sponsors in the GCC, diaspora investors, and cross-border investors who need trusted governance intelligence and direction delivered directly to them.</p>
       </div>
       <div className="deploy-card">
         <div className="di">🔄</div>
         <h4>Hybrid Governance Model™</h4>
-        <p>Blended governance presence calibrated to your project&apos;s stage, complexity, and risk profile.</p>
-        <p className="deploy-best"><strong>Best for:</strong> Sponsors who require flexible governance deployment without compromising governance depth.</p>
+        <p>Continuously directing governance remotely, managing the project at critical milestones through targeted on-ground senior presence, and executing direct oversight at the points where physical engagement matters most.</p>
+        <p className="deploy-best"><strong>Best for:</strong> Sponsors who want the depth of on-ground governance at critical points, supported by structured remote direction throughout the full project lifecycle.</p>
       </div>
       <div className="deploy-card">
         <div className="di">🏗️</div>
         <h4>Full On-Site Governance Command™</h4>
-        <p>Dedicated senior governance presence embedded within your project for end-to-end oversight and authority.</p>
-        <p className="deploy-best"><strong>Best for:</strong> High-stakes developments where full-time, on-ground governance command is the right fit.</p>
+        <p>A dedicated senior governance presence embedded within the project environment — directing, managing, and executing governance on the sponsor's behalf on the ground in Africa, working alongside the project team with the sponsor's objectives at the centre of every decision.</p>
+        <p className="deploy-best"><strong>Best for:</strong> GCC-based, diaspora, and overseas project sponsors who wish to appoint a trusted senior governance partner to represent their interests directly within the project environment in Africa.</p>
       </div>
     </div>
   </div>
@@ -556,7 +559,7 @@ export default function Home() {
         <div className="about-card">
           <div className="about-photo">
             <img 
-              src="/talibbhai.png" 
+              src="/talibbhai.jpg" 
               alt="Talibbhai Khanji" 
               style={{ width: '100%', height: '100%', objectFit: 'cover' }} 
             />
@@ -785,7 +788,10 @@ export default function Home() {
     <div className="footer-grid">
 
       <div className="footer-brand">
-        <h3>PROCONIX <span>PMC</span></h3>
+        <div className="nav-logo-wrapper" style={{ marginBottom: '15px' }}>
+          <div className="nav-logo" style={{ fontSize: '1.3rem' }}>PROCONIX</div>
+          <div className="nav-tagline" style={{ fontSize: '0.5rem' }}>Project Management Consultancy</div>
+        </div>
         <p>We Direct, Manage, and Execute end-to-end construction project governance in Africa — across the full EPCM lifecycle, from inception through to successful handover.</p>
         <div className="footer-social-row">
           <a href="https://www.linkedin.com/in/talibkhanjipmp/" target="_blank" rel="noopener" title="LinkedIn">

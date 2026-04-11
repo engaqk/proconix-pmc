@@ -97,10 +97,13 @@ nav{
   display:flex;align-items:center;justify-content:space-between;gap:20px;
 }
 .nav-logo{
-  font-family:'Cormorant Garamond',serif;font-size:1.35rem;
-  font-weight:600;letter-spacing:0.05em;flex-shrink:0;
+  font-family:'Cormorant Garamond',serif;font-size:1.45rem;
+  font-weight:600;letter-spacing:0.06em;line-height:1;margin-bottom:2px;
 }
-.nav-logo span{color:var(--gold);}
+.nav-tagline{
+  font-size:0.55rem;font-weight:600;letter-spacing:0.12em;
+  text-transform:uppercase;color:var(--gold);
+}
 
 .nav-links{
   display:flex;align-items:center;gap:32px;list-style:none;

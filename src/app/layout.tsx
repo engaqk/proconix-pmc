@@ -6,8 +6,11 @@ import FloatingWhatsApp from './FloatingWhatsApp';
 export const metadata: Metadata = {
   title: 'Proconix PMC — Construction Project Governance in Africa | Talibbhai Khanji',
   description: 'Proconix PMC Directs, Manage, and Executes end-to-end construction project governance in Africa across the full EPCM lifecycle. $5M–$100M+ CAPEX. Real Estate, Hospitality & Industrial.',
-  themeColor: '#0B1D35',
   manifest: '/manifest.json',
+};
+
+export const viewport = {
+  themeColor: '#0B1D35',
 };
 
 export default function RootLayout({
