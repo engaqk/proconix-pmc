@@ -1,4 +1,4 @@
-const CACHE_NAME = 'proconix-v1';
+const CACHE_NAME = 'proconix-v2';
 
 self.addEventListener('install', (e) => {
   e.waitUntil(

@@ -22,7 +22,10 @@ export default function FeaturesPage() {
       <nav id="main-nav" style={{ padding: navPadding, background: 'rgba(7, 20, 42, 0.95)' }}>
         <div className="container">
           <div className="nav-inner">
-            <Link href="/" className="nav-logo">PROCONIX <span>PMC</span></Link>
+            <Link href="/" className="nav-logo-wrapper" style={{ textDecoration: 'none' }}>
+              <div className="nav-logo">PROCONIX</div>
+              <div className="nav-tagline">Project Management Consultancy</div>
+            </Link>
             <ul className="nav-links">
               <li><Link href="/">Home</Link></li>
               <li><Link href="/features" className="active-link" style={{ color: 'var(--gold)' }}>Features</Link></li>
