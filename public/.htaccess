@@ -1,0 +1,19 @@
+RewriteEngine On
+RewriteBase /
+
+# Rewrite /admin to admin.html
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^admin$ admin.html [L]
+RewriteRule ^admin/$ admin.html [L]
+
+# Rewrite /articles to articles.html
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^articles$ articles.html [L]
+RewriteRule ^articles/$ articles.html [L]
+
+# Generic rule for all other pretty URLs
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME}.html -f
+RewriteRule ^(.+)$ $1.html [L]

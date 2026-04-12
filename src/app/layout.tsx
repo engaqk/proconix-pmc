@@ -24,6 +24,7 @@ export default function RootLayout({
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet" />
+        <link rel="icon" href="/icon.jpg" sizes="any" />
         <link rel="apple-touch-icon" href="/icon.jpg" />
       </head>
       <body>

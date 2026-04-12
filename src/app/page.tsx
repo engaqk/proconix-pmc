@@ -427,21 +427,7 @@ export default function Home() {
       <div className="lead-left">
         <div className="section-eyebrow">Free Resource</div>
         <h2 className="section-title">Know Where You Stand<br/><em>Before It Costs You On Site</em></h2>
-        <p className="section-intro">70% of construction project problems are created before ground is broken. This checklist gives you a scored readiness assessment across 5 governance domains — before your contractor mobilises.</p>
-
-        <div className="lead-domains">
-          <div className="domain-item"><div className="domain-check">✓</div><span><strong>Domain 1 —</strong> Technical &amp; Execution Readiness: design constructability, critical path validation, schedule governance</span></div>
-          <div className="domain-item"><div className="domain-check">✓</div><span><strong>Domain 2 —</strong> Legal &amp; Contractual Readiness: contract structure, regulatory compliance, statutory approvals</span></div>
-          <div className="domain-item"><div className="domain-check">✓</div><span><strong>Domain 3 —</strong> Procurement &amp; Supply Chain: import risk, long-lead items, supplier governance</span></div>
-          <div className="domain-item"><div className="domain-check">✓</div><span><strong>Domain 4 —</strong> Governance &amp; Authority: sponsor authority matrix, decision-making structure, escalation protocols</span></div>
-          <div className="domain-item"><div className="domain-check">✓</div><span><strong>Domain 5 —</strong> Financial Governance: cost baseline, cash flow governance, contingency structure</span></div>
-        </div>
-
-        <div className="readiness-tags">
-          <span className="rtag rtag-green">✔ Protected</span>
-          <span className="rtag rtag-amber">⚠ Exposed</span>
-          <span className="rtag rtag-red">✗ Set Up for Financial Loss</span>
-        </div>
+        <p className="section-intro">70% of construction project problems are created before ground is broken. This checklist ensures you have a structured governance command in place before your contractor mobilises.</p>
       </div>
 
       <div className="lead-form-box">
