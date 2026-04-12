@@ -58,7 +58,10 @@ async function sendRawSmtpEmail(options: {
 export async function POST(req: Request) {
   try {
     const body = await req.json();
-    const { name, email, country, sector } = body;
+    const { name, email, country, sector, type } = body;
+    
+    // Determine type if not provided
+    const displayType = type || (country ? 'Checklist Download' : 'Lead Capture');
 
     // Save to Firestore First
     await addDoc(collection(db, 'formSubmissions'), {
@@ -67,7 +70,7 @@ export async function POST(req: Request) {
       country: country || 'Not provided',
       sector: sector || 'Not provided',
       createdAt: serverTimestamp(),
-      type: country ? 'Lead Form Form' : 'Capture Form'
+      type: displayType
     }).catch(e => console.error("Firestore Save Error:", e));
 
     // Then trigger email to Admin

@@ -11,10 +11,18 @@ export default function AdminDashboard() {
   const [error, setError] = useState("");
   const [submissions, setSubmissions] = useState<any[]>([]);
 
+  useEffect(() => {
+    const savedLogin = localStorage.getItem("proconix_admin_logged_in");
+    if (savedLogin === "true") {
+      setIsLoggedIn(true);
+    }
+  }, []);
+
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
     if (username === "admin" && password === "admin53") {
       setIsLoggedIn(true);
+      localStorage.setItem("proconix_admin_logged_in", "true");
       setError("");
     } else {
       setError("Invalid credentials. Please try again.");
@@ -72,7 +80,10 @@ export default function AdminDashboard() {
       <div style={{ maxWidth: "1000px", margin: "0 auto" }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "30px" }}>
           <h1 style={{ color: "#0B1D35", margin: 0 }}>Proconix Dashboard</h1>
-          <button onClick={() => setIsLoggedIn(false)} style={{ padding: "8px 16px", background: "#0B1D35", color: "#fff", border: "none", borderRadius: "4px", cursor: "pointer" }}>Logout</button>
+          <button onClick={() => {
+            setIsLoggedIn(false);
+            localStorage.removeItem("proconix_admin_logged_in");
+          }} style={{ padding: "8px 16px", background: "#0B1D35", color: "#fff", border: "none", borderRadius: "4px", cursor: "pointer" }}>Logout</button>
         </div>
         
         <div style={{ background: "#fff", borderRadius: "8px", boxShadow: "0 4px 12px rgba(0,0,0,0.05)", overflow: "hidden" }}>
@@ -102,7 +113,14 @@ export default function AdminDashboard() {
                         {sub.createdAt ? new Date(sub.createdAt.toDate()).toLocaleDateString() : 'Just now'}
                       </td>
                       <td style={{ padding: "15px" }}>
-                        <span style={{ background: sub.type === 'Capture Form' ? '#e3f2fd' : '#e8f5e9', color: sub.type === 'Capture Form' ? '#1565c0' : '#2e7d32', padding: "4px 8px", borderRadius: "12px", fontSize: "0.8rem", fontWeight: "bold" }}>
+                        <span style={{ 
+                          background: sub.type === 'Discovery Call Click' ? '#fff3e0' : (sub.type === 'Checklist Download' ? '#e3f2fd' : '#e8f5e9'), 
+                          color: sub.type === 'Discovery Call Click' ? '#e65100' : (sub.type === 'Checklist Download' ? '#1565c0' : '#2e7d32'), 
+                          padding: "4px 8px", 
+                          borderRadius: "12px", 
+                          fontSize: "0.8rem", 
+                          fontWeight: "bold" 
+                        }}>
                           {sub.type}
                         </span>
                       </td>

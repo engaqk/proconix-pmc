@@ -16,6 +16,21 @@ export default function FeaturesPage() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  const handleDiscoveryClick = async () => {
+    try {
+      await fetch('/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ 
+          name: 'Anonymous Click (Features Page)', 
+          email: 'Pending registration', 
+          type: 'Discovery Call Click' 
+        }),
+      });
+    } catch {}
+    window.open("https://topmate.io/talibkhanji_pmp/2043275", "_blank");
+  };
+
   return (
     <div className="features-page">
       {/* Navigation */}
@@ -36,7 +51,7 @@ export default function FeaturesPage() {
             </ul>
             <div className="nav-right">
               <a href="mailto:info@proconixpmc.com?subject=NDA%20Request" className="btn-outline">Request NDA</a>
-              <a href="https://topmate.io/talibkhanji_pmp/2043275" target="_blank" rel="noopener noreferrer" className="btn-gold">Book Discovery Call</a>
+              <button onClick={handleDiscoveryClick} className="btn-gold">Book Discovery Call</button>
             </div>
             <button className="menu-toggle" onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}>
               {isMobileMenuOpen ? '✕' : '☰'}
@@ -52,7 +67,7 @@ export default function FeaturesPage() {
           <Link href="/#advantage">Our Advantage</Link>
           <Link href="/#about">About</Link>
           <Link href="/#cases">Case Evidence</Link>
-          <a href="https://topmate.io/talibkhanji_pmp/2043275" target="_blank" rel="noopener noreferrer" className="btn-gold" style={{ marginTop: '10px' }}>Book Discovery Call</a>
+          <button onClick={handleDiscoveryClick} className="btn-gold" style={{ marginTop: '10px' }}>Book Discovery Call</button>
         </div>
       </nav>
 
@@ -79,7 +94,7 @@ export default function FeaturesPage() {
             * We engineer the governance structures that protect your project capital from day one.
           </p>
           <div style={{ marginTop: '40px' }}>
-            <a href="https://topmate.io/talibkhanji_pmp/2043275" target="_blank" rel="noopener noreferrer" className="btn-gold" style={{ padding: '16px 32px' }}>Book Discovery Call</a>
+            <button onClick={handleDiscoveryClick} className="btn-gold" style={{ padding: '16px 32px' }}>Book Discovery Call</button>
           </div>
         </div>
       </section>
