@@ -64,14 +64,23 @@ export async function POST(req: Request) {
     const displayType = type || (country ? 'Checklist Download' : 'Lead Capture');
 
     // Save to Firestore First
-    await addDoc(collection(db, 'formSubmissions'), {
-      name: name || '',
-      email: email || '',
-      country: country || 'Not provided',
-      sector: sector || 'Not provided',
-      createdAt: serverTimestamp(),
-      type: displayType
-    }).catch(e => console.error("Firestore Save Error:", e));
+    try {
+      await addDoc(collection(db, 'formSubmissions'), {
+        name: name || '',
+        email: email || '',
+        country: country || 'Not provided',
+        sector: sector || 'Not provided',
+        createdAt: serverTimestamp(),
+        type: displayType
+      });
+    } catch (dbError: any) {
+      console.error("CRITICAL: Firestore Save Error:", dbError);
+      // Return 500 if database save fails, so we know why
+      return NextResponse.json({ 
+        error: "Failed to save submission to database. Ensure Firebase rules allow writing to 'formSubmissions'.",
+        debug: dbError.message 
+      }, { status: 500 });
+    }
 
     // Then trigger email to Admin
     let textContent = `New Form Submission:\nName: ${name}\nEmail: ${email}`;

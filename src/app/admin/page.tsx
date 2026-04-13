@@ -29,8 +29,12 @@ export default function AdminDashboard() {
     }
   };
 
+  const [isLoading, setIsLoading] = useState(true);
+  const [firebaseError, setFirebaseError] = useState<string | null>(null);
+
   useEffect(() => {
     if (isLoggedIn) {
+      setIsLoading(true);
       const q = query(collection(db, "formSubmissions"), orderBy("createdAt", "desc"));
       const unsubscribe = onSnapshot(q, (snapshot) => {
         const data = snapshot.docs.map(doc => ({
@@ -38,8 +42,17 @@ export default function AdminDashboard() {
           ...doc.data()
         }));
         setSubmissions(data);
+        setIsLoading(false);
+        setFirebaseError(null);
       }, (err) => {
         console.error("Error fetching submissions:", err);
+        setFirebaseError(err.message);
+        setIsLoading(false);
+        
+        // If it's a missing index error, Firebase provides a URL in the console
+        if (err.message.includes("index")) {
+          setFirebaseError("Firestore Index Missing: You need to create an index for 'formSubmissions' with 'createdAt' descending. Check the browser console for the direct link.");
+        }
       });
       return () => unsubscribe();
     }
@@ -91,8 +104,25 @@ export default function AdminDashboard() {
             <h3 style={{ margin: 0, color: "#455065" }}>Recent Form Submissions ({submissions.length})</h3>
           </div>
           
-          {submissions.length === 0 ? (
-            <div style={{ padding: "40px", textAlign: "center", color: "#8EA8C3" }}>No submissions found yet.</div>
+          {firebaseError && (
+            <div style={{ padding: "20px", backgroundColor: "#fff5f5", color: "#c53030", borderBottom: "1px solid #fed7d7" }}>
+              <strong>Firebase Error:</strong> {firebaseError}
+              <br/>
+              <span style={{ fontSize: "0.85rem" }}>
+                Ensure your <a href="https://console.firebase.google.com/u/0/project/proconix-pmc/firestore/rules" target="_blank" style={{ color: "#c53030", textDecoration: "underline" }}>Firestore Rules</a> allow read/write and that indices are created.
+              </span>
+            </div>
+          )}
+
+          {isLoading ? (
+            <div style={{ padding: "40px", textAlign: "center", color: "#8EA8C3" }}>Loading submissions...</div>
+          ) : submissions.length === 0 ? (
+            <div style={{ padding: "40px", textAlign: "center", color: "#8EA8C3" }}>
+              No submissions found yet in <strong>formSubmissions</strong> collection.
+              <br/>
+              <br/>
+              <a href="https://console.firebase.google.com/u/0/project/proconix-pmc/firestore/databases/-default-/data" target="_blank" style={{ color: "#0B1D35", textDecoration: "underline" }}>Check Firestore Console</a>
+            </div>
           ) : (
             <div style={{ overflowX: "auto" }}>
               <table style={{ width: "100%", borderCollapse: "collapse", textAlign: "left" }}>
