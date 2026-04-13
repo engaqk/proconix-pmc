@@ -409,7 +409,7 @@ export default function Home() {
 <section className="who-section">
   <div className="container">
     <div className="section-eyebrow">Ideal Client Profile</div>
-    <h2 className="section-title">Built for <em>Project Sponsors,</em><br/>Not Project Managers</h2>
+    <h2 className="section-title">Built for <em>Project Sponsors</em></h2>
     <p className="section-intro">Proconix serves real estate, hospitality, and industrial project sponsors and investors — with construction projects in Africa. GCC-based, diaspora, and African-domiciled investors who need their capital governed, not just managed.</p>
     <div className="who-grid">
       <div className="who-card">
