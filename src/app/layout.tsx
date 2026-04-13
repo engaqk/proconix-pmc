@@ -33,7 +33,22 @@ export default function RootLayout({
         <FloatingWhatsApp />
         <script
           dangerouslySetInnerHTML={{
-            __html: `if ('serviceWorker' in navigator) { navigator.serviceWorker.register('/sw.js'); }`
+            __html: `
+              window.addEventListener('beforeinstallprompt', (e) => {
+                e.preventDefault();
+                window.deferredPrompt = e;
+              });
+              
+              if ('serviceWorker' in navigator) {
+                window.addEventListener('load', () => {
+                  navigator.serviceWorker.register('/sw.js').then(reg => {
+                    console.log('SW registered:', reg);
+                  }).catch(err => {
+                    console.log('SW reg error:', err);
+                  });
+                });
+              }
+            `
           }}
         />
       </body>

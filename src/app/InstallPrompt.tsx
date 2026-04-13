@@ -16,45 +16,81 @@ export default function InstallPrompt() {
     const ios = /iPad|iPhone|iPod/.test(navigator.userAgent) && !(window as any).MSStream;
     setIsIOS(ios);
     
-    // FORCE SHOW prompt after 2 seconds for first-load visibility
-    // This acts as the fallback if the browser event is slow
-    const timer = setTimeout(() => {
+    // 1. Initial check for globally captured prompt
+    if ((window as any).deferredPrompt) {
+      setDeferredPrompt((window as any).deferredPrompt);
       setShowPrompt(true);
-    }, 2000);
+    }
 
-    const handleBeforeInstallPrompt = (e: Event) => {
+    const handleBeforeInstallPrompt = (e: any) => {
       console.log('beforeinstallprompt event fired - browser is ready');
       e.preventDefault();
       setDeferredPrompt(e);
       setShowPrompt(true);
-      // If event fired, we don't need the timer anymore
-      clearTimeout(timer);
+      (window as any).deferredPrompt = e;
+    };
+
+    const handleAppInstalled = () => {
+      console.log('App was successfully installed');
+      setDeferredPrompt(null);
+      setShowPrompt(false);
+      (window as any).deferredPrompt = null;
     };
 
     window.addEventListener("beforeinstallprompt", handleBeforeInstallPrompt);
+    window.addEventListener("appinstalled", handleAppInstalled);
+
+    // For iOS, show the prompt after a slight delay for better experience
+    // For others, we ONLY show if beforeinstallprompt has fired
+    if (ios) {
+      const timer = setTimeout(() => {
+        setShowPrompt(true);
+      }, 4000);
+      return () => {
+        window.removeEventListener("beforeinstallprompt", handleBeforeInstallPrompt);
+        window.removeEventListener("appinstalled", handleAppInstalled);
+        clearTimeout(timer);
+      };
+    }
 
     return () => {
       window.removeEventListener("beforeinstallprompt", handleBeforeInstallPrompt);
-      clearTimeout(timer);
+      window.removeEventListener("appinstalled", handleAppInstalled);
     };
   }, []);
 
   const handleInstallClick = async () => {
     if (!deferredPrompt) {
-      if (isIOS) {
-        // No action needed, user reads the guide in the card
-      } else {
-        // Android/Chrome Fallback
-        alert("To install Proconix App:\n1. Open your browser menu (three dots ⋮)\n2. Tap 'Install App' or 'Add to Home Screen'");
+      // Final attempt to check global
+      const globalPrompt = (window as any).deferredPrompt;
+      if (globalPrompt) {
+        setDeferredPrompt(globalPrompt);
+        await globalPrompt.prompt();
+        const { outcome } = await globalPrompt.userChoice;
+        if (outcome === 'accepted') {
+          setShowPrompt(false);
+        }
+        return;
+      }
+
+      if (!isIOS) {
+        alert("The app is almost ready for installation. If this doesn't work, please use your browser's menu (⋮) and select 'Install Proconix'.");
       }
       return;
     }
     
-    setShowPrompt(false);
-    deferredPrompt.prompt();
-    const { outcome } = await deferredPrompt.userChoice;
-    console.log(`User response to the install prompt: ${outcome}`);
-    setDeferredPrompt(null);
+    try {
+      await deferredPrompt.prompt();
+      const { outcome } = await deferredPrompt.userChoice;
+      console.log(`User response to the install prompt: ${outcome}`);
+      if (outcome === 'accepted') {
+        setShowPrompt(false);
+        setDeferredPrompt(null);
+        (window as any).deferredPrompt = null;
+      }
+    } catch (err) {
+      console.error('Installation failed:', err);
+    }
   };
 
   const handleClose = () => {

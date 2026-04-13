@@ -204,7 +204,7 @@ export default function Home() {
       <div className="hero-card" id="hero-card">
         <div className="card-tag">Free Resource — Download Instantly</div>
         <h3>Before You Break Ground:<br/>Pre-Construction Governance Checklist — Africa</h3>
-        <p>13 diagnostic areas. 5 governance domains. Know exactly where you stand before your contractor mobilises.</p>
+        <p>13 diagnostic areas. Know exactly where you stand before your contractor mobilises.</p>
         <div className="stat-rows">
           <div className="stat-row">
             <span className="val">70%</span>
