@@ -1,4 +1,5 @@
 
+
 export async function sendSlackNotification(data: {
   type: string;
   name: string;
@@ -22,7 +23,6 @@ export async function sendSlackNotification(data: {
     low: '#C9A84C'     // Proconix Gold for Checklist
   };
 
-  const currentColor = colorMap[priority];
   const emoji = priority === 'high' ? '🔥' : priority === 'medium' ? '💬' : '📩';
 
   const blocks: any[] = [
@@ -55,11 +55,11 @@ export async function sendSlackNotification(data: {
       fields: [
         {
           type: "mrkdwn",
-          text: `*Country:*\n${country || 'N/A'}`
+          text: `*Country/Location:*\n${country || 'N/A'}`
         },
         {
           type: "mrkdwn",
-          text: `*Sector:*\n${sector || 'N/A'}`
+          text: `*Sector/Budget:*\n${sector || 'N/A'}`
         }
       ] as any
     });
@@ -70,7 +70,7 @@ export async function sendSlackNotification(data: {
       type: "section",
       text: {
         type: "mrkdwn",
-        text: `*Additional Details:*\n${details}`
+        text: `*Additional Context:*\n${details}`
       }
     });
   }
@@ -80,12 +80,18 @@ export async function sendSlackNotification(data: {
   });
 
   try {
-    await fetch(webhookUrl, {
+    const response = await fetch(webhookUrl, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ blocks })
     });
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.error('Slack Webhook Failed:', response.status, errorText);
+    }
   } catch (error) {
     console.error('Error sending Slack notification:', error);
   }
 }
+

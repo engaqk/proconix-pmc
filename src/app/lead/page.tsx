@@ -62,7 +62,7 @@ export default function LeadPage() {
       const res = await fetch('/api/contact', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data),
+        body: JSON.stringify({ ...data, type: 'Checklist Download (Lead Page)' }),
       });
       if (res.ok) {
         setFormStatus({ type: 'success', message: 'Details captured. Your download has opened in a new tab.' });
@@ -71,6 +71,7 @@ export default function LeadPage() {
     } catch {
       // Silently ignore capture errors to ensure user gets the file
     }
+
   };
 
   const handleDiscoveryClick = async () => {
