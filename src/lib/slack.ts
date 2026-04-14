@@ -72,7 +72,7 @@ export async function sendSlackNotification(data: {
         type: "mrkdwn",
         text: `*Additional Details:*\n${details}`
       }
-    });
+    } as any);
   }
 
   blocks.push({
