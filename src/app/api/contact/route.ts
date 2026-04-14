@@ -56,7 +56,7 @@ async function sendRawSmtpEmail(options: {
         // SMTP Multi-line status codes: 
         // "250-Something" means more lines coming.
         // "250 Something" (space at pos 3) means last line of this response.
-        const isLastLine = line.length >= 4 && line[3] === ' '; e.target;
+        const isLastLine = line.length >= 4 && line[3] === ' ';
         
         if (line.startsWith('5') || line.startsWith('4')) {
           const errorMsg = `SMTP ${line}`;
