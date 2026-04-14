@@ -922,3 +922,23 @@ footer{background:var(--navy-deep);border-top:1px solid var(--border);padding:56
 .form-status { padding: 10px; margin-top: 10px; border-radius: 4px; font-size: 0.8rem; text-align: center; }
 .form-status.success { background-color: rgba(76, 175, 130, 0.2); color: #4CAF82; border: 1px solid rgba(76, 175, 130, 0.5); }
 .form-status.error { background-color: rgba(224, 92, 92, 0.2); color: #E05C5C; border: 1px solid rgba(224, 92, 92, 0.5); }
+
+/* Lead Generation Page Styles */
+.mandate-ticker { background: var(--gold-pale); border-bottom: 1px solid rgba(201, 168, 76, 0.15); padding: 8px 0; overflow: hidden; }
+.ticker-content { display: flex; align-items: center; justify-content: center; gap: 12px; font-size: 0.72rem; color: var(--gold); letter-spacing: 0.05em; text-transform: uppercase; white-space: nowrap; animation: ticker-fade 4s infinite alternate; }
+.ticker-dot { width: 6px; height: 6px; background: var(--gold); border-radius: 50%; box-shadow: 0 0 8px var(--gold); }
+.ticker-scarcity { background: var(--gold); color: var(--navy); padding: 2px 8px; font-weight: 700; margin-left: 10px; }
+@keyframes ticker-fade { from { opacity: 0.7; } to { opacity: 1; } }
+
+.resource-visual { display: flex; align-items: center; gap: 20px; background: var(--navy-mid); border: 1px solid var(--border); padding: 16px; margin-bottom: 24px; }
+.resource-visual p { font-size: 0.78rem; color: var(--text-muted); line-height: 1.5; margin: 0; }
+.mockup-pdf { width: 50px; height: 64px; background: #fff; border-radius: 2px; position: relative; flex-shrink: 0; box-shadow: 0 4px 12px rgba(0,0,0,0.3); }
+.mockup-header { background: var(--navy); height: 18px; width: 100%; display: flex; align-items: center; justify-content: center; color: var(--gold); font-size: 5px; font-weight: 900; }
+.mockup-body { padding: 8px 6px; }
+.mockup-line { height: 2px; background: #eee; margin-bottom: 4px; width: 100%; }
+.mockup-line.short { width: 60%; }
+
+.form-select { background: var(--navy-card); border: 1px solid rgba(201, 168, 76, 0.22); color: var(--white); font-family: 'DM Sans', sans-serif; font-size: 0.88rem; padding: 14px 16px; width: 100%; outline: none; transition: border .2s; appearance: none; cursor: pointer; }
+.form-select:focus { border-color: var(--gold); }
+
+.hero-qualify { font-size: 0.72rem; color: var(--text-muted); font-style: italic; margin-top: 10px; margin-bottom: 40px; opacity: 0.8; }
