@@ -4,7 +4,7 @@ import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
 import { db } from '../../../lib/firebase';
 import { sendSlackNotification } from '../../../lib/slack';
 
-// Minimal Raw SMTP Client using Node TLS 
+// Robust Raw SMTP Client using Node TLS 
 async function sendRawSmtpEmail(options: { 
   to: string;
   bcc?: string;
@@ -14,23 +14,23 @@ async function sendRawSmtpEmail(options: {
   const user = process.env.GMAIL_USER || 'talibkhanjipmp@gmail.com';
   const pass = process.env.GMAIL_APP_PASSWORD || '';
   
-  if (!pass) {
-    console.error('SMTP ERROR: GMAIL_APP_PASSWORD is not set.');
+  if (!pass || pass === 'your_app_password_here') {
+    console.error('SMTP ERROR: GMAIL_APP_PASSWORD is not set or is placeholder.');
     return;
   }
 
   return new Promise((resolve, reject) => {
     let resolved = false;
+    let step = 0;
+    let dataBuffer = '';
+
     const socket = tls.connect({ 
       port: 465, 
       host: 'smtp.gmail.com',
-      servername: 'smtp.gmail.com' // Explicit servername for SNI
+      servername: 'smtp.gmail.com'
     }, () => {});
     
     socket.setEncoding('utf-8');
-    
-    let step = 0;
-    let buffer = '';
 
     const cleanup = (success: boolean, error?: any) => {
       if (resolved) return;
@@ -40,90 +40,117 @@ async function sendRawSmtpEmail(options: {
       else reject(error);
     };
 
+    const sendLine = (line: string) => {
+      if (socket.writable) socket.write(line + '\r\n');
+    };
+
     socket.on('data', (data: string) => {
-      buffer += data;
-      if (!buffer.endsWith('\r\n')) return;
+      dataBuffer += data;
       
-      const response = buffer;
-      buffer = '';
+      // Process only when we have complete lines
+      while (dataBuffer.includes('\r\n')) {
+        const lineEnd = dataBuffer.indexOf('\r\n');
+        const line = dataBuffer.substring(0, lineEnd);
+        dataBuffer = dataBuffer.substring(lineEnd + 2);
 
-      try {
-        if (step === 0 && response.startsWith('220')) {
-          socket.write('EHLO localhost\r\n');
-          step++;
-        } 
-        else if (step === 1 && response.includes('250 ')) {
-          socket.write('AUTH LOGIN\r\n');
-          step++;
-        }
-        else if (step === 2 && response.startsWith('334')) {
-          socket.write(Buffer.from(user).toString('base64') + '\r\n');
-          step++;
-        }
-        else if (step === 3 && response.startsWith('334')) {
-          socket.write(Buffer.from(pass).toString('base64') + '\r\n');
-          step++;
-        }
-        else if (step === 4 && response.startsWith('235')) {
-          socket.write(`MAIL FROM:<${user}>\r\n`);
-          step++;
-        }
-        else if (step === 5 && response.startsWith('250')) {
-          socket.write(`RCPT TO:<${options.to}>\r\n`);
-          step = options.bcc ? 6 : 7;
-        }
-        else if (step === 6 && response.startsWith('250')) {
-          socket.write(`RCPT TO:<${options.bcc}>\r\n`);
-          step++;
-        }
-        else if (step === 7 && response.startsWith('250')) {
-          socket.write('DATA\r\n');
-          step++;
-        }
-        else if (step === 8 && response.startsWith('354')) {
-          // Dot-stuffing: If any line starts with a dot, prefix it with another dot
-          const escapedText = options.text
-            .split('\r\n')
-            .map(line => line.startsWith('.') ? '.' + line : line)
-            .join('\r\n');
-
-          const message = [
-            `From: Proconix Governance <${user}>`,
-            `To: ${options.to}`,
-            `Subject: ${options.subject}`,
-            `Content-Type: text/plain; charset="UTF-8"`,
-            `Date: ${new Date().toUTCString()}`,
-            '',
-            escapedText,
-            '.',
-            ''
-          ].join('\r\n');
-          socket.write(message);
-          step++;
-        }
-        else if (step === 9 && response.startsWith('250')) {
-          socket.write('QUIT\r\n');
-          cleanup(true);
-        }
+        // SMTP Multi-line status codes: 
+        // "250-Something" means more lines coming.
+        // "250 Something" (space at pos 3) means last line of this response.
+        const isLastLine = line.length >= 4 && line[3] === ' '; e.target;
         
-        if (response.startsWith('5') || response.startsWith('4')) {
-          const errorMsg = response.trim();
-          console.error('SMTP Transmission Error:', errorMsg);
-          cleanup(false, new Error('SMTP Error: ' + errorMsg));
+        if (line.startsWith('5') || line.startsWith('4')) {
+          const errorMsg = `SMTP ${line}`;
+          console.error(errorMsg);
+          cleanup(false, new Error(errorMsg));
+          return;
         }
-      } catch (err) {
-        cleanup(false, err);
+
+        switch (step) {
+          case 0: // Greeting
+            if (line.startsWith('220')) {
+              sendLine('EHLO localhost');
+              step = 1;
+            }
+            break;
+          case 1: // EHLO Status
+            if (line.startsWith('250') && isLastLine) {
+              sendLine('AUTH LOGIN');
+              step = 2;
+            }
+            break;
+          case 2: // Auth User Prompt
+            if (line.startsWith('334')) {
+              sendLine(Buffer.from(user).toString('base64'));
+              step = 3;
+            }
+            break;
+          case 3: // Auth Pass Prompt
+            if (line.startsWith('334')) {
+              sendLine(Buffer.from(pass).toString('base64'));
+              step = 4;
+            }
+            break;
+          case 4: // Auth Success
+            if (line.startsWith('235')) {
+              sendLine(`MAIL FROM:<${user}>`);
+              step = 5;
+            }
+            break;
+          case 5: // Mail From OK
+            if (line.startsWith('250')) {
+              sendLine(`RCPT TO:<${options.to}>`);
+              step = options.bcc ? 6 : 7;
+            }
+            break;
+          case 6: // RCPT TO OK (for BCC)
+            if (line.startsWith('250')) {
+              sendLine(`RCPT TO:<${options.bcc}>`);
+              step = 7;
+            }
+            break;
+          case 7: // RCPT TO OK, Start Data
+            if (line.startsWith('250')) {
+              sendLine('DATA');
+              step = 8;
+            }
+            break;
+          case 8: // Data Prompt
+            if (line.startsWith('354')) {
+              const escapedText = options.text
+                .split('\r\n')
+                .map(l => l.startsWith('.') ? '.' + l : l)
+                .join('\r\n');
+
+              const message = [
+                `From: Proconix Governance <${user}>`,
+                `To: ${options.to}`,
+                `Subject: ${options.subject}`,
+                `Content-Type: text/plain; charset="UTF-8"`,
+                `Date: ${new Date().toUTCString()}`,
+                '',
+                escapedText,
+                '.',
+                ''
+              ].join('\r\n');
+              socket.write(message);
+              step = 9;
+            }
+            break;
+          case 9: // Data Sent OK
+            if (line.startsWith('250')) {
+              sendLine('QUIT');
+              cleanup(true);
+            }
+            break;
+        }
       }
     });
 
-    socket.on('error', (err) => {
-      console.error('SMTP Connection Error:', err.message);
-      cleanup(false, err);
-    });
-    
+    socket.on('error', (err) => cleanup(false, err));
     setTimeout(() => cleanup(false, new Error('SMTP Timeout')), 15000);
   });
 }
+
 
 
 
