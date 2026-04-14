@@ -25,7 +25,7 @@ export async function sendSlackNotification(data: {
   const currentColor = colorMap[priority];
   const emoji = priority === 'high' ? '🔥' : priority === 'medium' ? '💬' : '📩';
 
-  const blocks = [
+  const blocks: any[] = [
     {
       type: "header",
       text: {
@@ -72,7 +72,7 @@ export async function sendSlackNotification(data: {
         type: "mrkdwn",
         text: `*Additional Details:*\n${details}`
       }
-    } as any);
+    });
   }
 
   blocks.push({
