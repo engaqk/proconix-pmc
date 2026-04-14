@@ -54,6 +54,23 @@ export default function GovernanceSimulator() {
     return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(val);
   };
 
+  const handleConversion = async () => {
+    try {
+      await fetch('/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ 
+          name: 'Simulator Lead', 
+          email: 'Pending registration', 
+          type: 'Simulator Audit Click',
+          sector: selectedSector.name,
+          details: `Budget: ${formatCurrency(budget)}, Readiness: ${score}%, Leakage: ${formatCurrency(leakage)}`
+        }),
+      });
+    } catch {}
+    window.open("https://topmate.io/talibkhanji_pmp/2043275", "_blank");
+  };
+
   return (
     <div className="simulator-card">
       {/* Progress Bar */}
@@ -137,7 +154,7 @@ export default function GovernanceSimulator() {
           </div>
 
           <div className="result-actions">
-            <button className="btn-gold" onClick={() => window.open("https://topmate.io/talibkhanji_pmp/2043275", "_blank")}>
+            <button className="btn-gold" onClick={handleConversion}>
               Book Strategic Audit
             </button>
             <button className="btn-outline" onClick={() => setStep(1)}>Restart Diagnostic</button>

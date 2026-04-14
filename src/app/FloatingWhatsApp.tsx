@@ -18,6 +18,19 @@ export default function FloatingWhatsApp() {
       href="https://wa.me/918530781153"
       target="_blank"
       rel="noopener noreferrer"
+      onClick={async () => {
+        try {
+          await fetch('/api/contact', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ 
+              name: 'WhatsApp Intent', 
+              email: 'Pending chat', 
+              type: 'WhatsApp Click' 
+            }),
+          });
+        } catch {}
+      }}
       style={{
         position: 'fixed',
         bottom: '80px', // slightly above PWA banner if open

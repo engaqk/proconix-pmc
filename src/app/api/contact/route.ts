@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import tls from 'tls';
 import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
 import { db } from '../../../lib/firebase';
+import { sendSlackNotification } from '../../../lib/slack';
 
 // Minimal Raw SMTP Client using Node TLS 
 async function sendRawSmtpEmail(options: { 
@@ -92,6 +93,16 @@ export async function POST(req: Request) {
       bcc: 'talibkhanjipmp@gmail.com',
       subject: 'New Website Inquiry - Proconix',
       text: textContent,
+    });
+
+    // Notify Slack
+    await sendSlackNotification({
+      type: displayType,
+      name: name || 'Anonymous',
+      email: email || 'N/A',
+      country: country,
+      sector: sector,
+      priority: displayType.includes('Call') || displayType.includes('Audit') ? 'high' : displayType.includes('WhatsApp') ? 'medium' : 'low'
     });
 
     return NextResponse.json({ success: true });

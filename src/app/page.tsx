@@ -89,6 +89,22 @@ export default function Home() {
     window.open("https://topmate.io/talibkhanji_pmp/2043275", "_blank");
   };
 
+  const handleChecklistClick = async (e: React.MouseEvent) => {
+    e.preventDefault();
+    try {
+      await fetch('/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ 
+          name: 'Anonymous Click', 
+          email: 'Pending registration', 
+          type: 'External Checklist Click' 
+        }),
+      });
+    } catch {}
+    window.open("https://checklist.gr8.com/", "_blank");
+  };
+
   return (
     <>
       <nav id="main-nav" style={{ padding: navPadding }}>
@@ -699,7 +715,7 @@ export default function Home() {
         <br/>
         <p>If you have a question not addressed here, the discovery call is the right place to ask it. There is no obligation and no pitch — only a structured conversation about whether Proconix is the right governance partner for your specific project.</p>
         <br/>
-        <a href="https://topmate.io/talibkhanji_pmp/2043275" target="_blank" rel="noopener noreferrer" className="btn-outline" style={{"marginTop":"8px"}}>Book the Discovery Call</a>
+        <button onClick={handleDiscoveryClick} className="btn-outline" style={{"marginTop":"8px"}}>Book the Discovery Call</button>
       </div>
 
       <div className="faq-list">
@@ -778,7 +794,7 @@ export default function Home() {
       <p>Every day a construction project runs without a structured governance architecture is a day of compounding exposure. The discovery call is where we determine whether Proconix is the right governance partner for your project — and whether your project falls within our current mandate window.</p>
       <div className="cta-pair">
         <button onClick={handleDiscoveryClick} className="btn-gold">Book a Discovery Call</button>
-        <a href="https://checklist.gr8.com/" target="_blank" rel="noopener noreferrer" className="btn-outline">Download Free Checklist Now</a>
+        <button onClick={handleChecklistClick} className="btn-outline">Download Free Checklist Now</button>
       </div>
       <p className="cta-scarcity"><strong>Mandate Availability:</strong> Maximum 4 active Tier-1 mandates. One new engagement per quarter. Enquire to confirm current availability.</p>
     </div>
