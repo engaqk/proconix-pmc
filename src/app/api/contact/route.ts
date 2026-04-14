@@ -113,7 +113,7 @@ async function sendRawSmtpEmail(options: {
           case 8:
             if (line.startsWith('354')) {
               const message = [
-                `From: Proconix Governance <${user}>`,
+                `From: Proconix Project Management Consultancy <${user}>`,
                 `To: ${options.to}`,
                 `Subject: ${options.subject}`,
                 `Content-Type: text/html; charset="UTF-8"`,
@@ -223,12 +223,12 @@ function getEmailTemplate(data: {
 
             <center>
               <a href="mailto:${email}" class="btn">Reply to Sponsor</a>
-              <p class="secondary">Intent detected via Proconix Governance Engine v2.0</p>
+              <p class="secondary">Intent detected via Proconix Project Management Consultancy v2.0</p>
             </center>
           </div>
           <div class="footer">
             &copy; 2026 Proconix Project Management Consultancy<br>
-            Project Governance · Africa · GCC · UK · UK-Europe
+            Project Management Consultancy · Africa · GCC · UK · UK-Europe
           </div>
         </div>
       </div>
