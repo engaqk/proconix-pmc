@@ -119,6 +119,7 @@ export default function LeadPage() {
               <li><Link href="/">Home</Link></li>
               <li><Link href="/features">Features</Link></li>
               <li><a href="#hero-card" onClick={(e) => smoothScroll(e, "#hero-card")}>Checklist</a></li>
+              <li><Link href="/admin">Admin Login</Link></li>
             </ul>
 
             <div className="nav-right">
@@ -143,6 +144,7 @@ export default function LeadPage() {
         <div className={`mobile-menu ${isMobileMenuOpen ? 'open' : ''}`}>
           <Link href="/">Home</Link>
           <Link href="/features">Features</Link>
+          <Link href="/admin">Admin Login</Link>
           <button onClick={handleDiscoveryClick} className="btn-gold" style={{ marginTop: '10px' }}>Book Strategic Audit</button>
         </div>
 

@@ -48,6 +48,7 @@ export default function FeaturesPage() {
               <li><Link href="/#advantage">Our Advantage</Link></li>
               <li><Link href="/#about">About</Link></li>
               <li><Link href="/#cases">Case Evidence</Link></li>
+              <li><Link href="/admin">Admin Login</Link></li>
             </ul>
             <div className="nav-right">
               <button onClick={handleDiscoveryClick} className="btn-gold">Book Discovery Call</button>
@@ -63,6 +64,7 @@ export default function FeaturesPage() {
           <Link href="/">Home</Link>
           <Link href="/features">Features</Link>
           <Link href="/#problem">The Problem</Link>
+          <Link href="/admin">Admin Login</Link>
           <button onClick={handleDiscoveryClick} className="btn-gold" style={{ marginTop: '10px' }}>Book Discovery Call</button>
         </div>
       </nav>

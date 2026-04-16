@@ -123,6 +123,7 @@ export default function Home() {
               <li><a href="#advantage" onClick={(e) => smoothScroll(e, "#advantage")}>Our Advantage</a></li>
               <li><a href="#about" onClick={(e) => smoothScroll(e, "#about")}>About</a></li>
               <li><a href="#cases" onClick={(e) => smoothScroll(e, "#cases")}>Case Evidence</a></li>
+              <li><Link href="/admin">Admin Login</Link></li>
             </ul>
 
             <div className="nav-right">
@@ -157,6 +158,7 @@ export default function Home() {
           <a href="#advantage" onClick={(e) => smoothScroll(e, "#advantage")}>Our Advantage</a>
           <a href="#about" onClick={(e) => smoothScroll(e, "#about")}>About</a>
           <a href="#cases" onClick={(e) => smoothScroll(e, "#cases")}>Case Evidence</a>
+          <Link href="/admin">Admin Login</Link>
           <button onClick={handleDiscoveryClick} className="btn-gold" style={{ marginTop: '10px' }}>Book Discovery Call</button>
         </div>
       </nav>

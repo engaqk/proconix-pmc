@@ -1,147 +1,41 @@
 import { NextResponse } from 'next/server';
-import tls from 'tls';
+import nodemailer from 'nodemailer';
 import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
 import { db } from '../../../lib/firebase';
 import { sendSlackNotification } from '../../../lib/slack';
 
-// Robust Raw SMTP Client using Node TLS 
-async function sendRawSmtpEmail(options: { 
+
+// Modern SMTP Client using Nodemailer (Hostinger Optimized)
+async function sendEmailViaNodemailer(options: { 
   to: string;
-  bcc?: string;
   subject: string; 
   html: string; 
 }) {
-  const user = process.env.GMAIL_USER || 'talibkhanjipmp@gmail.com';
-  const pass = process.env.GMAIL_APP_PASSWORD || '';
-  
-  if (!pass || pass === 'your_app_password_here') {
-    console.error('SMTP ERROR: GMAIL_APP_PASSWORD is not set or is placeholder.');
+  const host = process.env.SMTP_HOST || 'smtp.hostinger.com';
+  const port = parseInt(process.env.SMTP_PORT || '465');
+  const user = process.env.SMTP_USER || 'info@proconixpmc.com';
+  const pass = process.env.SMTP_PASS || '';
+
+  if (!pass) {
+    console.error('SMTP ERROR: SMTP_PASS is not set.');
     return;
   }
 
-  return new Promise((resolve, reject) => {
-    let resolved = false;
-    let step = 0;
-    let dataBuffer = '';
+  const transporter = nodemailer.createTransport({
+    host,
+    port,
+    secure: port === 465,
+    auth: { user, pass },
+  });
 
-    const socket = tls.connect({ 
-      port: 465, 
-      host: 'smtp.gmail.com',
-      servername: 'smtp.gmail.com'
-    }, () => {});
-    
-    socket.setEncoding('utf-8');
-
-    const cleanup = (success: boolean, error?: any) => {
-      if (resolved) return;
-      resolved = true;
-      socket.end();
-      if (success) resolve(true);
-      else reject(error);
-    };
-
-    const sendLine = (line: string) => {
-      if (socket.writable) socket.write(line + '\r\n');
-    };
-
-    socket.on('data', (data: string) => {
-      dataBuffer += data;
-      
-      while (dataBuffer.includes('\r\n')) {
-        const lineEnd = dataBuffer.indexOf('\r\n');
-        const line = dataBuffer.substring(0, lineEnd);
-        dataBuffer = dataBuffer.substring(lineEnd + 2);
-
-        const isLastLine = line.length >= 4 && line[3] === ' ';
-        
-        if (line.startsWith('5') || line.startsWith('4')) {
-          const errorMsg = `SMTP ${line}`;
-          console.error(errorMsg);
-          cleanup(false, new Error(errorMsg));
-          return;
-        }
-
-        switch (step) {
-          case 0:
-            if (line.startsWith('220')) {
-              sendLine('EHLO localhost');
-              step = 1;
-            }
-            break;
-          case 1:
-            if (line.startsWith('250') && isLastLine) {
-              sendLine('AUTH LOGIN');
-              step = 2;
-            }
-            break;
-          case 2:
-            if (line.startsWith('334')) {
-              sendLine(Buffer.from(user).toString('base64'));
-              step = 3;
-            }
-            break;
-          case 3:
-            if (line.startsWith('334')) {
-              sendLine(Buffer.from(pass).toString('base64'));
-              step = 4;
-            }
-            break;
-          case 4:
-            if (line.startsWith('235')) {
-              sendLine(`MAIL FROM:<${user}>`);
-              step = 5;
-            }
-            break;
-          case 5:
-            if (line.startsWith('250')) {
-              sendLine(`RCPT TO:<${options.to}>`);
-              step = options.bcc ? 6 : 7;
-            }
-            break;
-          case 6:
-            if (line.startsWith('250')) {
-              sendLine(`RCPT TO:<${options.bcc}>`);
-              step = 7;
-            }
-            break;
-          case 7:
-            if (line.startsWith('250')) {
-              sendLine('DATA');
-              step = 8;
-            }
-            break;
-          case 8:
-            if (line.startsWith('354')) {
-              const message = [
-                `From: Proconix Project Management Consultancy <${user}>`,
-                `To: ${options.to}`,
-                `Subject: ${options.subject}`,
-                `Content-Type: text/html; charset="UTF-8"`,
-                `MIME-Version: 1.0`,
-                `Date: ${new Date().toUTCString()}`,
-                '',
-                options.html,
-                '.',
-                ''
-              ].join('\r\n');
-              socket.write(message);
-              step = 9;
-            }
-            break;
-          case 9:
-            if (line.startsWith('250')) {
-              sendLine('QUIT');
-              cleanup(true);
-            }
-            break;
-        }
-      }
-    });
-
-    socket.on('error', (err) => cleanup(false, err));
-    setTimeout(() => cleanup(false, new Error('SMTP Timeout')), 15000);
+  return await transporter.sendMail({
+    from: `"Proconix Admin" <${user}>`,
+    to: options.to,
+    subject: options.subject,
+    html: options.html,
   });
 }
+
 
 function getEmailTemplate(data: {
   name: string;
@@ -290,12 +184,12 @@ export async function POST(req: Request) {
         details: incomingDetails
       });
 
-      await sendRawSmtpEmail({
-        to: 'talibkhanjipmp@gmail.com',
+      await sendEmailViaNodemailer({
+        to: process.env.SMTP_TO || 'info@proconixpmc.com',
         subject: `NEW LEAD: ${displayType} - ${name || 'Anonymous'}`,
         html: emailHtml,
       });
-      console.log('SMTP: HTML Email sent successfully to talibkhanjipmp@gmail.com');
+      console.log('SMTP: HTML Email sent successfully');
     } catch (smtpError: any) {
       console.error('SMTP Email Error (Non-Fatal):', smtpError.message);
     }
