@@ -869,8 +869,8 @@ footer{background:var(--navy-deep);border-top:1px solid var(--border);padding:56
 /* Mobile Social Section in Hero */
 .hero-mobile-social {
   display: none;
-  gap: 12px;
-  margin-bottom: 24px;
+  gap: 10px;
+  margin-bottom: 16px;
   animation: fadeUp .6s .05s ease both;
 }
 
@@ -878,6 +878,8 @@ footer{background:var(--navy-deep);border-top:1px solid var(--border);padding:56
   .hero-mobile-social {
     display: flex;
     flex-wrap: wrap;
+    justify-content: center;
+    margin-top: -10px;
   }
 }
 
@@ -916,8 +918,16 @@ footer{background:var(--navy-deep);border-top:1px solid var(--border);padding:56
    RESPONSIVE
 ───────────────────────────────────────────────── */
 @media(max-width:1050px){
-  .hero-grid{grid-template-columns:1fr;}
-  .hero-card{max-width:480px;}
+  .hero{padding-top:100px; padding-bottom:50px;}
+  .hero-grid{grid-template-columns:1fr; gap:40px;}
+  .hero-mobile-social{display:flex; justify-content:center; margin-top:0; margin-bottom:12px;}
+  .hero-badge{display:flex; justify-content:center; margin-bottom:20px; text-align:center;}
+  .hero-identity{display:block; text-align:center; margin-left:auto; margin-right:auto;}
+  .hero h1{text-align:center; margin-left:auto; margin-right:auto;}
+  .hero-sub{text-align:center; margin-left:auto; margin-right:auto;}
+  .hero-ctas{justify-content:center;}
+  .hero-metrics{justify-content:center;}
+  .hero-card{max-width:480px; margin:20px auto 0;}
   .identity-grid{grid-template-columns:1fr;}
   .problem-grid{grid-template-columns:1fr;}
   .who-grid{grid-template-columns:1fr 1fr;}
