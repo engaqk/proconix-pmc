@@ -866,6 +866,40 @@ footer{background:var(--navy-deep);border-top:1px solid var(--border);padding:56
   margin-top: 10px;
 }
 
+/* Mobile Social Section in Hero */
+.hero-mobile-social {
+  display: none;
+  gap: 12px;
+  margin-bottom: 24px;
+  animation: fadeUp .6s .05s ease both;
+}
+
+@media (max-width: 1050px) {
+  .hero-mobile-social {
+    display: flex;
+    flex-wrap: wrap;
+  }
+}
+
+.hero-mobile-social a {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 46px;
+  height: 46px;
+  border: 1px solid var(--border);
+  color: var(--text-muted);
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  background: rgba(11,29,53,0.3);
+}
+
+.hero-mobile-social a:hover {
+  border-color: var(--gold);
+  color: var(--gold);
+  background: var(--gold-pale);
+  transform: translateY(-3px);
+}
+
 /* ─────────────────────────────────────────────────
    ANIMATIONS
 ───────────────────────────────────────────────── */
