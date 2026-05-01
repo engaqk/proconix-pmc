@@ -46,10 +46,10 @@ export default function AdminDashboard() {
     setIsSavingEdit(true);
     setEditResult({ type: "", message: "" });
     try {
-      const res = await fetch(`/api/scheduled-broadcasts/${editingBroadcast.id}`, {
-        method: 'PATCH',
+      const res = await fetch('/api/scheduled-broadcasts/manage', {
+        method: 'POST',
         headers: { 'Content-Type': 'application/json', Authorization: 'Bearer admin53' },
-        body: JSON.stringify({ subject: editSubject, message: editMessage, scheduledAt: editScheduledAt })
+        body: JSON.stringify({ action: 'update', id: editingBroadcast.id, subject: editSubject, message: editMessage, scheduledAt: editScheduledAt })
       });
       if (res.ok) {
         setEditResult({ type: "success", message: "Broadcast updated successfully." });
@@ -69,9 +69,10 @@ export default function AdminDashboard() {
   const handleDeleteBroadcast = async (id: string) => {
     if (!confirm('Are you sure you want to delete this scheduled broadcast?')) return;
     try {
-      await fetch(`/api/scheduled-broadcasts/${id}`, {
-        method: 'DELETE',
-        headers: { Authorization: 'Bearer admin53' }
+      await fetch('/api/scheduled-broadcasts/manage', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Authorization: 'Bearer admin53' },
+        body: JSON.stringify({ action: 'delete', id })
       });
       await fetchScheduledBroadcasts();
     } catch (e) {
