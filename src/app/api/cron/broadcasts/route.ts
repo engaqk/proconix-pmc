@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { db } from '../../../../lib/firebase';
 import { collection, query, where, getDocs, updateDoc, doc } from 'firebase/firestore';
-import { sendBroadcastEmail, formatBroadcastHtml } from '../../broadcast/route';
+import { sendBroadcastEmail, formatBroadcastHtml, getDailyEmailsSent, logEmailsSent, DAILY_EMAIL_LIMIT } from '../../broadcast/route';
 
 export async function POST(req: Request) {
   const logs: string[] = [];
@@ -26,6 +26,10 @@ export async function POST(req: Request) {
     const nowISO = now.toISOString();
     logs.push(`Running at: ${nowISO}`);
 
+    // Fetch current daily usage
+    let dailyUsed = await getDailyEmailsSent();
+    logs.push(`Daily quota status: ${dailyUsed}/${DAILY_EMAIL_LIMIT} used`);
+
     // Query all pending broadcasts
     const q = query(
       collection(db, 'scheduledBroadcasts'),
@@ -39,28 +43,47 @@ export async function POST(req: Request) {
       return NextResponse.json({ success: true, processed: 0, logs });
     }
 
-    const sentBroadcasts: string[] = [];
+    const sentBroadcastIds: string[] = [];
 
     for (const document of snapshot.docs) {
       const data = document.data();
       const scheduledAt = new Date(data.scheduledAt);
 
-      logs.push(`Broadcast ${document.id}: scheduledAt=${data.scheduledAt}, subject="${data.subject}", recipients=${data.emails?.length ?? 0}`);
-
       // Only send if the scheduled time has passed
       if (scheduledAt <= now) {
-        logs.push(`→ Sending now (scheduled time has passed)`);
+        const remaining = DAILY_EMAIL_LIMIT - dailyUsed;
+        
+        if (remaining <= 0) {
+          logs.push(`Broadcast ${document.id}: → SKIPPED (Daily quota reached)`);
+          continue; // Try next one (maybe a smaller one? No, they are all blocked if remaining is 0)
+        }
+
+        logs.push(`Broadcast ${document.id}: scheduledAt=${data.scheduledAt}, subject="${data.subject}", recipients=${data.emails?.length ?? 0}`);
+        logs.push(`→ Sending now (remaining quota: ${remaining})`);
+
         try {
+          const emailsToSend = data.emails.slice(0, remaining);
+          const skippedCount = data.emails.length - emailsToSend.length;
+
           const htmlMessage = formatBroadcastHtml(data.message);
-          const count = await sendBroadcastEmail(data.emails, data.subject, htmlMessage);
-          logs.push(`→ Successfully sent to ${count}/${data.emails.length} recipient(s)`);
+          const count = await sendBroadcastEmail(emailsToSend, data.subject, htmlMessage);
+          
+          dailyUsed += count;
+          if (count > 0) await logEmailsSent(count, data.subject);
+
+          logs.push(`→ Successfully sent to ${count}/${emailsToSend.length} recipient(s)`);
+          if (skippedCount > 0) {
+            logs.push(`→ WARN: ${skippedCount} recipients were skipped due to quota limits`);
+          }
 
           await updateDoc(doc(db, 'scheduledBroadcasts', document.id), {
-            status: 'sent',
+            status: skippedCount > 0 ? 'sent_partial' : 'sent',
+            sentCount: count,
+            skippedCount: skippedCount,
             sentAt: nowISO,
           });
 
-          sentBroadcasts.push(document.id);
+          sentBroadcastIds.push(document.id);
         } catch (err: any) {
           logs.push(`→ FAILED: ${err.message}`);
           await updateDoc(doc(db, 'scheduledBroadcasts', document.id), {
@@ -72,11 +95,11 @@ export async function POST(req: Request) {
       } else {
         const diffMs = scheduledAt.getTime() - now.getTime();
         const diffMins = Math.ceil(diffMs / 60000);
-        logs.push(`→ Skipping: scheduled in ${diffMins} minute(s)`);
+        logs.push(`Broadcast ${document.id}: → Skipping (scheduled in ${diffMins} minute(s))`);
       }
     }
 
-    return NextResponse.json({ success: true, processed: sentBroadcasts.length, logs });
+    return NextResponse.json({ success: true, processed: sentBroadcastIds.length, logs });
   } catch (err: any) {
     logs.push(`FATAL ERROR: ${err.message}`);
     console.error('Scheduled Broadcast Error:', err);

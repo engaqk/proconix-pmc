@@ -18,6 +18,21 @@ export default function AdminDashboard() {
   const [broadcastResult, setBroadcastResult] = useState({ type: "", message: "" });
   const [showBroadcast, setShowBroadcast] = useState(false);
   const [showAnonymous, setShowAnonymous] = useState(false);
+  const [emailQuota, setEmailQuota] = useState<{ limit: number, used: number, remaining: number } | null>(null);
+
+  const fetchQuota = async () => {
+    try {
+      const res = await fetch('/api/broadcast', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ secret: 'admin53', action: 'getQuota' })
+      });
+      const data = await res.json();
+      if (res.ok && data.quota) setEmailQuota(data.quota);
+    } catch (e) {
+      console.error('Failed to fetch quota', e);
+    }
+  };
 
   const [scheduledBroadcasts, setScheduledBroadcasts] = useState<any[]>([]);
   const [showScheduledHistory, setShowScheduledHistory] = useState(false);
@@ -132,7 +147,12 @@ export default function AdminDashboard() {
         if (payload.scheduledAt) {
           setBroadcastResult({ type: "success", message: `Successfully scheduled email for ${new Date(payload.scheduledAt).toLocaleString()}.` });
         } else {
-          setBroadcastResult({ type: "success", message: `Successfully sent broadcast to ${data.count} recipients.` });
+          let msg = `Successfully sent broadcast to ${data.count} recipients.`;
+          if (data.skipped > 0) {
+            msg += ` ${data.skipped} emails were skipped due to daily quota limits.`;
+          }
+          setBroadcastResult({ type: "success", message: msg });
+          if (data.quota) setEmailQuota(data.quota);
         }
         setBroadcastSubject("");
         setBroadcastMessage("");
@@ -243,7 +263,11 @@ export default function AdminDashboard() {
         <div className="admin-header">
           <h1 className="admin-title" style={{ color: "#FFFFFF", margin: 0, fontFamily: "'Cormorant Garamond', serif" }}>PROCONIX <span style={{ color: "#C9A84C" }}>DASHBOARD</span></h1>
           <div className="admin-header-actions">
-            <button onClick={() => setShowBroadcast(!showBroadcast)} style={{ padding: "8px 16px", background: "#C9A84C", color: "#0B1D35", border: "none", borderRadius: "4px", cursor: "pointer", fontWeight: "bold", display: "flex", alignItems: "center", gap: "8px", fontFamily: "'DM Sans', sans-serif" }}>
+            <button onClick={() => {
+              const newState = !showBroadcast;
+              setShowBroadcast(newState);
+              if (newState) fetchQuota();
+            }} style={{ padding: "8px 16px", background: "#C9A84C", color: "#0B1D35", border: "none", borderRadius: "4px", cursor: "pointer", fontWeight: "bold", display: "flex", alignItems: "center", gap: "8px", fontFamily: "'DM Sans', sans-serif" }}>
               <span>{showBroadcast ? "Close Broadcast" : "Broadcast Email"}</span>
               <span style={{ background: "rgba(0,0,0,0.2)", padding: "2px 6px", borderRadius: "12px", fontSize: "0.8rem", color: "#0B1D35" }}>
                 {Array.from(new Set(submissions.map(s => s.email).filter(e => e && e.includes('@')))).length}
@@ -299,6 +323,26 @@ export default function AdminDashboard() {
                   />
                   <p style={{ margin: "5px 0 0", color: "#8EA8C3", fontSize: "0.8rem" }}>Only required if you are clicking 'Schedule Email'.</p>
                 </div>
+
+                {emailQuota && (
+                  <div style={{ padding: "12px", background: "rgba(11,29,53,0.4)", borderRadius: "6px", border: "1px solid rgba(201,168,76,0.15)" }}>
+                    <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "8px", fontSize: "0.85rem" }}>
+                      <span style={{ color: "#C2D4E4" }}>Daily Sending Limit</span>
+                      <span style={{ color: "#C9A84C", fontWeight: "bold" }}>{emailQuota.used} / {emailQuota.limit} Used</span>
+                    </div>
+                    <div style={{ height: "6px", background: "rgba(255,255,255,0.1)", borderRadius: "3px", overflow: "hidden" }}>
+                      <div style={{ 
+                        height: "100%", 
+                        width: `${(emailQuota.used / emailQuota.limit) * 100}%`, 
+                        background: emailQuota.used >= emailQuota.limit ? "#e57373" : "#C9A84C",
+                        transition: "width 0.5s ease" 
+                      }}></div>
+                    </div>
+                    <p style={{ margin: "8px 0 0", color: "#8EA8C3", fontSize: "0.75rem", textAlign: "right" }}>
+                      {emailQuota.remaining} emails remaining in next 24h
+                    </p>
+                  </div>
+                )}
                 
                 {broadcastResult.message && (
                   <div style={{ padding: "15px", borderRadius: "4px", backgroundColor: broadcastResult.type === 'success' ? 'rgba(46, 125, 50, 0.2)' : 'rgba(198, 40, 40, 0.2)', color: broadcastResult.type === 'success' ? '#81c784' : '#e57373', border: `1px solid ${broadcastResult.type === 'success' ? '#2e7d32' : '#c62828'}` }}>
