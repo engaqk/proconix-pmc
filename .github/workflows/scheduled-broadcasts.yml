@@ -2,8 +2,8 @@ name: Scheduled Email Broadcasts
 
 on:
   schedule:
-    # Runs every 15 minutes
-    - cron: '*/15 * * * *'
+    # Runs every 5 minutes
+    - cron: '*/5 * * * *'
   workflow_dispatch:
 
 jobs:
@@ -12,6 +12,6 @@ jobs:
     steps:
       - name: Trigger Scheduled Broadcasts
         run: |
-          curl -s -X POST \
+          curl -i -X POST \
             -H "Authorization: Bearer ${{ secrets.CRON_SECRET }}" \
             ${{ secrets.PROD_URL }}/api/cron/broadcasts
