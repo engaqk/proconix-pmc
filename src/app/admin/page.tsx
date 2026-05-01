@@ -11,6 +11,60 @@ export default function AdminDashboard() {
   const [error, setError] = useState("");
   const [submissions, setSubmissions] = useState<any[]>([]);
 
+  const [broadcastSubject, setBroadcastSubject] = useState("");
+  const [broadcastMessage, setBroadcastMessage] = useState("");
+  const [isBroadcasting, setIsBroadcasting] = useState(false);
+  const [broadcastResult, setBroadcastResult] = useState({ type: "", message: "" });
+
+  const handleBroadcastSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!broadcastSubject || !broadcastMessage) {
+      setBroadcastResult({ type: "error", message: "Subject and Message are required." });
+      return;
+    }
+    
+    // Get unique valid emails
+    const validEmails = Array.from(new Set(
+      submissions
+        .map(sub => sub.email)
+        .filter(email => email && email.includes('@'))
+    ));
+
+    if (validEmails.length === 0) {
+      setBroadcastResult({ type: "error", message: "No valid recipient emails found." });
+      return;
+    }
+
+    setIsBroadcasting(true);
+    setBroadcastResult({ type: "", message: "" });
+
+    try {
+      const res = await fetch('/api/broadcast', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          emails: validEmails,
+          subject: broadcastSubject,
+          message: broadcastMessage,
+          secret: 'admin53'
+        })
+      });
+
+      const data = await res.json();
+      if (res.ok) {
+        setBroadcastResult({ type: "success", message: `Successfully sent broadcast to ${data.count} recipients.` });
+        setBroadcastSubject("");
+        setBroadcastMessage("");
+      } else {
+        setBroadcastResult({ type: "error", message: data.error || "Broadcast failed" });
+      }
+    } catch (err: any) {
+      setBroadcastResult({ type: "error", message: err.message || "Broadcast failed" });
+    } finally {
+      setIsBroadcasting(false);
+    }
+  };
+
   useEffect(() => {
     const savedLogin = localStorage.getItem("proconix_admin_logged_in");
     if (savedLogin === "true") {
@@ -172,6 +226,67 @@ export default function AdminDashboard() {
             </div>
           )}
         </div>
+
+        {isLoggedIn && (
+          <div style={{ background: "#fff", borderRadius: "8px", boxShadow: "0 4px 12px rgba(0,0,0,0.05)", overflow: "hidden", marginTop: "40px" }}>
+            <div style={{ padding: "20px", borderBottom: "1px solid #eee", background: "#fafafa" }}>
+              <h3 style={{ margin: 0, color: "#455065" }}>Broadcast Email to All Leads</h3>
+            </div>
+            <div style={{ padding: "20px" }}>
+              <p style={{ color: "#455065", marginBottom: "20px" }}>
+                This will send an email from <strong>info@proconixpmc.com</strong> to all unique, valid email addresses in the table above. Recipients are BCC'd for privacy.
+              </p>
+              
+              <form onSubmit={handleBroadcastSubmit} style={{ display: "flex", flexDirection: "column", gap: "15px" }}>
+                <div>
+                  <label style={{ display: "block", marginBottom: "5px", color: "#0B1D35", fontWeight: "bold" }}>Subject</label>
+                  <input 
+                    type="text" 
+                    placeholder="Enter email subject..." 
+                    value={broadcastSubject}
+                    onChange={(e) => setBroadcastSubject(e.target.value)}
+                    style={{ width: "100%", padding: "12px", border: "1px solid #ddd", borderRadius: "4px" }}
+                    required 
+                  />
+                </div>
+                <div>
+                  <label style={{ display: "block", marginBottom: "5px", color: "#0B1D35", fontWeight: "bold" }}>Message Body</label>
+                  <textarea 
+                    placeholder="Write your message here... HTML tags will be escaped, but line breaks are preserved." 
+                    value={broadcastMessage}
+                    onChange={(e) => setBroadcastMessage(e.target.value)}
+                    style={{ width: "100%", padding: "12px", border: "1px solid #ddd", borderRadius: "4px", minHeight: "150px", fontFamily: "inherit" }}
+                    required 
+                  />
+                </div>
+                
+                {broadcastResult.message && (
+                  <div style={{ padding: "15px", borderRadius: "4px", backgroundColor: broadcastResult.type === 'success' ? '#e8f5e9' : '#ffebee', color: broadcastResult.type === 'success' ? '#2e7d32' : '#c62828' }}>
+                    {broadcastResult.message}
+                  </div>
+                )}
+                
+                <button 
+                  type="submit" 
+                  disabled={isBroadcasting || submissions.length === 0}
+                  style={{ 
+                    padding: "12px 24px", 
+                    background: "#C9A84C", 
+                    color: "#0B1D35", 
+                    border: "none", 
+                    borderRadius: "4px", 
+                    fontWeight: "bold", 
+                    cursor: (isBroadcasting || submissions.length === 0) ? "not-allowed" : "pointer", 
+                    opacity: (isBroadcasting || submissions.length === 0) ? 0.6 : 1,
+                    alignSelf: "flex-start" 
+                  }}
+                >
+                  {isBroadcasting ? "Sending Broadcast..." : "Send Broadcast to All Leads"}
+                </button>
+              </form>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

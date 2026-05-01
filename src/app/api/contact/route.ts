@@ -86,7 +86,7 @@ function getEmailTemplate(data: {
         <div class="container">
           <div class="top-gradient"></div>
           <div class="header">
-            <div class="logo">PROCONIX <span>PMC</span></div>
+            <div class="logo">PROCONIX</div>
             <div class="tagline">Project Management Consultancy</div>
           </div>
           <div class="content" style="text-align: left;">
