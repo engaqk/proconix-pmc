@@ -4,17 +4,18 @@ import { doc, getDoc, updateDoc, deleteDoc } from 'firebase/firestore';
 
 export const dynamic = 'force-dynamic';
 
-export async function PATCH(req: Request, { params }: { params: { id: string } }) {
+export async function PATCH(req: Request, { params }: { params: Promise<{ id: string }> }) {
   const authHeader = req.headers.get('authorization');
   if (authHeader !== 'Bearer admin53') {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
   try {
+    const { id } = await params;
     const body = await req.json();
     const { subject, message, scheduledAt } = body;
 
-    const ref = doc(db, 'scheduledBroadcasts', params.id);
+    const ref = doc(db, 'scheduledBroadcasts', id);
     const existing = await getDoc(ref);
     if (!existing.exists()) {
       return NextResponse.json({ error: 'Not found' }, { status: 404 });
@@ -35,14 +36,15 @@ export async function PATCH(req: Request, { params }: { params: { id: string } }
   }
 }
 
-export async function DELETE(req: Request, { params }: { params: { id: string } }) {
+export async function DELETE(req: Request, { params }: { params: Promise<{ id: string }> }) {
   const authHeader = req.headers.get('authorization');
   if (authHeader !== 'Bearer admin53') {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
   try {
-    await deleteDoc(doc(db, 'scheduledBroadcasts', params.id));
+    const { id } = await params;
+    await deleteDoc(doc(db, 'scheduledBroadcasts', id));
     return NextResponse.json({ success: true });
   } catch (err: any) {
     return NextResponse.json({ error: err.message }, { status: 500 });
