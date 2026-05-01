@@ -2,7 +2,6 @@ import { NextResponse } from 'next/server';
 import { db } from '../../../../lib/firebase';
 import { doc, getDoc, updateDoc, deleteDoc } from 'firebase/firestore';
 
-export const dynamic = 'force-dynamic';
 
 export async function PATCH(req: Request, { params }: { params: Promise<{ id: string }> }) {
   const authHeader = req.headers.get('authorization');

@@ -2,9 +2,7 @@ import { NextResponse } from 'next/server';
 import { db } from '../../../lib/firebase';
 import { collection, getDocs, orderBy, query } from 'firebase/firestore';
 
-export const dynamic = 'force-dynamic';
-
-export async function GET(req: Request) {
+export async function POST(req: Request) {
   const authHeader = req.headers.get('authorization');
   if (authHeader !== 'Bearer admin53') {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });

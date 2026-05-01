@@ -31,6 +31,7 @@ export default function AdminDashboard() {
   const fetchScheduledBroadcasts = async () => {
     try {
       const res = await fetch('/api/scheduled-broadcasts', {
+        method: 'POST',
         headers: { Authorization: 'Bearer admin53' }
       });
       const data = await res.json();
