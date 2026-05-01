@@ -3,6 +3,8 @@ import { db } from '../../../../lib/firebase';
 import { collection, query, where, getDocs, updateDoc, doc } from 'firebase/firestore';
 import { sendBroadcastEmail, formatBroadcastHtml } from '../../broadcast/route';
 
+export const dynamic = 'force-dynamic';
+
 export async function GET(req: Request) {
   try {
     // Basic authorization to prevent arbitrary triggers
