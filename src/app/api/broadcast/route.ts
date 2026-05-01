@@ -1,7 +1,9 @@
 import { NextResponse } from 'next/server';
 import nodemailer from 'nodemailer';
+import { db } from '../../../lib/firebase';
+import { collection, addDoc } from 'firebase/firestore';
 
-async function sendBroadcastEmail(emails: string[], subject: string, messageHtml: string) {
+export async function sendBroadcastEmail(emails: string[], subject: string, messageHtml: string) {
   const host = process.env.SMTP_HOST || 'smtp.hostinger.com';
   const port = parseInt(process.env.SMTP_PORT || '465');
   const user = process.env.SMTP_USER || 'info@proconixpmc.com';
@@ -36,7 +38,7 @@ async function sendBroadcastEmail(emails: string[], subject: string, messageHtml
   return successCount;
 }
 
-function formatBroadcastHtml(message: string) {
+export function formatBroadcastHtml(message: string) {
   return `
     <!DOCTYPE html>
     <html>
@@ -82,7 +84,7 @@ function formatBroadcastHtml(message: string) {
 export async function POST(req: Request) {
   try {
     const body = await req.json();
-    const { emails, subject, message, secret } = body;
+    const { emails, subject, message, secret, scheduledAt } = body;
 
     // Simple security check to ensure this is only triggered from the admin dashboard
     if (secret !== 'admin53') {
@@ -95,6 +97,22 @@ export async function POST(req: Request) {
 
     if (!subject || !message) {
       return NextResponse.json({ error: 'Subject and message are required' }, { status: 400 });
+    }
+
+    // Handle scheduling
+    if (scheduledAt) {
+      const scheduledDate = new Date(scheduledAt);
+      if (scheduledDate > new Date()) {
+        await addDoc(collection(db, "scheduledBroadcasts"), {
+          emails,
+          subject,
+          message,
+          scheduledAt: scheduledDate.toISOString(),
+          status: "pending",
+          createdAt: new Date().toISOString()
+        });
+        return NextResponse.json({ success: true, count: emails.length, scheduled: true });
+      }
     }
 
     const htmlMessage = formatBroadcastHtml(message);

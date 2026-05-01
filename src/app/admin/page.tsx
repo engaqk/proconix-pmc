@@ -13,12 +13,13 @@ export default function AdminDashboard() {
 
   const [broadcastSubject, setBroadcastSubject] = useState("");
   const [broadcastMessage, setBroadcastMessage] = useState("");
+  const [scheduledDate, setScheduledDate] = useState("");
   const [isBroadcasting, setIsBroadcasting] = useState(false);
   const [broadcastResult, setBroadcastResult] = useState({ type: "", message: "" });
   const [showBroadcast, setShowBroadcast] = useState(false);
   const [showAnonymous, setShowAnonymous] = useState(false);
 
-  const handleBroadcastSubmit = async (e: React.FormEvent) => {
+  const handleBroadcastSubmit = async (e: React.FormEvent, isScheduled: boolean) => {
     e.preventDefault();
     if (!broadcastSubject || !broadcastMessage) {
       setBroadcastResult({ type: "error", message: "Subject and Message are required." });
@@ -41,22 +42,30 @@ export default function AdminDashboard() {
     setBroadcastResult({ type: "", message: "" });
 
     try {
+      const payload = {
+        emails: validEmails,
+        subject: broadcastSubject,
+        message: broadcastMessage,
+        secret: 'admin53',
+        scheduledAt: (isScheduled && scheduledDate) ? new Date(scheduledDate).toISOString() : null
+      };
+
       const res = await fetch('/api/broadcast', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          emails: validEmails,
-          subject: broadcastSubject,
-          message: broadcastMessage,
-          secret: 'admin53'
-        })
+        body: JSON.stringify(payload)
       });
 
       const data = await res.json();
       if (res.ok) {
-        setBroadcastResult({ type: "success", message: `Successfully sent broadcast to ${data.count} recipients.` });
+        if (payload.scheduledAt) {
+          setBroadcastResult({ type: "success", message: `Successfully scheduled email for ${new Date(payload.scheduledAt).toLocaleString()}.` });
+        } else {
+          setBroadcastResult({ type: "success", message: `Successfully sent broadcast to ${data.count} recipients.` });
+        }
         setBroadcastSubject("");
         setBroadcastMessage("");
+        setScheduledDate("");
       } else {
         setBroadcastResult({ type: "error", message: data.error || "Broadcast failed" });
       }
@@ -154,6 +163,7 @@ export default function AdminDashboard() {
           .admin-header { flex-direction: column; align-items: flex-start; gap: 15px; }
           .admin-header-actions { width: 100%; justify-content: space-between; }
           .admin-title { font-size: 24px; }
+          .hide-on-mobile { display: none !important; }
         }
       `}} />
       <div style={{ minHeight: "100vh", backgroundColor: "#07142A", padding: "40px 20px", color: "#FFFFFF", fontFamily: "'DM Sans', sans-serif" }}>
@@ -184,7 +194,7 @@ export default function AdminDashboard() {
                 This will send an email from <strong style={{ color: "#C9A84C" }}>info@proconixpmc.com</strong> to all unique, valid email addresses in the table. Recipients are BCC'd for privacy.
               </p>
               
-              <form onSubmit={handleBroadcastSubmit} style={{ display: "flex", flexDirection: "column", gap: "15px" }}>
+              <form style={{ display: "flex", flexDirection: "column", gap: "15px" }}>
                 <div>
                   <label style={{ display: "block", marginBottom: "8px", color: "#C9A84C", fontWeight: "bold", fontSize: "0.9rem", textTransform: "uppercase", letterSpacing: "1px" }}>Subject</label>
                   <input 
@@ -206,6 +216,17 @@ export default function AdminDashboard() {
                     required 
                   />
                 </div>
+
+                <div>
+                  <label style={{ display: "block", marginBottom: "8px", color: "#C9A84C", fontWeight: "bold", fontSize: "0.9rem", textTransform: "uppercase", letterSpacing: "1px" }}>Schedule (Optional)</label>
+                  <input 
+                    type="datetime-local" 
+                    value={scheduledDate}
+                    onChange={(e) => setScheduledDate(e.target.value)}
+                    style={{ width: "100%", padding: "14px", border: "1px solid rgba(201,168,76,0.2)", borderRadius: "4px", background: "rgba(11,29,53,0.6)", color: "#FFFFFF", fontFamily: "'DM Sans', sans-serif", fontSize: "15px" }}
+                  />
+                  <p style={{ margin: "5px 0 0", color: "#8EA8C3", fontSize: "0.8rem" }}>Only required if you are clicking 'Schedule Email'.</p>
+                </div>
                 
                 {broadcastResult.message && (
                   <div style={{ padding: "15px", borderRadius: "4px", backgroundColor: broadcastResult.type === 'success' ? 'rgba(46, 125, 50, 0.2)' : 'rgba(198, 40, 40, 0.2)', color: broadcastResult.type === 'success' ? '#81c784' : '#e57373', border: `1px solid ${broadcastResult.type === 'success' ? '#2e7d32' : '#c62828'}` }}>
@@ -213,26 +234,49 @@ export default function AdminDashboard() {
                   </div>
                 )}
                 
-                <button 
-                  type="submit" 
-                  disabled={isBroadcasting || submissions.length === 0}
-                  style={{ 
-                    padding: "14px 28px", 
-                    background: "#C9A84C", 
-                    color: "#0B1D35", 
-                    border: "none", 
-                    borderRadius: "4px", 
-                    fontWeight: "bold", 
-                    cursor: (isBroadcasting || submissions.length === 0) ? "not-allowed" : "pointer", 
-                    opacity: (isBroadcasting || submissions.length === 0) ? 0.6 : 1,
-                    alignSelf: "flex-start",
-                    fontFamily: "'DM Sans', sans-serif",
-                    textTransform: "uppercase",
-                    letterSpacing: "1px"
-                  }}
-                >
-                  {isBroadcasting ? "Sending Broadcast..." : "Send Broadcast to All Leads"}
-                </button>
+                <div style={{ display: "flex", gap: "15px", flexWrap: "wrap" }}>
+                  <button 
+                    type="button" 
+                    onClick={(e) => handleBroadcastSubmit(e, false)}
+                    disabled={isBroadcasting || submissions.length === 0}
+                    style={{ 
+                      padding: "14px 28px", 
+                      background: "#C9A84C", 
+                      color: "#0B1D35", 
+                      border: "none", 
+                      borderRadius: "4px", 
+                      fontWeight: "bold", 
+                      cursor: (isBroadcasting || submissions.length === 0) ? "not-allowed" : "pointer", 
+                      opacity: (isBroadcasting || submissions.length === 0) ? 0.6 : 1,
+                      fontFamily: "'DM Sans', sans-serif",
+                      textTransform: "uppercase",
+                      letterSpacing: "1px"
+                    }}
+                  >
+                    {isBroadcasting && !scheduledDate ? "Sending..." : "Send Broadcast Now"}
+                  </button>
+
+                  <button 
+                    type="button" 
+                    onClick={(e) => handleBroadcastSubmit(e, true)}
+                    disabled={isBroadcasting || submissions.length === 0 || !scheduledDate}
+                    style={{ 
+                      padding: "14px 28px", 
+                      background: "rgba(201,168,76,0.1)", 
+                      color: "#C9A84C", 
+                      border: "1px solid #C9A84C", 
+                      borderRadius: "4px", 
+                      fontWeight: "bold", 
+                      cursor: (isBroadcasting || submissions.length === 0 || !scheduledDate) ? "not-allowed" : "pointer", 
+                      opacity: (isBroadcasting || submissions.length === 0 || !scheduledDate) ? 0.6 : 1,
+                      fontFamily: "'DM Sans', sans-serif",
+                      textTransform: "uppercase",
+                      letterSpacing: "1px"
+                    }}
+                  >
+                    {isBroadcasting && scheduledDate ? "Scheduling..." : "Schedule Email"}
+                  </button>
+                </div>
               </form>
             </div>
           </div>
@@ -295,22 +339,22 @@ export default function AdminDashboard() {
               <table style={{ width: "100%", borderCollapse: "collapse", textAlign: "left" }}>
                 <thead>
                   <tr style={{ background: "rgba(11,29,53,0.5)", color: "#C9A84C", textTransform: "uppercase", letterSpacing: "1px" }}>
-                    <th style={{ padding: "15px", fontSize: "0.85rem" }}>Date</th>
-                    <th style={{ padding: "15px", fontSize: "0.85rem" }}>Type</th>
-                    <th style={{ padding: "15px", fontSize: "0.85rem" }}>Name</th>
+                    <th style={{ padding: "15px", fontSize: "0.85rem" }}>Date & Time</th>
+                    <th className="hide-on-mobile" style={{ padding: "15px", fontSize: "0.85rem" }}>Type</th>
+                    <th style={{ padding: "15px", fontSize: "0.85rem" }}>First Name</th>
                     <th style={{ padding: "15px", fontSize: "0.85rem" }}>Email</th>
-                    <th style={{ padding: "15px", fontSize: "0.85rem" }}>Country</th>
-                    <th style={{ padding: "15px", fontSize: "0.85rem" }}>Sector & Budget</th>
-                    <th style={{ padding: "15px", fontSize: "0.85rem" }}>Details</th>
+                    <th className="hide-on-mobile" style={{ padding: "15px", fontSize: "0.85rem" }}>Country</th>
+                    <th className="hide-on-mobile" style={{ padding: "15px", fontSize: "0.85rem" }}>Sector & Budget</th>
+                    <th className="hide-on-mobile" style={{ padding: "15px", fontSize: "0.85rem" }}>Details</th>
                   </tr>
                 </thead>
                 <tbody>
                   {submissions.filter(sub => sub.email && sub.email.includes('@') && sub.name !== 'Anonymous Click').map((sub) => (
                     <tr key={sub.id} style={{ borderBottom: "1px solid rgba(255,255,255,0.05)", transition: "background 0.2s" }} onMouseOver={(e) => e.currentTarget.style.background = 'rgba(255,255,255,0.02)'} onMouseOut={(e) => e.currentTarget.style.background = 'transparent'}>
                       <td style={{ padding: "15px", color: "#8EA8C3", fontSize: "0.9rem" }}>
-                        {sub.createdAt ? new Date(sub.createdAt.toDate()).toLocaleDateString() : 'Just now'}
+                        {sub.createdAt ? new Date(sub.createdAt.toDate()).toLocaleString([], { year: 'numeric', month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit' }) : 'Just now'}
                       </td>
-                      <td style={{ padding: "15px" }}>
+                      <td className="hide-on-mobile" style={{ padding: "15px" }}>
                         <span style={{ 
                           background: sub.type === 'Discovery Call Click' ? 'rgba(230, 81, 0, 0.1)' : (sub.type === 'Checklist Download' ? 'rgba(21, 101, 192, 0.1)' : 'rgba(46, 125, 50, 0.1)'), 
                           color: sub.type === 'Discovery Call Click' ? '#ffb74d' : (sub.type === 'Checklist Download' ? '#64b5f6' : '#81c784'), 
@@ -324,14 +368,14 @@ export default function AdminDashboard() {
                           {sub.type}
                         </span>
                       </td>
-                      <td style={{ padding: "15px", color: "#FFFFFF", fontWeight: "500" }}>{sub.name}</td>
+                      <td style={{ padding: "15px", color: "#FFFFFF", fontWeight: "500" }}>{sub.name ? sub.name.split(' ')[0] : ''}</td>
                       <td style={{ padding: "15px", color: "#C2D4E4" }}><a href={`mailto:${sub.email}`} style={{ color: "#C9A84C", textDecoration: "none" }}>{sub.email}</a></td>
-                      <td style={{ padding: "15px", color: "#C2D4E4" }}>{sub.country}</td>
-                      <td style={{ padding: "15px", color: "#C2D4E4" }}>
+                      <td className="hide-on-mobile" style={{ padding: "15px", color: "#C2D4E4" }}>{sub.country}</td>
+                      <td className="hide-on-mobile" style={{ padding: "15px", color: "#C2D4E4" }}>
                         {sub.sector !== 'Not provided' ? sub.sector : ''}
                         {sub.budget !== 'Not provided' ? <span style={{ color: "#8EA8C3" }}> ({sub.budget})</span> : ''}
                       </td>
-                      <td style={{ padding: "15px", color: "#8EA8C3", maxWidth: "200px", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", fontStyle: "italic" }} title={sub.details}>
+                      <td className="hide-on-mobile" style={{ padding: "15px", color: "#8EA8C3", maxWidth: "200px", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", fontStyle: "italic" }} title={sub.details}>
                         {sub.details !== 'Not provided' ? sub.details : ''}
                       </td>
                     </tr>
@@ -375,16 +419,16 @@ export default function AdminDashboard() {
               <table style={{ width: "100%", borderCollapse: "collapse", textAlign: "left", opacity: 0.8 }}>
                 <thead>
                   <tr style={{ background: "rgba(11,29,53,0.3)", color: "#C9A84C", textTransform: "uppercase", letterSpacing: "1px" }}>
-                    <th style={{ padding: "12px 15px", fontSize: "0.8rem" }}>Date</th>
+                    <th style={{ padding: "12px 15px", fontSize: "0.8rem" }}>Date & Time</th>
                     <th style={{ padding: "12px 15px", fontSize: "0.8rem" }}>Type</th>
-                    <th style={{ padding: "12px 15px", fontSize: "0.8rem" }}>Details</th>
+                    <th className="hide-on-mobile" style={{ padding: "12px 15px", fontSize: "0.8rem" }}>Details</th>
                   </tr>
                 </thead>
                 <tbody>
                   {submissions.filter(sub => !sub.email || !sub.email.includes('@') || sub.name === 'Anonymous Click').map((sub) => (
                     <tr key={sub.id} style={{ borderBottom: "1px solid rgba(255,255,255,0.03)" }}>
                       <td style={{ padding: "12px 15px", color: "#8EA8C3", fontSize: "0.85rem" }}>
-                        {sub.createdAt ? new Date(sub.createdAt.toDate()).toLocaleDateString() : 'Just now'}
+                        {sub.createdAt ? new Date(sub.createdAt.toDate()).toLocaleString([], { year: 'numeric', month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit' }) : 'Just now'}
                       </td>
                       <td style={{ padding: "12px 15px" }}>
                         <span style={{ 
