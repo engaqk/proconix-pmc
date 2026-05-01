@@ -12,6 +12,6 @@ jobs:
     steps:
       - name: Trigger Scheduled Broadcasts
         run: |
-          curl -s -X GET \
+          curl -s -X POST \
             -H "Authorization: Bearer ${{ secrets.CRON_SECRET }}" \
             ${{ secrets.PROD_URL }}/api/cron/broadcasts
