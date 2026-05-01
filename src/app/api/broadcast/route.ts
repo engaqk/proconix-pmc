@@ -3,6 +3,8 @@ import nodemailer from 'nodemailer';
 import { db } from '../../../lib/firebase';
 import { collection, addDoc } from 'firebase/firestore';
 
+const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
+
 export async function sendBroadcastEmail(emails: string[], subject: string, messageHtml: string) {
   const host = process.env.SMTP_HOST || 'smtp.hostinger.com';
   const port = parseInt(process.env.SMTP_PORT || '465');
@@ -20,19 +22,24 @@ export async function sendBroadcastEmail(emails: string[], subject: string, mess
     auth: { user, pass },
   });
 
-  // Send emails individually to avoid BCC limits or spam filters on Hostinger
+  // Send emails individually with a delay to avoid triggering Hostinger spam filters
   let successCount = 0;
-  for (const email of emails) {
+  for (let i = 0; i < emails.length; i++) {
+    const email = emails[i];
     try {
       await transporter.sendMail({
         from: `"Proconix PMC" <${user}>`,
-        to: email, // Sending directly to each recipient
+        to: email,
         subject: subject,
         html: messageHtml,
       });
       successCount++;
     } catch (e) {
       console.error(`Failed to send broadcast to ${email}:`, e);
+    }
+    // Wait 1 second between each email to avoid Hostinger rate-limit / spam flags
+    if (i < emails.length - 1) {
+      await sleep(1000);
     }
   }
   return successCount;
