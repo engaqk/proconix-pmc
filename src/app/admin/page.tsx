@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { collection, query, orderBy, onSnapshot } from "firebase/firestore";
+import { collection, query, orderBy, onSnapshot, getDocs, deleteDoc, doc } from "firebase/firestore";
 import { db } from "../../lib/firebase";
 
 export default function AdminDashboard() {
@@ -427,8 +427,27 @@ export default function AdminDashboard() {
 
         {/* Registered Leads Table */}
         <div style={{ background: "#122647", borderRadius: "8px", boxShadow: "0 8px 24px rgba(0,0,0,0.15)", overflow: "hidden", border: "1px solid rgba(255,255,255,0.05)", marginBottom: "30px" }}>
-          <div style={{ padding: "20px", borderBottom: "1px solid rgba(201,168,76,0.1)", background: "#0B1D35" }}>
+          <div style={{ padding: "20px", borderBottom: "1px solid rgba(201,168,76,0.1)", background: "#0B1D35", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
             <h3 style={{ margin: 0, color: "#FFFFFF", fontFamily: "'Cormorant Garamond', serif", fontSize: "24px" }}>Registered Leads ({submissions.filter(sub => sub.email && sub.email.includes('@') && sub.name !== 'Anonymous Click').length})</h3>
+            <button 
+              onClick={async () => {
+                if (confirm("Are you sure you want to delete ALL registered leads? This cannot be undone.") && 
+                    confirm("FINAL CONFIRMATION: Are you REALLY sure?")) {
+                  try {
+                    const q = query(collection(db, "formSubmissions"));
+                    const snap = await getDocs(q);
+                    const deletes = snap.docs.map(d => deleteDoc(doc(db, "formSubmissions", d.id)));
+                    await Promise.all(deletes);
+                    alert("All leads have been cleared.");
+                  } catch (e: any) {
+                    alert("Error clearing leads: " + e.message);
+                  }
+                }
+              }}
+              style={{ padding: "6px 12px", background: "rgba(229, 115, 115, 0.1)", color: "#e57373", border: "1px solid rgba(229, 115, 115, 0.3)", borderRadius: "4px", fontSize: "0.8rem", cursor: "pointer", fontWeight: "bold" }}
+            >
+              CLEAR ALL LEADS
+            </button>
           </div>
           
           {firebaseError && (
