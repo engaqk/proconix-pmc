@@ -127,7 +127,7 @@ function getEmailTemplate(data: {
           </div>
           <div class="footer">
             &copy; 2026 Proconix Project Management Consultancy<br>
-            Project Management Consultancy &middot; Africa &middot; GCC &middot; UK &middot; UK-Europe
+            Project Management Consultancy &middot; Africa &middot; GCC
           </div>
         </div>
       </div>
@@ -182,7 +182,7 @@ function getUserEmailTemplate(name: string) {
           </div>
           <div class="footer">
             &copy; 2026 Proconix Project Management Consultancy<br>
-            Project Management Consultancy &middot; Africa &middot; GCC &middot; UK
+            Project Management Consultancy &middot; Africa &middot; GCC
           </div>
         </div>
       </div>
