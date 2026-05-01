@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { collection, query, orderBy, onSnapshot, getDocs, deleteDoc, doc } from "firebase/firestore";
 import { db } from "../../lib/firebase";
 
@@ -19,6 +19,8 @@ export default function AdminDashboard() {
   const [showBroadcast, setShowBroadcast] = useState(false);
   const [showAnonymous, setShowAnonymous] = useState(false);
   const [emailQuota, setEmailQuota] = useState<{ limit: number, used: number, remaining: number } | null>(null);
+  const [selectedEmails, setSelectedEmails] = useState<string[]>([]);
+  const hasInitializedSelection = useRef(false);
 
   const fetchQuota = async () => {
     try {
@@ -112,15 +114,9 @@ export default function AdminDashboard() {
       return;
     }
     
-    // Get unique valid emails
-    const validEmails = Array.from(new Set(
-      submissions
-        .map(sub => sub.email)
-        .filter(email => email && email.includes('@'))
-    ));
-
-    if (validEmails.length === 0) {
-      setBroadcastResult({ type: "error", message: "No valid recipient emails found." });
+    // Use manually selected emails
+    if (selectedEmails.length === 0) {
+      setBroadcastResult({ type: "error", message: "No recipients selected." });
       return;
     }
 
@@ -129,7 +125,7 @@ export default function AdminDashboard() {
 
     try {
       const payload = {
-        emails: validEmails,
+        emails: selectedEmails,
         subject: broadcastSubject,
         message: broadcastMessage,
         secret: 'admin53',
@@ -200,6 +196,16 @@ export default function AdminDashboard() {
         setSubmissions(data);
         setIsLoading(false);
         setFirebaseError(null);
+        
+        if (!hasInitializedSelection.current && data.length > 0) {
+          const valid = Array.from(new Set(
+            data
+              .map(sub => (sub as any).email)
+              .filter(email => email && email.includes('@'))
+          )) as string[];
+          setSelectedEmails(valid);
+          hasInitializedSelection.current = true;
+        }
       }, (err) => {
         console.error("Error fetching submissions:", err);
         setFirebaseError(err.message);
@@ -270,7 +276,7 @@ export default function AdminDashboard() {
             }} style={{ padding: "8px 16px", background: "#C9A84C", color: "#0B1D35", border: "none", borderRadius: "4px", cursor: "pointer", fontWeight: "bold", display: "flex", alignItems: "center", gap: "8px", fontFamily: "'DM Sans', sans-serif" }}>
               <span>{showBroadcast ? "Close Broadcast" : "Broadcast Email"}</span>
               <span style={{ background: "rgba(0,0,0,0.2)", padding: "2px 6px", borderRadius: "12px", fontSize: "0.8rem", color: "#0B1D35" }}>
-                {Array.from(new Set(submissions.map(s => s.email).filter(e => e && e.includes('@')))).length}
+                {selectedEmails.length}
               </span>
             </button>
             <button onClick={() => {
@@ -283,11 +289,11 @@ export default function AdminDashboard() {
         {showBroadcast && (
           <div style={{ background: "#122647", borderRadius: "8px", boxShadow: "0 8px 24px rgba(0,0,0,0.2)", overflow: "hidden", marginBottom: "30px", border: "1px solid rgba(201,168,76,0.3)" }}>
             <div style={{ padding: "20px", borderBottom: "1px solid rgba(201,168,76,0.1)", background: "#0B1D35" }}>
-              <h3 style={{ margin: 0, color: "#FFFFFF", fontFamily: "'Cormorant Garamond', serif", fontSize: "24px" }}>Broadcast Email to All Leads</h3>
+              <h3 style={{ margin: 0, color: "#FFFFFF", fontFamily: "'Cormorant Garamond', serif", fontSize: "24px" }}>Broadcast Email to Selected Leads ({selectedEmails.length})</h3>
             </div>
             <div style={{ padding: "20px" }}>
               <p style={{ color: "#C2D4E4", marginBottom: "20px", fontSize: "0.95rem" }}>
-                This will send an email from <strong style={{ color: "#C9A84C" }}>info@proconixpmc.com</strong> to all unique, valid email addresses in the table. Recipients are BCC'd for privacy.
+                This will send an email from <strong style={{ color: "#C9A84C" }}>info@proconixpmc.com</strong> to the <strong style={{ color: "#C9A84C" }}>{selectedEmails.length}</strong> selected recipients. Recipients are BCC'd for privacy.
               </p>
               
               <form style={{ display: "flex", flexDirection: "column", gap: "15px" }}>
@@ -474,6 +480,17 @@ export default function AdminDashboard() {
               <table style={{ width: "100%", borderCollapse: "collapse", textAlign: "left" }}>
                 <thead>
                   <tr style={{ background: "rgba(11,29,53,0.5)", color: "#C9A84C", textTransform: "uppercase", letterSpacing: "1px" }}>
+                    <th style={{ padding: "15px", width: "40px" }}>
+                      <input 
+                        type="checkbox" 
+                        checked={selectedEmails.length > 0 && selectedEmails.length === Array.from(new Set(submissions.filter(s => s.email && s.email.includes('@') && s.name !== 'Anonymous Click').map(s => s.email))).length}
+                        onChange={(e) => {
+                          const allValid = Array.from(new Set(submissions.filter(s => s.email && s.email.includes('@') && s.name !== 'Anonymous Click').map(s => s.email))) as string[];
+                          setSelectedEmails(e.target.checked ? allValid : []);
+                        }}
+                        style={{ cursor: "pointer", accentColor: "#C9A84C" }}
+                      />
+                    </th>
                     <th style={{ padding: "15px", fontSize: "0.85rem" }}>Date & Time</th>
                     <th className="hide-on-mobile" style={{ padding: "15px", fontSize: "0.85rem" }}>Type</th>
                     <th style={{ padding: "15px", fontSize: "0.85rem" }}>First Name</th>
@@ -485,7 +502,21 @@ export default function AdminDashboard() {
                 </thead>
                 <tbody>
                   {submissions.filter(sub => sub.email && sub.email.includes('@') && sub.name !== 'Anonymous Click').map((sub) => (
-                    <tr key={sub.id} style={{ borderBottom: "1px solid rgba(255,255,255,0.05)", transition: "background 0.2s" }} onMouseOver={(e) => e.currentTarget.style.background = 'rgba(255,255,255,0.02)'} onMouseOut={(e) => e.currentTarget.style.background = 'transparent'}>
+                    <tr key={sub.id} style={{ borderBottom: "1px solid rgba(255,255,255,0.05)", transition: "background 0.2s", background: selectedEmails.includes(sub.email) ? "rgba(201,168,76,0.05)" : "transparent" }} onMouseOver={(e) => e.currentTarget.style.background = selectedEmails.includes(sub.email) ? 'rgba(201,168,76,0.08)' : 'rgba(255,255,255,0.02)'} onMouseOut={(e) => e.currentTarget.style.background = selectedEmails.includes(sub.email) ? 'rgba(201,168,76,0.05)' : 'transparent'}>
+                      <td style={{ padding: "15px" }}>
+                        <input 
+                          type="checkbox" 
+                          checked={selectedEmails.includes(sub.email)}
+                          onChange={() => {
+                            if (selectedEmails.includes(sub.email)) {
+                              setSelectedEmails(selectedEmails.filter(e => e !== sub.email));
+                            } else {
+                              setSelectedEmails([...selectedEmails, sub.email]);
+                            }
+                          }}
+                          style={{ cursor: "pointer", accentColor: "#C9A84C" }}
+                        />
+                      </td>
                       <td style={{ padding: "15px", color: "#8EA8C3", fontSize: "0.9rem" }}>
                         {sub.createdAt ? new Date(sub.createdAt.toDate()).toLocaleString([], { year: 'numeric', month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit' }) : 'Just now'}
                       </td>
