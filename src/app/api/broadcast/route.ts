@@ -51,8 +51,8 @@ function formatBroadcastHtml(message: string) {
         .logo { font-family: 'Cormorant Garamond', serif; color: #FFFFFF; font-size: 28px; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; }
         .logo span { color: #C9A84C; }
         .tagline { color: #C9A84C; font-size: 10px; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; margin-top: 5px; }
-        .content { padding: 0 40px 40px; text-align: left; }
-        p { color: #C2D4E4; font-weight: 300; font-size: 15px; margin-bottom: 20px; }
+        .content { padding: 0 40px 40px; text-align: left; color: #FFFFFF; font-size: 16px; line-height: 1.8; }
+        p { color: #FFFFFF; font-weight: 300; font-size: 16px; margin-bottom: 20px; }
         .footer { padding: 40px; text-align: center; font-size: 11px; color: #8EA8C3; border-top: 1px solid rgba(201,168,76,0.1); background: #07142A; letter-spacing: 0.5px; }
       </style>
       <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
@@ -65,7 +65,7 @@ function formatBroadcastHtml(message: string) {
             <div class="logo">PROCONIX</div>
             <div class="tagline">Project Management Consultancy</div>
           </div>
-          <div class="content">
+          <div class="content" style="color: #FFFFFF; font-size: 16px; line-height: 1.8;">
             ${message.replace(/\n/g, '<br>')}
           </div>
           <div class="footer">
