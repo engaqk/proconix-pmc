@@ -19,6 +19,75 @@ export default function AdminDashboard() {
   const [showBroadcast, setShowBroadcast] = useState(false);
   const [showAnonymous, setShowAnonymous] = useState(false);
 
+  const [scheduledBroadcasts, setScheduledBroadcasts] = useState<any[]>([]);
+  const [showScheduledHistory, setShowScheduledHistory] = useState(false);
+  const [editingBroadcast, setEditingBroadcast] = useState<any | null>(null);
+  const [editSubject, setEditSubject] = useState("");
+  const [editMessage, setEditMessage] = useState("");
+  const [editScheduledAt, setEditScheduledAt] = useState("");
+  const [isSavingEdit, setIsSavingEdit] = useState(false);
+  const [editResult, setEditResult] = useState({ type: "", message: "" });
+
+  const fetchScheduledBroadcasts = async () => {
+    try {
+      const res = await fetch('/api/scheduled-broadcasts', {
+        headers: { Authorization: 'Bearer admin53' }
+      });
+      const data = await res.json();
+      if (res.ok) setScheduledBroadcasts(data.broadcasts);
+    } catch (e) {
+      console.error('Failed to fetch scheduled broadcasts', e);
+    }
+  };
+
+  const handleEditSave = async () => {
+    if (!editingBroadcast) return;
+    setIsSavingEdit(true);
+    setEditResult({ type: "", message: "" });
+    try {
+      const res = await fetch(`/api/scheduled-broadcasts/${editingBroadcast.id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json', Authorization: 'Bearer admin53' },
+        body: JSON.stringify({ subject: editSubject, message: editMessage, scheduledAt: editScheduledAt })
+      });
+      if (res.ok) {
+        setEditResult({ type: "success", message: "Broadcast updated successfully." });
+        await fetchScheduledBroadcasts();
+        setTimeout(() => { setEditingBroadcast(null); setEditResult({ type: "", message: "" }); }, 1500);
+      } else {
+        const d = await res.json();
+        setEditResult({ type: "error", message: d.error || "Update failed" });
+      }
+    } catch (e: any) {
+      setEditResult({ type: "error", message: e.message });
+    } finally {
+      setIsSavingEdit(false);
+    }
+  };
+
+  const handleDeleteBroadcast = async (id: string) => {
+    if (!confirm('Are you sure you want to delete this scheduled broadcast?')) return;
+    try {
+      await fetch(`/api/scheduled-broadcasts/${id}`, {
+        method: 'DELETE',
+        headers: { Authorization: 'Bearer admin53' }
+      });
+      await fetchScheduledBroadcasts();
+    } catch (e) {
+      console.error('Delete failed', e);
+    }
+  };
+
+  const openEdit = (b: any) => {
+    setEditingBroadcast(b);
+    setEditSubject(b.subject);
+    setEditMessage(b.message);
+    const d = new Date(b.scheduledAt);
+    const local = new Date(d.getTime() - d.getTimezoneOffset() * 60000).toISOString().slice(0, 16);
+    setEditScheduledAt(local);
+    setEditResult({ type: "", message: "" });
+  };
+
   const handleBroadcastSubmit = async (e: React.FormEvent, isScheduled: boolean) => {
     e.preventDefault();
     if (!broadcastSubject || !broadcastMessage) {
@@ -119,6 +188,7 @@ export default function AdminDashboard() {
           setFirebaseError("Firestore Index Missing: You need to create an index for 'formSubmissions' with 'createdAt' descending. Check the browser console for the direct link.");
         }
       });
+      fetchScheduledBroadcasts();
       return () => unsubscribe();
     }
   }, [isLoggedIn]);
@@ -457,6 +527,105 @@ export default function AdminDashboard() {
             </div>
           </div>
         )}
+
+        {/* Scheduled Email History */}
+        <div style={{ marginTop: "30px" }}>
+          <div style={{ textAlign: "center", marginBottom: "20px" }}>
+            <button
+              onClick={() => { setShowScheduledHistory(!showScheduledHistory); if (!showScheduledHistory) fetchScheduledBroadcasts(); }}
+              style={{ padding: "10px 20px", background: "rgba(11,29,53,0.8)", color: "#C9A84C", border: "1px solid rgba(201,168,76,0.5)", borderRadius: "50px", cursor: "pointer", fontFamily: "'DM Sans', sans-serif", fontSize: "0.9rem", transition: "all 0.2s ease" }}
+            >
+              {showScheduledHistory ? "Hide Scheduled Email History" : `Scheduled Email History (${scheduledBroadcasts.length})`}
+            </button>
+          </div>
+
+          {showScheduledHistory && (
+            <div style={{ background: "#122647", borderRadius: "8px", boxShadow: "0 8px 24px rgba(0,0,0,0.15)", overflow: "hidden", border: "1px solid rgba(201,168,76,0.2)" }}>
+              <div style={{ padding: "20px", borderBottom: "1px solid rgba(201,168,76,0.1)", background: "#0B1D35", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                <h3 style={{ margin: 0, color: "#FFFFFF", fontFamily: "'Cormorant Garamond', serif", fontSize: "22px" }}>Scheduled Email History</h3>
+                <button onClick={fetchScheduledBroadcasts} style={{ padding: "6px 14px", background: "rgba(201,168,76,0.1)", color: "#C9A84C", border: "1px solid rgba(201,168,76,0.3)", borderRadius: "4px", cursor: "pointer", fontSize: "0.8rem", fontFamily: "'DM Sans', sans-serif" }}>↻ Refresh</button>
+              </div>
+              {scheduledBroadcasts.length === 0 ? (
+                <div style={{ padding: "40px", textAlign: "center", color: "#8EA8C3" }}>No scheduled broadcasts found.</div>
+              ) : (
+                <div style={{ overflowX: "auto" }}>
+                  <table style={{ width: "100%", borderCollapse: "collapse", textAlign: "left" }}>
+                    <thead>
+                      <tr style={{ background: "rgba(11,29,53,0.5)", color: "#C9A84C", textTransform: "uppercase", letterSpacing: "1px" }}>
+                        <th style={{ padding: "14px 16px", fontSize: "0.8rem" }}>Subject</th>
+                        <th className="hide-on-mobile" style={{ padding: "14px 16px", fontSize: "0.8rem" }}>Scheduled For</th>
+                        <th className="hide-on-mobile" style={{ padding: "14px 16px", fontSize: "0.8rem" }}>Recipients</th>
+                        <th style={{ padding: "14px 16px", fontSize: "0.8rem" }}>Status</th>
+                        <th style={{ padding: "14px 16px", fontSize: "0.8rem" }}>Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {scheduledBroadcasts.map((b) => {
+                        const statusColor = b.status === 'sent' ? '#81c784' : b.status === 'failed' ? '#e57373' : '#C9A84C';
+                        const statusBg = b.status === 'sent' ? 'rgba(46,125,50,0.1)' : b.status === 'failed' ? 'rgba(198,40,40,0.1)' : 'rgba(201,168,76,0.1)';
+                        const statusBorder = b.status === 'sent' ? 'rgba(46,125,50,0.3)' : b.status === 'failed' ? 'rgba(198,40,40,0.3)' : 'rgba(201,168,76,0.3)';
+                        return (
+                          <tr key={b.id} style={{ borderBottom: "1px solid rgba(255,255,255,0.05)" }}>
+                            <td style={{ padding: "14px 16px", color: "#FFFFFF", fontWeight: 500, maxWidth: "200px", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{b.subject}</td>
+                            <td className="hide-on-mobile" style={{ padding: "14px 16px", color: "#8EA8C3", fontSize: "0.9rem" }}>{b.scheduledAt ? new Date(b.scheduledAt).toLocaleString([], { year: 'numeric', month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit' }) : '-'}</td>
+                            <td className="hide-on-mobile" style={{ padding: "14px 16px", color: "#C2D4E4" }}>{b.emails?.length ?? 0}</td>
+                            <td style={{ padding: "14px 16px" }}>
+                              <span style={{ background: statusBg, color: statusColor, border: `1px solid ${statusBorder}`, padding: "3px 10px", borderRadius: "12px", fontSize: "0.75rem", fontWeight: "bold", textTransform: "capitalize" }}>{b.status}</span>
+                            </td>
+                            <td style={{ padding: "14px 16px" }}>
+                              <div style={{ display: "flex", gap: "8px" }}>
+                                {b.status === 'pending' && (
+                                  <button onClick={() => openEdit(b)} style={{ padding: "5px 12px", background: "rgba(201,168,76,0.1)", color: "#C9A84C", border: "1px solid rgba(201,168,76,0.4)", borderRadius: "4px", cursor: "pointer", fontSize: "0.8rem", fontFamily: "'DM Sans', sans-serif" }}>Edit</button>
+                                )}
+                                <button onClick={() => handleDeleteBroadcast(b.id)} style={{ padding: "5px 12px", background: "rgba(198,40,40,0.1)", color: "#e57373", border: "1px solid rgba(198,40,40,0.3)", borderRadius: "4px", cursor: "pointer", fontSize: "0.8rem", fontFamily: "'DM Sans', sans-serif" }}>Delete</button>
+                              </div>
+                            </td>
+                          </tr>
+                        );
+                      })}
+                    </tbody>
+                  </table>
+                </div>
+              )}
+            </div>
+          )}
+        </div>
+
+        {/* Edit Modal */}
+        {editingBroadcast && (
+          <div style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.7)", zIndex: 1000, display: "flex", alignItems: "center", justifyContent: "center", padding: "20px" }}>
+            <div style={{ background: "#122647", border: "1px solid rgba(201,168,76,0.3)", borderRadius: "8px", width: "100%", maxWidth: "600px", overflow: "hidden" }}>
+              <div style={{ padding: "20px", borderBottom: "1px solid rgba(201,168,76,0.1)", background: "#0B1D35", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                <h3 style={{ margin: 0, color: "#FFFFFF", fontFamily: "'Cormorant Garamond', serif", fontSize: "22px" }}>Edit Scheduled Email</h3>
+                <button onClick={() => setEditingBroadcast(null)} style={{ background: "none", border: "none", color: "#8EA8C3", fontSize: "1.4rem", cursor: "pointer", lineHeight: 1 }}>×</button>
+              </div>
+              <div style={{ padding: "24px", display: "flex", flexDirection: "column", gap: "16px" }}>
+                <div>
+                  <label style={{ display: "block", marginBottom: "8px", color: "#C9A84C", fontWeight: "bold", fontSize: "0.85rem", textTransform: "uppercase", letterSpacing: "1px" }}>Subject</label>
+                  <input value={editSubject} onChange={e => setEditSubject(e.target.value)} style={{ width: "100%", padding: "12px", border: "1px solid rgba(201,168,76,0.2)", borderRadius: "4px", background: "rgba(11,29,53,0.6)", color: "#FFFFFF", fontFamily: "'DM Sans', sans-serif", fontSize: "14px" }} />
+                </div>
+                <div>
+                  <label style={{ display: "block", marginBottom: "8px", color: "#C9A84C", fontWeight: "bold", fontSize: "0.85rem", textTransform: "uppercase", letterSpacing: "1px" }}>Message</label>
+                  <textarea value={editMessage} onChange={e => setEditMessage(e.target.value)} rows={6} style={{ width: "100%", padding: "12px", border: "1px solid rgba(201,168,76,0.2)", borderRadius: "4px", background: "rgba(11,29,53,0.6)", color: "#FFFFFF", fontFamily: "'DM Sans', sans-serif", fontSize: "14px", resize: "vertical" }} />
+                </div>
+                <div>
+                  <label style={{ display: "block", marginBottom: "8px", color: "#C9A84C", fontWeight: "bold", fontSize: "0.85rem", textTransform: "uppercase", letterSpacing: "1px" }}>Scheduled Date & Time</label>
+                  <input type="datetime-local" value={editScheduledAt} onChange={e => setEditScheduledAt(e.target.value)} style={{ width: "100%", padding: "12px", border: "1px solid rgba(201,168,76,0.2)", borderRadius: "4px", background: "rgba(11,29,53,0.6)", color: "#FFFFFF", fontFamily: "'DM Sans', sans-serif", fontSize: "14px" }} />
+                </div>
+                {editResult.message && (
+                  <div style={{ padding: "12px", borderRadius: "4px", backgroundColor: editResult.type === 'success' ? 'rgba(46,125,50,0.2)' : 'rgba(198,40,40,0.2)', color: editResult.type === 'success' ? '#81c784' : '#e57373', border: `1px solid ${editResult.type === 'success' ? '#2e7d32' : '#c62828'}`, fontSize: "0.9rem" }}>
+                    {editResult.message}
+                  </div>
+                )}
+                <div style={{ display: "flex", gap: "12px", justifyContent: "flex-end" }}>
+                  <button onClick={() => setEditingBroadcast(null)} style={{ padding: "10px 20px", background: "rgba(255,255,255,0.05)", color: "#8EA8C3", border: "1px solid rgba(255,255,255,0.1)", borderRadius: "4px", cursor: "pointer", fontFamily: "'DM Sans', sans-serif" }}>Cancel</button>
+                  <button onClick={handleEditSave} disabled={isSavingEdit} style={{ padding: "10px 24px", background: "#C9A84C", color: "#0B1D35", border: "none", borderRadius: "4px", fontWeight: "bold", cursor: isSavingEdit ? "not-allowed" : "pointer", opacity: isSavingEdit ? 0.7 : 1, fontFamily: "'DM Sans', sans-serif" }}>{isSavingEdit ? "Saving..." : "Save Changes"}</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
       </div>
     </div>
     </>
