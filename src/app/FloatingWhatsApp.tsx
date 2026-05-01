@@ -1,9 +1,11 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { usePathname } from "next/navigation";
 
 export default function FloatingWhatsApp() {
   const [isVisible, setIsVisible] = useState(false);
+  const pathname = usePathname();
 
   useEffect(() => {
     // Small delay to draw user attention after page load
@@ -12,6 +14,7 @@ export default function FloatingWhatsApp() {
   }, []);
 
   if (!isVisible) return null;
+  if (pathname && pathname.startsWith('/admin')) return null;
 
   return (
     <a

@@ -15,6 +15,7 @@ export default function AdminDashboard() {
   const [broadcastMessage, setBroadcastMessage] = useState("");
   const [isBroadcasting, setIsBroadcasting] = useState(false);
   const [broadcastResult, setBroadcastResult] = useState({ type: "", message: "" });
+  const [showBroadcast, setShowBroadcast] = useState(false);
 
   const handleBroadcastSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -143,27 +144,126 @@ export default function AdminDashboard() {
   }
 
   return (
-    <div style={{ minHeight: "100vh", backgroundColor: "#F7F8FA", padding: "40px 20px" }}>
-      <div style={{ maxWidth: "1000px", margin: "0 auto" }}>
+    <div style={{ minHeight: "100vh", backgroundColor: "#07142A", padding: "40px 20px", color: "#FFFFFF", fontFamily: "'DM Sans', sans-serif" }}>
+      <div style={{ maxWidth: "1200px", margin: "0 auto" }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "30px" }}>
-          <h1 style={{ color: "#0B1D35", margin: 0 }}>Proconix Dashboard</h1>
-          <button onClick={() => {
-            setIsLoggedIn(false);
-            localStorage.removeItem("proconix_admin_logged_in");
-          }} style={{ padding: "8px 16px", background: "#0B1D35", color: "#fff", border: "none", borderRadius: "4px", cursor: "pointer" }}>Logout</button>
+          <h1 style={{ color: "#FFFFFF", margin: 0, fontFamily: "'Cormorant Garamond', serif", fontSize: "32px" }}>PROCONIX <span style={{ color: "#C9A84C" }}>DASHBOARD</span></h1>
+          <div style={{ display: "flex", gap: "15px" }}>
+            <button onClick={() => setShowBroadcast(!showBroadcast)} style={{ padding: "8px 16px", background: "#C9A84C", color: "#0B1D35", border: "none", borderRadius: "4px", cursor: "pointer", fontWeight: "bold", display: "flex", alignItems: "center", gap: "8px", fontFamily: "'DM Sans', sans-serif" }}>
+              <span>{showBroadcast ? "Close Broadcast" : "Broadcast Email"}</span>
+              <span style={{ background: "rgba(0,0,0,0.2)", padding: "2px 6px", borderRadius: "12px", fontSize: "0.8rem", color: "#0B1D35" }}>
+                {Array.from(new Set(submissions.map(s => s.email).filter(e => e && e.includes('@')))).length}
+              </span>
+            </button>
+            <button onClick={() => {
+              setIsLoggedIn(false);
+              localStorage.removeItem("proconix_admin_logged_in");
+            }} style={{ padding: "8px 16px", background: "rgba(255,255,255,0.1)", color: "#fff", border: "1px solid rgba(255,255,255,0.2)", borderRadius: "4px", cursor: "pointer", fontFamily: "'DM Sans', sans-serif" }}>Logout</button>
+          </div>
+        </div>
+
+        {showBroadcast && (
+          <div style={{ background: "#122647", borderRadius: "8px", boxShadow: "0 8px 24px rgba(0,0,0,0.2)", overflow: "hidden", marginBottom: "30px", border: "1px solid rgba(201,168,76,0.3)" }}>
+            <div style={{ padding: "20px", borderBottom: "1px solid rgba(201,168,76,0.1)", background: "#0B1D35" }}>
+              <h3 style={{ margin: 0, color: "#FFFFFF", fontFamily: "'Cormorant Garamond', serif", fontSize: "24px" }}>Broadcast Email to All Leads</h3>
+            </div>
+            <div style={{ padding: "20px" }}>
+              <p style={{ color: "#C2D4E4", marginBottom: "20px", fontSize: "0.95rem" }}>
+                This will send an email from <strong style={{ color: "#C9A84C" }}>info@proconixpmc.com</strong> to all unique, valid email addresses in the table. Recipients are BCC'd for privacy.
+              </p>
+              
+              <form onSubmit={handleBroadcastSubmit} style={{ display: "flex", flexDirection: "column", gap: "15px" }}>
+                <div>
+                  <label style={{ display: "block", marginBottom: "8px", color: "#C9A84C", fontWeight: "bold", fontSize: "0.9rem", textTransform: "uppercase", letterSpacing: "1px" }}>Subject</label>
+                  <input 
+                    type="text" 
+                    placeholder="Enter email subject..." 
+                    value={broadcastSubject}
+                    onChange={(e) => setBroadcastSubject(e.target.value)}
+                    style={{ width: "100%", padding: "14px", border: "1px solid rgba(201,168,76,0.2)", borderRadius: "4px", background: "rgba(11,29,53,0.6)", color: "#FFFFFF", fontFamily: "'DM Sans', sans-serif", fontSize: "15px" }}
+                    required 
+                  />
+                </div>
+                <div>
+                  <label style={{ display: "block", marginBottom: "8px", color: "#C9A84C", fontWeight: "bold", fontSize: "0.9rem", textTransform: "uppercase", letterSpacing: "1px" }}>Message Body</label>
+                  <textarea 
+                    placeholder="Write your message here... HTML tags will be escaped, but line breaks are preserved." 
+                    value={broadcastMessage}
+                    onChange={(e) => setBroadcastMessage(e.target.value)}
+                    style={{ width: "100%", padding: "14px", border: "1px solid rgba(201,168,76,0.2)", borderRadius: "4px", minHeight: "180px", background: "rgba(11,29,53,0.6)", color: "#FFFFFF", fontFamily: "'DM Sans', sans-serif", fontSize: "15px", resize: "vertical" }}
+                    required 
+                  />
+                </div>
+                
+                {broadcastResult.message && (
+                  <div style={{ padding: "15px", borderRadius: "4px", backgroundColor: broadcastResult.type === 'success' ? 'rgba(46, 125, 50, 0.2)' : 'rgba(198, 40, 40, 0.2)', color: broadcastResult.type === 'success' ? '#81c784' : '#e57373', border: `1px solid ${broadcastResult.type === 'success' ? '#2e7d32' : '#c62828'}` }}>
+                    {broadcastResult.message}
+                  </div>
+                )}
+                
+                <button 
+                  type="submit" 
+                  disabled={isBroadcasting || submissions.length === 0}
+                  style={{ 
+                    padding: "14px 28px", 
+                    background: "#C9A84C", 
+                    color: "#0B1D35", 
+                    border: "none", 
+                    borderRadius: "4px", 
+                    fontWeight: "bold", 
+                    cursor: (isBroadcasting || submissions.length === 0) ? "not-allowed" : "pointer", 
+                    opacity: (isBroadcasting || submissions.length === 0) ? 0.6 : 1,
+                    alignSelf: "flex-start",
+                    fontFamily: "'DM Sans', sans-serif",
+                    textTransform: "uppercase",
+                    letterSpacing: "1px"
+                  }}
+                >
+                  {isBroadcasting ? "Sending Broadcast..." : "Send Broadcast to All Leads"}
+                </button>
+              </form>
+            </div>
+          </div>
+        )}
+
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: "20px", marginBottom: "30px" }}>
+          <div style={{ background: "#122647", padding: "20px", borderRadius: "8px", boxShadow: "0 8px 24px rgba(0,0,0,0.15)", borderLeft: "4px solid #C9A84C", borderTop: "1px solid rgba(255,255,255,0.05)", borderRight: "1px solid rgba(255,255,255,0.05)", borderBottom: "1px solid rgba(255,255,255,0.05)" }}>
+            <h4 style={{ margin: "0 0 10px 0", color: "#8EA8C3", fontSize: "0.85rem", textTransform: "uppercase", letterSpacing: "1px" }}>Total Unique Emails</h4>
+            <div style={{ fontSize: "2.2rem", fontWeight: "bold", color: "#FFFFFF", fontFamily: "'Cormorant Garamond', serif" }}>
+              {Array.from(new Set(submissions.map(s => s.email).filter(e => e && e.includes('@')))).length}
+            </div>
+          </div>
+          <div style={{ background: "#122647", padding: "20px", borderRadius: "8px", boxShadow: "0 8px 24px rgba(0,0,0,0.15)", borderLeft: "4px solid #C9A84C", borderTop: "1px solid rgba(255,255,255,0.05)", borderRight: "1px solid rgba(255,255,255,0.05)", borderBottom: "1px solid rgba(255,255,255,0.05)" }}>
+            <h4 style={{ margin: "0 0 10px 0", color: "#8EA8C3", fontSize: "0.85rem", textTransform: "uppercase", letterSpacing: "1px" }}>Checklist Downloads</h4>
+            <div style={{ fontSize: "2.2rem", fontWeight: "bold", color: "#FFFFFF", fontFamily: "'Cormorant Garamond', serif" }}>
+              {submissions.filter(s => s.type && s.type.includes('Checklist')).length}
+            </div>
+          </div>
+          <div style={{ background: "#122647", padding: "20px", borderRadius: "8px", boxShadow: "0 8px 24px rgba(0,0,0,0.15)", borderLeft: "4px solid #C9A84C", borderTop: "1px solid rgba(255,255,255,0.05)", borderRight: "1px solid rgba(255,255,255,0.05)", borderBottom: "1px solid rgba(255,255,255,0.05)" }}>
+            <h4 style={{ margin: "0 0 10px 0", color: "#8EA8C3", fontSize: "0.85rem", textTransform: "uppercase", letterSpacing: "1px" }}>Discovery Calls</h4>
+            <div style={{ fontSize: "2.2rem", fontWeight: "bold", color: "#FFFFFF", fontFamily: "'Cormorant Garamond', serif" }}>
+              {submissions.filter(s => s.type && (s.type.includes('Call') || s.type.includes('Lead Capture'))).length}
+            </div>
+          </div>
+          <div style={{ background: "#122647", padding: "20px", borderRadius: "8px", boxShadow: "0 8px 24px rgba(0,0,0,0.15)", borderLeft: "4px solid #C9A84C", borderTop: "1px solid rgba(255,255,255,0.05)", borderRight: "1px solid rgba(255,255,255,0.05)", borderBottom: "1px solid rgba(255,255,255,0.05)" }}>
+            <h4 style={{ margin: "0 0 10px 0", color: "#8EA8C3", fontSize: "0.85rem", textTransform: "uppercase", letterSpacing: "1px" }}>Total Interactions</h4>
+            <div style={{ fontSize: "2.2rem", fontWeight: "bold", color: "#FFFFFF", fontFamily: "'Cormorant Garamond', serif" }}>
+              {submissions.length}
+            </div>
+          </div>
         </div>
         
-        <div style={{ background: "#fff", borderRadius: "8px", boxShadow: "0 4px 12px rgba(0,0,0,0.05)", overflow: "hidden" }}>
-          <div style={{ padding: "20px", borderBottom: "1px solid #eee", background: "#fafafa" }}>
-            <h3 style={{ margin: 0, color: "#455065" }}>Recent Form Submissions ({submissions.length})</h3>
+        <div style={{ background: "#122647", borderRadius: "8px", boxShadow: "0 8px 24px rgba(0,0,0,0.15)", overflow: "hidden", border: "1px solid rgba(255,255,255,0.05)" }}>
+          <div style={{ padding: "20px", borderBottom: "1px solid rgba(201,168,76,0.1)", background: "#0B1D35" }}>
+            <h3 style={{ margin: 0, color: "#FFFFFF", fontFamily: "'Cormorant Garamond', serif", fontSize: "24px" }}>Recent Form Submissions ({submissions.length})</h3>
           </div>
           
           {firebaseError && (
-            <div style={{ padding: "20px", backgroundColor: "#fff5f5", color: "#c53030", borderBottom: "1px solid #fed7d7" }}>
+            <div style={{ padding: "20px", backgroundColor: "rgba(198, 40, 40, 0.1)", color: "#e57373", borderBottom: "1px solid rgba(198, 40, 40, 0.2)" }}>
               <strong>Firebase Error:</strong> {firebaseError}
               <br/>
               <span style={{ fontSize: "0.85rem" }}>
-                Ensure your <a href="https://console.firebase.google.com/u/0/project/proconix-pmc/firestore/rules" target="_blank" style={{ color: "#c53030", textDecoration: "underline" }}>Firestore Rules</a> allow read/write and that indices are created.
+                Ensure your <a href="https://console.firebase.google.com/u/0/project/proconix-pmc/firestore/rules" target="_blank" style={{ color: "#ef9a9a", textDecoration: "underline" }}>Firestore Rules</a> allow read/write and that indices are created.
               </span>
             </div>
           )}
@@ -175,48 +275,50 @@ export default function AdminDashboard() {
               No submissions found yet in <strong>formSubmissions</strong> collection.
               <br/>
               <br/>
-              <a href="https://console.firebase.google.com/u/0/project/proconix-pmc/firestore/databases/-default-/data" target="_blank" style={{ color: "#0B1D35", textDecoration: "underline" }}>Check Firestore Console</a>
+              <a href="https://console.firebase.google.com/u/0/project/proconix-pmc/firestore/databases/-default-/data" target="_blank" style={{ color: "#C9A84C", textDecoration: "underline" }}>Check Firestore Console</a>
             </div>
           ) : (
             <div style={{ overflowX: "auto" }}>
               <table style={{ width: "100%", borderCollapse: "collapse", textAlign: "left" }}>
                 <thead>
-                  <tr style={{ background: "#0B1D35", color: "#fff" }}>
-                    <th style={{ padding: "15px", fontSize: "0.9rem" }}>Date</th>
-                    <th style={{ padding: "15px", fontSize: "0.9rem" }}>Type</th>
-                    <th style={{ padding: "15px", fontSize: "0.9rem" }}>Name</th>
-                    <th style={{ padding: "15px", fontSize: "0.9rem" }}>Email</th>
-                    <th style={{ padding: "15px", fontSize: "0.9rem" }}>Country</th>
-                    <th style={{ padding: "15px", fontSize: "0.9rem" }}>Sector & Budget</th>
-                    <th style={{ padding: "15px", fontSize: "0.9rem" }}>Details</th>
+                  <tr style={{ background: "rgba(11,29,53,0.5)", color: "#C9A84C", textTransform: "uppercase", letterSpacing: "1px" }}>
+                    <th style={{ padding: "15px", fontSize: "0.85rem" }}>Date</th>
+                    <th style={{ padding: "15px", fontSize: "0.85rem" }}>Type</th>
+                    <th style={{ padding: "15px", fontSize: "0.85rem" }}>Name</th>
+                    <th style={{ padding: "15px", fontSize: "0.85rem" }}>Email</th>
+                    <th style={{ padding: "15px", fontSize: "0.85rem" }}>Country</th>
+                    <th style={{ padding: "15px", fontSize: "0.85rem" }}>Sector & Budget</th>
+                    <th style={{ padding: "15px", fontSize: "0.85rem" }}>Details</th>
                   </tr>
                 </thead>
                 <tbody>
                   {submissions.map((sub) => (
-                    <tr key={sub.id} style={{ borderBottom: "1px solid #eee" }}>
-                      <td style={{ padding: "15px", color: "#455065", fontSize: "0.9rem" }}>
+                    <tr key={sub.id} style={{ borderBottom: "1px solid rgba(255,255,255,0.05)", transition: "background 0.2s" }} onMouseOver={(e) => e.currentTarget.style.background = 'rgba(255,255,255,0.02)'} onMouseOut={(e) => e.currentTarget.style.background = 'transparent'}>
+                      <td style={{ padding: "15px", color: "#8EA8C3", fontSize: "0.9rem" }}>
                         {sub.createdAt ? new Date(sub.createdAt.toDate()).toLocaleDateString() : 'Just now'}
                       </td>
                       <td style={{ padding: "15px" }}>
                         <span style={{ 
-                          background: sub.type === 'Discovery Call Click' ? '#fff3e0' : (sub.type === 'Checklist Download' ? '#e3f2fd' : '#e8f5e9'), 
-                          color: sub.type === 'Discovery Call Click' ? '#e65100' : (sub.type === 'Checklist Download' ? '#1565c0' : '#2e7d32'), 
-                          padding: "4px 8px", 
+                          background: sub.type === 'Discovery Call Click' ? 'rgba(230, 81, 0, 0.1)' : (sub.type === 'Checklist Download' ? 'rgba(21, 101, 192, 0.1)' : 'rgba(46, 125, 50, 0.1)'), 
+                          color: sub.type === 'Discovery Call Click' ? '#ffb74d' : (sub.type === 'Checklist Download' ? '#64b5f6' : '#81c784'), 
+                          border: `1px solid ${sub.type === 'Discovery Call Click' ? 'rgba(230, 81, 0, 0.3)' : (sub.type === 'Checklist Download' ? 'rgba(21, 101, 192, 0.3)' : 'rgba(46, 125, 50, 0.3)')}`,
+                          padding: "4px 10px", 
                           borderRadius: "12px", 
-                          fontSize: "0.8rem", 
-                          fontWeight: "bold" 
+                          fontSize: "0.75rem", 
+                          fontWeight: "bold",
+                          letterSpacing: "0.5px"
                         }}>
                           {sub.type}
                         </span>
                       </td>
-                      <td style={{ padding: "15px", color: "#0B1D35", fontWeight: "bold" }}>{sub.name}</td>
-                      <td style={{ padding: "15px", color: "#455065" }}>{sub.email}</td>
-                      <td style={{ padding: "15px", color: "#455065" }}>{sub.country}</td>
-                      <td style={{ padding: "15px", color: "#455065" }}>
+                      <td style={{ padding: "15px", color: "#FFFFFF", fontWeight: "500" }}>{sub.name}</td>
+                      <td style={{ padding: "15px", color: "#C2D4E4" }}><a href={`mailto:${sub.email}`} style={{ color: "#C9A84C", textDecoration: "none" }}>{sub.email}</a></td>
+                      <td style={{ padding: "15px", color: "#C2D4E4" }}>{sub.country}</td>
+                      <td style={{ padding: "15px", color: "#C2D4E4" }}>
                         {sub.sector !== 'Not provided' ? sub.sector : ''}
-                        {sub.budget !== 'Not provided' ? ` (${sub.budget})` : ''}
+                        {sub.budget !== 'Not provided' ? <span style={{ color: "#8EA8C3" }}> ({sub.budget})</span> : ''}
                       </td>
-                      <td style={{ padding: "15px", color: "#455065", maxWidth: "200px", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }} title={sub.details}>
+                      <td style={{ padding: "15px", color: "#8EA8C3", maxWidth: "200px", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", fontStyle: "italic" }} title={sub.details}>
                         {sub.details !== 'Not provided' ? sub.details : ''}
                       </td>
                     </tr>
@@ -226,67 +328,6 @@ export default function AdminDashboard() {
             </div>
           )}
         </div>
-
-        {isLoggedIn && (
-          <div style={{ background: "#fff", borderRadius: "8px", boxShadow: "0 4px 12px rgba(0,0,0,0.05)", overflow: "hidden", marginTop: "40px" }}>
-            <div style={{ padding: "20px", borderBottom: "1px solid #eee", background: "#fafafa" }}>
-              <h3 style={{ margin: 0, color: "#455065" }}>Broadcast Email to All Leads</h3>
-            </div>
-            <div style={{ padding: "20px" }}>
-              <p style={{ color: "#455065", marginBottom: "20px" }}>
-                This will send an email from <strong>info@proconixpmc.com</strong> to all unique, valid email addresses in the table above. Recipients are BCC'd for privacy.
-              </p>
-              
-              <form onSubmit={handleBroadcastSubmit} style={{ display: "flex", flexDirection: "column", gap: "15px" }}>
-                <div>
-                  <label style={{ display: "block", marginBottom: "5px", color: "#0B1D35", fontWeight: "bold" }}>Subject</label>
-                  <input 
-                    type="text" 
-                    placeholder="Enter email subject..." 
-                    value={broadcastSubject}
-                    onChange={(e) => setBroadcastSubject(e.target.value)}
-                    style={{ width: "100%", padding: "12px", border: "1px solid #ddd", borderRadius: "4px" }}
-                    required 
-                  />
-                </div>
-                <div>
-                  <label style={{ display: "block", marginBottom: "5px", color: "#0B1D35", fontWeight: "bold" }}>Message Body</label>
-                  <textarea 
-                    placeholder="Write your message here... HTML tags will be escaped, but line breaks are preserved." 
-                    value={broadcastMessage}
-                    onChange={(e) => setBroadcastMessage(e.target.value)}
-                    style={{ width: "100%", padding: "12px", border: "1px solid #ddd", borderRadius: "4px", minHeight: "150px", fontFamily: "inherit" }}
-                    required 
-                  />
-                </div>
-                
-                {broadcastResult.message && (
-                  <div style={{ padding: "15px", borderRadius: "4px", backgroundColor: broadcastResult.type === 'success' ? '#e8f5e9' : '#ffebee', color: broadcastResult.type === 'success' ? '#2e7d32' : '#c62828' }}>
-                    {broadcastResult.message}
-                  </div>
-                )}
-                
-                <button 
-                  type="submit" 
-                  disabled={isBroadcasting || submissions.length === 0}
-                  style={{ 
-                    padding: "12px 24px", 
-                    background: "#C9A84C", 
-                    color: "#0B1D35", 
-                    border: "none", 
-                    borderRadius: "4px", 
-                    fontWeight: "bold", 
-                    cursor: (isBroadcasting || submissions.length === 0) ? "not-allowed" : "pointer", 
-                    opacity: (isBroadcasting || submissions.length === 0) ? 0.6 : 1,
-                    alignSelf: "flex-start" 
-                  }}
-                >
-                  {isBroadcasting ? "Sending Broadcast..." : "Send Broadcast to All Leads"}
-                </button>
-              </form>
-            </div>
-          </div>
-        )}
       </div>
     </div>
   );
