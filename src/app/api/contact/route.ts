@@ -49,7 +49,6 @@ function getEmailTemplate(data: {
   const { name, email, type, country, sector, budget, details } = data;
   
   const isHighPriority = type.includes('Call') || type.includes('Audit') || type.includes('Simulator') || type.includes('Lead Page');
-  const accentColor = isHighPriority ? '#C9A84C' : '#25D366';
   const badgeEmoji = isHighPriority ? '🔥' : '📩';
 
   return `
@@ -98,14 +97,20 @@ function getEmailTemplate(data: {
             <div class="lead-info">
               <div class="info-row">
                 <span class="info-label">Sponsor Name</span>
-                <span class="info-value">${name || 'Anonymous Submission'}</span>
+                <span class="info-value">${name || 'Not provided'}</span>
               </div>
               <div class="info-row">
                 <span class="info-label">Contact Email</span>
-                <span class="info-value"><a href="mailto:${email}" style="color: #FFFFFF; text-decoration: none; border-bottom: 1px solid #C9A84C;">${email}</a></span>
+                <span class="info-value"><a href="mailto:${email}" style="color: #FFFFFF; text-decoration: none; border-bottom: 1px solid #C9A84C;">${email || 'Not provided'}</a></span>
               </div>
-              ${country ? `<div class="info-row"><span class="info-label">Market / Country</span><span class="info-value">${country}</span></div>` : ''}
-              ${sector || budget ? `<div class="info-row"><span class="info-label">Sector & Capital Scope</span><span class="info-value">${sector || budget}</span></div>` : ''}
+              <div class="info-row">
+                <span class="info-label">Market / Country</span>
+                <span class="info-value">${country || 'Not provided'}</span>
+              </div>
+              <div class="info-row">
+                <span class="info-label">Sector & Capital Scope</span>
+                <span class="info-value">${sector || budget || 'Not provided'}</span>
+              </div>
             </div>
 
             ${details ? `
@@ -122,7 +127,62 @@ function getEmailTemplate(data: {
           </div>
           <div class="footer">
             &copy; 2026 Proconix Project Management Consultancy<br>
-            Project Management Consultancy · Africa · GCC · UK · UK-Europe
+            Project Management Consultancy &middot; Africa &middot; GCC &middot; UK &middot; UK-Europe
+          </div>
+        </div>
+      </div>
+    </body>
+    </html>
+  `;
+}
+
+function getUserEmailTemplate(name: string) {
+  return `
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <meta charset="utf-8">
+      <style>
+        body { font-family: 'DM Sans', 'Helvetica Neue', Arial, sans-serif; line-height: 1.7; color: #FFFFFF; background-color: #0B1D35; margin: 0; padding: 0; }
+        .wrapper { background-color: #07142A; padding: 60px 20px; }
+        .container { max-width: 600px; margin: 0 auto; background: #122647; border: 1px solid rgba(201,168,76,0.18); border-radius: 4px; overflow: hidden; position: relative; }
+        .top-gradient { height: 3px; background: linear-gradient(90deg, #9A7A35, #C9A84C, #9A7A35); }
+        .header { padding: 40px 40px 20px; text-align: center; }
+        .logo { font-family: 'Cormorant Garamond', serif; color: #FFFFFF; font-size: 28px; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; }
+        .logo span { color: #C9A84C; }
+        .tagline { color: #C9A84C; font-size: 10px; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; margin-top: 5px; }
+        .content { padding: 0 40px 40px; text-align: left; }
+        h2 { font-family: 'Cormorant Garamond', serif; margin: 0 0 15px; font-size: 24px; font-weight: 600; color: #FFFFFF; line-height: 1.2; }
+        h2 em { font-style: italic; color: #C9A84C; }
+        p { color: #C2D4E4; font-weight: 300; font-size: 15px; margin-bottom: 20px; }
+        .btn { display: inline-block; padding: 16px 36px; background: #C9A84C; color: #0B1D35; text-decoration: none; font-size: 13px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; border-radius: 0; margin: 20px 0; transition: background 0.3s; text-align: center;}
+        .footer { padding: 40px; text-align: center; font-size: 11px; color: #8EA8C3; border-top: 1px solid rgba(201,168,76,0.1); background: #07142A; letter-spacing: 0.5px; }
+      </style>
+      <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+    </head>
+    <body>
+      <div class="wrapper">
+        <div class="container">
+          <div class="top-gradient"></div>
+          <div class="header">
+            <div class="logo">PROCONIX <span>PMC</span></div>
+            <div class="tagline">Project Management Consultancy</div>
+          </div>
+          <div class="content">
+            <h2>Governance Starts <em>Now.</em></h2>
+            <p>Dear ${name || 'Project Sponsor'},</p>
+            <p>Thank you for downloading the <strong>Before You Break Ground: Pre-Construction Governance Checklist</strong>.</p>
+            <p>70% of construction project problems in Africa are created before ground is broken. This checklist is your first step in ensuring a structured governance command is in place to protect your capital from day one.</p>
+            <p>You can access your checklist at any time using the link below:</p>
+            <center>
+              <a href="https://proconixpmc.com/proconix-checklist.pdf" class="btn">View Your Checklist</a>
+            </center>
+            <p>If you are ready to discuss the specific governance architecture for your project, you can reply directly to this email or book a discovery call on our website.</p>
+            <p>Regards,<br><strong>Talibbhai Khanji</strong><br>Founder & Principal Consultant<br>Proconix PMC</p>
+          </div>
+          <div class="footer">
+            &copy; 2026 Proconix Project Management Consultancy<br>
+            Project Management Consultancy &middot; Africa &middot; GCC &middot; UK
           </div>
         </div>
       </div>
@@ -150,6 +210,7 @@ export async function POST(req: Request) {
         country: country || 'Not provided',
         sector: sector || budget || 'Not provided',
         budget: budget || 'Not provided',
+        details: incomingDetails || 'Not provided',
         createdAt: serverTimestamp(),
         type: displayType
       });
@@ -192,6 +253,21 @@ export async function POST(req: Request) {
       console.log('SMTP: HTML Email sent successfully');
     } catch (smtpError: any) {
       console.error('SMTP Email Error (Non-Fatal):', smtpError.message);
+    }
+
+    // 4. Send email to User if they downloaded the checklist or submitted a form
+    if (email && email.includes('@')) {
+      try {
+        const userEmailHtml = getUserEmailTemplate(name || '');
+        await sendEmailViaNodemailer({
+          to: email,
+          subject: 'Your Pre-Construction Governance Checklist - Proconix PMC',
+          html: userEmailHtml,
+        });
+        console.log('SMTP: HTML Email sent successfully to user');
+      } catch (smtpUserError: any) {
+        console.error('SMTP Email Error (User):', smtpUserError.message);
+      }
     }
 
     return NextResponse.json({ success: true });

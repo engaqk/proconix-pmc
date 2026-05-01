@@ -56,7 +56,7 @@ export default function LeadPage() {
     setFormStatus(null);
     
     // Trigger download immediately on valid submit
-    window.open("https://checklist.gr8.com/", "_blank");
+    window.open("/proconix-checklist.pdf", "_blank");
 
     try {
       const res = await fetch('/api/contact', {
@@ -89,21 +89,6 @@ export default function LeadPage() {
     window.open("https://topmate.io/talibkhanji_pmp/2043275", "_blank");
   };
 
-  const handleChecklistClick = async (e: React.MouseEvent) => {
-    e.preventDefault();
-    try {
-      await fetch('/api/contact', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ 
-          name: 'Anonymous Click (Lead Page)', 
-          email: 'Pending registration', 
-          type: 'External Checklist Click' 
-        }),
-      });
-    } catch {}
-    window.open("https://checklist.gr8.com/", "_blank");
-  };
 
   return (
     <>

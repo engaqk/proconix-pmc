@@ -57,7 +57,7 @@ export default function Home() {
     setFormStatus(null);
     
     // Trigger download immediately on valid submit
-    window.open("https://checklist.gr8.com/", "_blank");
+    window.open("/proconix-checklist.pdf", "_blank");
 
     try {
       const res = await fetch('/api/contact', {
@@ -90,21 +90,6 @@ export default function Home() {
     window.open("https://topmate.io/talibkhanji_pmp/2043275", "_blank");
   };
 
-  const handleChecklistClick = async (e: React.MouseEvent) => {
-    e.preventDefault();
-    try {
-      await fetch('/api/contact', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ 
-          name: 'Anonymous Click', 
-          email: 'Pending registration', 
-          type: 'External Checklist Click' 
-        }),
-      });
-    } catch {}
-    window.open("https://checklist.gr8.com/", "_blank");
-  };
 
   return (
     <>
@@ -270,7 +255,7 @@ export default function Home() {
 
       <div className="identity-left">
         <div className="section-eyebrow">What Proconix Is — And Is Not</div>
-        <h2 className="section-title">A <em>Techno-Governance Firm.</em><br/>Not a Consultant. Not a Supervisor.</h2>
+        <h2 className="section-title">A <em>Techno-Governance Firm.</em><br/>Not a conventional consultant. Not a supervisory firm. A sponsor-aligned strategic project leader focused on delivery outcomes.</h2>
 
         <p style={{"fontSize":".92rem","color":"var(--text-light)","lineHeight":"1.8","fontWeight":"300","marginBottom":"8px"}}>
           Most project sponsors who engage construction advisors get observation — reports written after the damage is done.
@@ -641,7 +626,7 @@ export default function Home() {
 
         <p>The governance gap in African construction is not a theory. I have seen its consequences: cost overruns that were avoidable, handover failures that were preventable, and executive reputations damaged by decisions made in the absence of structured governance authority.</p>
 
-        <p>Proconix was built to close that gap. <strong>Not as a monitoring layer. Not as a consultant who writes reports from a distance.</strong> As a Sponsor-Aligned Strategic Project Leader who carries governance authority — embedded inside your project&apos;s decision structure from inception through to handover.</p>
+        <p>Proconix was built to close that gap. <strong>Not as a monitoring layer.</strong> As a Sponsor-Aligned Strategic Project Leader who carries governance authority — embedded inside your project&apos;s decision structure from inception through to handover.</p>
 
         <div className="about-quote">
           <p>"When I take on a mandate, I am in the decision room — not the observation room. That is a structural difference, and you will feel it immediately."</p>
@@ -812,7 +797,14 @@ export default function Home() {
       <p>Every day a construction project runs without a structured governance architecture is a day of compounding exposure. The discovery call is where we determine whether Proconix is the right governance partner for your project — and whether your project falls within our current mandate window.</p>
       <div className="cta-pair">
         <button onClick={handleDiscoveryClick} className="btn-gold">Book a Discovery Call</button>
-        <button onClick={handleChecklistClick} className="btn-outline">Download Free Checklist Now</button>
+        <form className="capture-form" onSubmit={handleFormSubmit} style={{ margin: 0, padding: 0, background: 'transparent', boxShadow: 'none', display: 'flex', flexDirection: 'column', gap: '8px', alignItems: 'center' }}>
+          <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', justifyContent: 'center' }}>
+            <input type="text" placeholder="Your Full Name" name="name" required style={{ padding: '12px', borderRadius: '4px', border: '1px solid rgba(255,255,255,0.2)', background: 'rgba(0,0,0,0.2)', color: '#fff', minWidth: '180px' }} />
+            <input type="email" placeholder="Your Email Address" name="email" required style={{ padding: '12px', borderRadius: '4px', border: '1px solid rgba(255,255,255,0.2)', background: 'rgba(0,0,0,0.2)', color: '#fff', minWidth: '180px' }} />
+            <button type="submit" className="btn-outline" style={{ whiteSpace: 'nowrap' }}>Download Free Checklist</button>
+          </div>
+          {formStatus && <div className={`form-status ${formStatus.type}`} style={{ fontSize: '0.85rem' }}>{formStatus.message}</div>}
+        </form>
       </div>
       <p className="cta-scarcity"><strong>Mandate Availability:</strong> Maximum 4 active Tier-1 mandates. One new engagement per quarter. Enquire to confirm current availability.</p>
     </div>
@@ -886,7 +878,7 @@ export default function Home() {
           <li><a href="https://www.instagram.com/talibkhanji_pmp/" target="_blank" rel="noopener">Instagram — @talibkhanji_pmp</a></li>
           <li><a href="https://wa.me/918530781153" target="_blank" rel="noopener">WhatsApp — Direct Message</a></li>
           <li><a href="mailto:info@proconixpmc.com">Email — info@proconixpmc.com</a></li>
-          <li><a href="https://proconixpmc.com/before-you-break-ground">Free Pre-Construction Checklist</a></li>
+          <li><a href="#hero-card">Free Pre-Construction Checklist</a></li>
         </ul>
       </div>
 

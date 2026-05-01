@@ -133,7 +133,8 @@ export default function AdminDashboard() {
                     <th style={{ padding: "15px", fontSize: "0.9rem" }}>Name</th>
                     <th style={{ padding: "15px", fontSize: "0.9rem" }}>Email</th>
                     <th style={{ padding: "15px", fontSize: "0.9rem" }}>Country</th>
-                    <th style={{ padding: "15px", fontSize: "0.9rem" }}>Sector</th>
+                    <th style={{ padding: "15px", fontSize: "0.9rem" }}>Sector & Budget</th>
+                    <th style={{ padding: "15px", fontSize: "0.9rem" }}>Details</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -157,7 +158,13 @@ export default function AdminDashboard() {
                       <td style={{ padding: "15px", color: "#0B1D35", fontWeight: "bold" }}>{sub.name}</td>
                       <td style={{ padding: "15px", color: "#455065" }}>{sub.email}</td>
                       <td style={{ padding: "15px", color: "#455065" }}>{sub.country}</td>
-                      <td style={{ padding: "15px", color: "#455065" }}>{sub.sector}</td>
+                      <td style={{ padding: "15px", color: "#455065" }}>
+                        {sub.sector !== 'Not provided' ? sub.sector : ''}
+                        {sub.budget !== 'Not provided' ? ` (${sub.budget})` : ''}
+                      </td>
+                      <td style={{ padding: "15px", color: "#455065", maxWidth: "200px", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }} title={sub.details}>
+                        {sub.details !== 'Not provided' ? sub.details : ''}
+                      </td>
                     </tr>
                   ))}
                 </tbody>
