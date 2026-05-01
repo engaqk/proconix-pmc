@@ -18,14 +18,22 @@ async function sendBroadcastEmail(emails: string[], subject: string, messageHtml
     auth: { user, pass },
   });
 
-  // To protect privacy, we will send to info@proconixpmc.com and BCC everyone else
-  return await transporter.sendMail({
-    from: `"Proconix PMC" <${user}>`,
-    to: user, 
-    bcc: emails,
-    subject: subject,
-    html: messageHtml,
-  });
+  // Send emails individually to avoid BCC limits or spam filters on Hostinger
+  let successCount = 0;
+  for (const email of emails) {
+    try {
+      await transporter.sendMail({
+        from: `"Proconix PMC" <${user}>`,
+        to: email, // Sending directly to each recipient
+        subject: subject,
+        html: messageHtml,
+      });
+      successCount++;
+    } catch (e) {
+      console.error(`Failed to send broadcast to ${email}:`, e);
+    }
+  }
+  return successCount;
 }
 
 function formatBroadcastHtml(message: string) {

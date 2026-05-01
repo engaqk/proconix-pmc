@@ -16,6 +16,7 @@ export default function AdminDashboard() {
   const [isBroadcasting, setIsBroadcasting] = useState(false);
   const [broadcastResult, setBroadcastResult] = useState({ type: "", message: "" });
   const [showBroadcast, setShowBroadcast] = useState(false);
+  const [showAnonymous, setShowAnonymous] = useState(false);
 
   const handleBroadcastSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -144,11 +145,22 @@ export default function AdminDashboard() {
   }
 
   return (
-    <div style={{ minHeight: "100vh", backgroundColor: "#07142A", padding: "40px 20px", color: "#FFFFFF", fontFamily: "'DM Sans', sans-serif" }}>
-      <div style={{ maxWidth: "1200px", margin: "0 auto" }}>
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "30px" }}>
-          <h1 style={{ color: "#FFFFFF", margin: 0, fontFamily: "'Cormorant Garamond', serif", fontSize: "32px" }}>PROCONIX <span style={{ color: "#C9A84C" }}>DASHBOARD</span></h1>
-          <div style={{ display: "flex", gap: "15px" }}>
+    <>
+      <style dangerouslySetInnerHTML={{__html: `
+        .admin-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
+        .admin-header-actions { display: flex; gap: 15px; }
+        .admin-title { font-size: 32px; }
+        @media (max-width: 768px) {
+          .admin-header { flex-direction: column; align-items: flex-start; gap: 15px; }
+          .admin-header-actions { width: 100%; justify-content: space-between; }
+          .admin-title { font-size: 24px; }
+        }
+      `}} />
+      <div style={{ minHeight: "100vh", backgroundColor: "#07142A", padding: "40px 20px", color: "#FFFFFF", fontFamily: "'DM Sans', sans-serif" }}>
+        <div style={{ maxWidth: "1200px", margin: "0 auto" }}>
+        <div className="admin-header">
+          <h1 className="admin-title" style={{ color: "#FFFFFF", margin: 0, fontFamily: "'Cormorant Garamond', serif" }}>PROCONIX <span style={{ color: "#C9A84C" }}>DASHBOARD</span></h1>
+          <div className="admin-header-actions">
             <button onClick={() => setShowBroadcast(!showBroadcast)} style={{ padding: "8px 16px", background: "#C9A84C", color: "#0B1D35", border: "none", borderRadius: "4px", cursor: "pointer", fontWeight: "bold", display: "flex", alignItems: "center", gap: "8px", fontFamily: "'DM Sans', sans-serif" }}>
               <span>{showBroadcast ? "Close Broadcast" : "Broadcast Email"}</span>
               <span style={{ background: "rgba(0,0,0,0.2)", padding: "2px 6px", borderRadius: "12px", fontSize: "0.8rem", color: "#0B1D35" }}>
@@ -252,10 +264,11 @@ export default function AdminDashboard() {
             </div>
           </div>
         </div>
-        
-        <div style={{ background: "#122647", borderRadius: "8px", boxShadow: "0 8px 24px rgba(0,0,0,0.15)", overflow: "hidden", border: "1px solid rgba(255,255,255,0.05)" }}>
+
+        {/* Registered Leads Table */}
+        <div style={{ background: "#122647", borderRadius: "8px", boxShadow: "0 8px 24px rgba(0,0,0,0.15)", overflow: "hidden", border: "1px solid rgba(255,255,255,0.05)", marginBottom: "30px" }}>
           <div style={{ padding: "20px", borderBottom: "1px solid rgba(201,168,76,0.1)", background: "#0B1D35" }}>
-            <h3 style={{ margin: 0, color: "#FFFFFF", fontFamily: "'Cormorant Garamond', serif", fontSize: "24px" }}>Recent Form Submissions ({submissions.length})</h3>
+            <h3 style={{ margin: 0, color: "#FFFFFF", fontFamily: "'Cormorant Garamond', serif", fontSize: "24px" }}>Registered Leads ({submissions.filter(sub => sub.email && sub.email.includes('@') && sub.name !== 'Anonymous Click').length})</h3>
           </div>
           
           {firebaseError && (
@@ -292,7 +305,7 @@ export default function AdminDashboard() {
                   </tr>
                 </thead>
                 <tbody>
-                  {submissions.map((sub) => (
+                  {submissions.filter(sub => sub.email && sub.email.includes('@') && sub.name !== 'Anonymous Click').map((sub) => (
                     <tr key={sub.id} style={{ borderBottom: "1px solid rgba(255,255,255,0.05)", transition: "background 0.2s" }} onMouseOver={(e) => e.currentTarget.style.background = 'rgba(255,255,255,0.02)'} onMouseOut={(e) => e.currentTarget.style.background = 'transparent'}>
                       <td style={{ padding: "15px", color: "#8EA8C3", fontSize: "0.9rem" }}>
                         {sub.createdAt ? new Date(sub.createdAt.toDate()).toLocaleDateString() : 'Just now'}
@@ -328,7 +341,80 @@ export default function AdminDashboard() {
             </div>
           )}
         </div>
+
+        {/* Anonymous Interactions Toggle */}
+        <div style={{ textAlign: "center", marginBottom: "20px" }}>
+          <button 
+            onClick={() => setShowAnonymous(!showAnonymous)}
+            style={{ 
+              padding: "10px 20px", 
+              background: "rgba(11,29,53,0.8)", 
+              color: "#C2D4E4", 
+              border: "1px solid rgba(201,168,76,0.3)", 
+              borderRadius: "50px", 
+              cursor: "pointer", 
+              fontFamily: "'DM Sans', sans-serif",
+              fontSize: "0.9rem",
+              transition: "all 0.2s ease"
+            }}
+            onMouseOver={(e) => { e.currentTarget.style.color = "#C9A84C"; e.currentTarget.style.borderColor = "#C9A84C"; }}
+            onMouseOut={(e) => { e.currentTarget.style.color = "#C2D4E4"; e.currentTarget.style.borderColor = "rgba(201,168,76,0.3)"; }}
+          >
+            {showAnonymous ? "Hide Anonymous Interactions" : `Show Anonymous Interactions (${submissions.filter(sub => !sub.email || !sub.email.includes('@') || sub.name === 'Anonymous Click').length})`}
+          </button>
+        </div>
+
+        {/* Anonymous Interactions Table */}
+        {showAnonymous && (
+          <div style={{ background: "#122647", borderRadius: "8px", boxShadow: "0 8px 24px rgba(0,0,0,0.15)", overflow: "hidden", border: "1px solid rgba(255,255,255,0.05)" }}>
+            <div style={{ padding: "20px", borderBottom: "1px solid rgba(201,168,76,0.1)", background: "rgba(11,29,53,0.5)" }}>
+              <h3 style={{ margin: 0, color: "#8EA8C3", fontFamily: "'Cormorant Garamond', serif", fontSize: "20px" }}>Anonymous Interactions</h3>
+            </div>
+            
+            <div style={{ overflowX: "auto" }}>
+              <table style={{ width: "100%", borderCollapse: "collapse", textAlign: "left", opacity: 0.8 }}>
+                <thead>
+                  <tr style={{ background: "rgba(11,29,53,0.3)", color: "#C9A84C", textTransform: "uppercase", letterSpacing: "1px" }}>
+                    <th style={{ padding: "12px 15px", fontSize: "0.8rem" }}>Date</th>
+                    <th style={{ padding: "12px 15px", fontSize: "0.8rem" }}>Type</th>
+                    <th style={{ padding: "12px 15px", fontSize: "0.8rem" }}>Details</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {submissions.filter(sub => !sub.email || !sub.email.includes('@') || sub.name === 'Anonymous Click').map((sub) => (
+                    <tr key={sub.id} style={{ borderBottom: "1px solid rgba(255,255,255,0.03)" }}>
+                      <td style={{ padding: "12px 15px", color: "#8EA8C3", fontSize: "0.85rem" }}>
+                        {sub.createdAt ? new Date(sub.createdAt.toDate()).toLocaleDateString() : 'Just now'}
+                      </td>
+                      <td style={{ padding: "12px 15px" }}>
+                        <span style={{ 
+                          background: 'rgba(255, 255, 255, 0.05)', 
+                          color: '#C2D4E4', 
+                          border: '1px solid rgba(255, 255, 255, 0.1)',
+                          padding: "3px 8px", 
+                          borderRadius: "12px", 
+                          fontSize: "0.7rem", 
+                        }}>
+                          {sub.type || 'Anonymous Click'}
+                        </span>
+                      </td>
+                      <td style={{ padding: "12px 15px", color: "#8EA8C3", fontSize: "0.85rem", fontStyle: "italic" }}>
+                        Unregistered intent
+                      </td>
+                    </tr>
+                  ))}
+                  {submissions.filter(sub => !sub.email || !sub.email.includes('@') || sub.name === 'Anonymous Click').length === 0 && (
+                    <tr>
+                      <td colSpan={3} style={{ padding: "20px", textAlign: "center", color: "#8EA8C3" }}>No anonymous interactions found.</td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        )}
       </div>
     </div>
+    </>
   );
 }

@@ -66,7 +66,6 @@ export default function Home() {
         body: JSON.stringify({ ...data, type: 'Checklist Download (Home)' }),
       });
       if (res.ok) {
-        setFormStatus({ type: 'success', message: 'Details captured. Your download has opened in a new tab.' });
         (e.target as HTMLFormElement).reset();
       }
     } catch {
