@@ -55,8 +55,7 @@ export default function LeadPage() {
     const data = Object.fromEntries(formData.entries());
     setFormStatus(null);
     
-    // Trigger download immediately on valid submit
-    window.open("/proconix-checklist.pdf", "_blank");
+    // Direct download removed; checklist sent via email notification
 
     try {
       const res = await fetch('/api/contact', {
@@ -65,6 +64,7 @@ export default function LeadPage() {
         body: JSON.stringify({ ...data, type: 'Checklist Download (Lead Page)' }),
       });
       if (res.ok) {
+        setFormStatus({ type: 'success', message: 'Success! You will shortly receive your downloadable checklist copy via your registered email. Please check your inbox (or spam folder) to get the checklist.' });
         (e.target as HTMLFormElement).reset();
       }
     } catch {
