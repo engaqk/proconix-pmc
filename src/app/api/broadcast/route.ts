@@ -72,33 +72,20 @@ export function formatBroadcastHtml(message: string) {
     <html>
     <head>
       <meta charset="utf-8">
-      <style>
-        body { font-family: 'DM Sans', 'Helvetica Neue', Arial, sans-serif; line-height: 1.7; color: #FFFFFF; background-color: #0B1D35; margin: 0; padding: 0; }
-        .wrapper { background-color: #07142A; padding: 60px 20px; }
-        .container { max-width: 600px; margin: 0 auto; background: #122647; border: 1px solid rgba(201,168,76,0.18); border-radius: 4px; overflow: hidden; position: relative; }
-        .top-gradient { height: 3px; background: linear-gradient(90deg, #9A7A35, #C9A84C, #9A7A35); }
-        .header { padding: 40px 40px 20px; text-align: center; }
-        .logo { font-family: 'Cormorant Garamond', serif; color: #FFFFFF; font-size: 28px; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; }
-        .logo span { color: #C9A84C; }
-        .tagline { color: #C9A84C; font-size: 10px; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; margin-top: 5px; }
-        .content { padding: 0 40px 40px; text-align: left; color: #FFFFFF; font-size: 16px; line-height: 1.8; }
-        p { color: #FFFFFF; font-weight: 300; font-size: 16px; margin-bottom: 20px; }
-        .footer { padding: 40px; text-align: center; font-size: 11px; color: #8EA8C3; border-top: 1px solid rgba(201,168,76,0.1); background: #07142A; letter-spacing: 0.5px; }
-      </style>
       <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
     </head>
-    <body>
-      <div class="wrapper">
-        <div class="container">
-          <div class="top-gradient"></div>
-          <div class="header">
-            <div class="logo">PROCONIX</div>
-            <div class="tagline">Project Management Consultancy</div>
+    <body style="font-family: 'DM Sans', 'Helvetica Neue', Arial, sans-serif; line-height: 1.7; color: #FFFFFF; background-color: #0B1D35; margin: 0; padding: 0;">
+      <div style="background-color: #07142A; padding: 40px 20px;">
+        <div style="max-width: 600px; margin: 0 auto; background: #122647; border: 1px solid rgba(201,168,76,0.18); border-radius: 4px; overflow: hidden;">
+          <div style="height: 3px; background-color: #C9A84C;"></div>
+          <div style="padding: 40px 40px 20px; text-align: center;">
+            <div style="font-family: 'Cormorant Garamond', serif; color: #FFFFFF; font-size: 28px; font-weight: 600; letter-spacing: 2px; text-transform: uppercase;">PROCONIX</div>
+            <div style="color: #C9A84C; font-size: 10px; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; margin-top: 5px;">Project Management Consultancy</div>
           </div>
-          <div class="content" style="color: #FFFFFF; font-size: 16px; line-height: 1.8;">
+          <div style="padding: 0 40px 40px; text-align: left; color: #FFFFFF; font-size: 16px; line-height: 1.8;">
             ${message.replace(/\n/g, '<br>')}
           </div>
-          <div class="footer">
+          <div style="padding: 30px; text-align: center; font-size: 11px; color: #8EA8C3; border-top: 1px solid rgba(201,168,76,0.1); background: #07142A; letter-spacing: 0.5px;">
             &copy; 2026 Proconix Project Management Consultancy<br>
             Project Management Consultancy &middot; Africa &middot; GCC
           </div>

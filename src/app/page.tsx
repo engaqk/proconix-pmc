@@ -66,6 +66,7 @@ export default function Home() {
       });
       if (res.ok) {
         setFormStatus({ type: 'success', message: 'Success! You will shortly receive your downloadable checklist copy via your registered email. Please check your inbox (or spam folder) to get the checklist.' });
+        setTimeout(() => setFormStatus(null), 6000);
         (e.target as HTMLFormElement).reset();
       }
     } catch {
@@ -234,6 +235,7 @@ export default function Home() {
           </div>
         </div>
         <form className="capture-form" onSubmit={handleFormSubmit}>
+          <p style={{ fontSize: '0.75rem', color: '#C9A84C', marginBottom: '10px', fontStyle: 'italic' }}>* Please enter your correct email address below to receive the checklist.</p>
           <input type="text" placeholder="Your Full Name" name="name" required/>
           <input type="email" placeholder="Your Email Address" name="email" required />
           <button type="submit" className="btn-gold">Download Free Checklist →</button>
@@ -468,6 +470,7 @@ export default function Home() {
         <h3>Before You Break Ground:<br/>Pre-Construction Governance Checklist — Africa</h3>
         <p>Built for $5M–$100M+ CAPEX project sponsors in Africa. 13 diagnostic areas. Readiness score output. No theory. No filler.</p>
         <form className="lead-form" onSubmit={handleFormSubmit}>
+          <p style={{ fontSize: '0.75rem', color: '#C9A84C', marginBottom: '10px', fontStyle: 'italic' }}>* Please enter your correct email address below to receive the checklist.</p>
           <input type="text" placeholder="Your Full Name" name="name" required/>
           <input type="email" placeholder="Your Email Address" name="email" required />
           <input type="text" placeholder="Project Country (Where in Africa?)" name="country" required/>
@@ -797,6 +800,7 @@ export default function Home() {
       <div className="cta-pair">
         <button onClick={handleDiscoveryClick} className="btn-gold">Book a Discovery Call</button>
         <form className="capture-form" onSubmit={handleFormSubmit} style={{ margin: 0, padding: 0, background: 'transparent', boxShadow: 'none', display: 'flex', flexDirection: 'column', gap: '8px', alignItems: 'center' }}>
+          <p style={{ fontSize: '0.75rem', color: '#C9A84C', marginBottom: '4px', fontStyle: 'italic' }}>* Please enter your correct email address below to receive the checklist.</p>
           <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', justifyContent: 'center' }}>
             <input type="text" placeholder="Your Full Name" name="name" required style={{ padding: '12px', borderRadius: '4px', border: '1px solid rgba(255,255,255,0.2)', background: 'rgba(0,0,0,0.2)', color: '#fff', minWidth: '180px' }} />
             <input type="email" placeholder="Your Email Address" name="email" required style={{ padding: '12px', borderRadius: '4px', border: '1px solid rgba(255,255,255,0.2)', background: 'rgba(0,0,0,0.2)', color: '#fff', minWidth: '180px' }} />
@@ -894,6 +898,33 @@ export default function Home() {
 
 
 
+      {formStatus && formStatus.type === 'success' && (
+        <div style={{
+          position: 'fixed',
+          top: '20px',
+          right: '20px',
+          background: '#4CAF50',
+          color: 'white',
+          padding: '16px 24px',
+          borderRadius: '8px',
+          boxShadow: '0 4px 12px rgba(0,0,0,0.3)',
+          zIndex: 9999,
+          maxWidth: '350px',
+          fontSize: '0.95rem',
+          lineHeight: '1.4',
+          borderLeft: '4px solid #fff',
+          display: 'flex',
+          alignItems: 'flex-start',
+          justifyContent: 'space-between',
+          gap: '12px'
+        }}>
+          <div>{formStatus.message}</div>
+          <button 
+            onClick={() => setFormStatus(null)}
+            style={{ background: 'transparent', border: 'none', color: 'white', fontSize: '1.2rem', cursor: 'pointer', lineHeight: 1, padding: 0 }}
+          >×</button>
+        </div>
+      )}
     </>
   );
 }

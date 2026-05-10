@@ -65,6 +65,7 @@ export default function LeadPage() {
       });
       if (res.ok) {
         setFormStatus({ type: 'success', message: 'Success! You will shortly receive your downloadable checklist copy via your registered email. Please check your inbox (or spam folder) to get the checklist.' });
+        setTimeout(() => setFormStatus(null), 6000);
         (e.target as HTMLFormElement).reset();
       }
     } catch {
@@ -198,6 +199,7 @@ export default function LeadPage() {
               </div>
 
               <form className="capture-form" onSubmit={handleFormSubmit}>
+                <p style={{ fontSize: '0.75rem', color: '#C9A84C', marginBottom: '10px', fontStyle: 'italic' }}>* Please enter your correct email address below to receive the checklist.</p>
                 <input type="text" placeholder="Your Full Name" name="name" required/>
                 <input type="email" placeholder="Your Email Address" name="email" required />
                 <select name="budget" required className="form-select">
@@ -251,6 +253,33 @@ export default function LeadPage() {
            <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>Developed by Proconix Project Management Consultancy.</p>
         </div>
       </footer>
+      {formStatus && formStatus.type === 'success' && (
+        <div style={{
+          position: 'fixed',
+          top: '20px',
+          right: '20px',
+          background: '#4CAF50',
+          color: 'white',
+          padding: '16px 24px',
+          borderRadius: '8px',
+          boxShadow: '0 4px 12px rgba(0,0,0,0.3)',
+          zIndex: 9999,
+          maxWidth: '350px',
+          fontSize: '0.95rem',
+          lineHeight: '1.4',
+          borderLeft: '4px solid #fff',
+          display: 'flex',
+          alignItems: 'flex-start',
+          justifyContent: 'space-between',
+          gap: '12px'
+        }}>
+          <div>{formStatus.message}</div>
+          <button 
+            onClick={() => setFormStatus(null)}
+            style={{ background: 'transparent', border: 'none', color: 'white', fontSize: '1.2rem', cursor: 'pointer', lineHeight: 1, padding: 0 }}
+          >×</button>
+        </div>
+      )}
     </>
   );
 }

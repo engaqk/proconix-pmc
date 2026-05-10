@@ -49,21 +49,19 @@ export async function sendSlackNotification(data: {
     }
   ];
 
-  if (country || sector) {
-    blocks.push({
-      type: "section",
-      fields: [
-        {
-          type: "mrkdwn",
-          text: `*Country/Location:*\n${country || 'N/A'}`
-        },
-        {
-          type: "mrkdwn",
-          text: `*Sector/Budget:*\n${sector || 'N/A'}`
-        }
-      ] as any
-    });
-  }
+  blocks.push({
+    type: "section",
+    fields: [
+      {
+        type: "mrkdwn",
+        text: `*Country/Location:*\n${country || 'Not provided'}`
+      },
+      {
+        type: "mrkdwn",
+        text: `*Sector/Budget:*\n${sector || 'Not provided'}`
+      }
+    ] as any
+  });
 
   if (details) {
     blocks.push({
