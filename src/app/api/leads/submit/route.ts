@@ -3,33 +3,37 @@ import { db } from '../../../../lib/firebase';
 import { collection, addDoc, query, where, getDocs, limit, serverTimestamp } from 'firebase/firestore';
 import nodemailer from 'nodemailer';
 import { leadRegistry } from '../../../../lib/leadConfig';
-import { getDailyEmailsSent, logEmailsSent, DAILY_EMAIL_LIMIT } from '../../broadcast/route';
 import { sendSlackNotification } from '../../../../lib/slack';
 
-function serializeDetails(data: {
+// ── Helpers ────────────────────────────────────────────────────────────────
+export function serializeLeadDetails(data: {
   utmSource?: string | null;
   utmMedium?: string | null;
   utmCampaign?: string | null;
   utmContent?: string | null;
   utmTerm?: string | null;
   referrer?: string | null;
-  dripStatus?: string | null;
-  dripDay?: number | null;
-  dripScheduledFor?: string | null;
-  dripSentHistory?: any[] | null;
 }) {
   const lines = [];
-  if (data.utmSource) lines.push(`UTM Source: ${data.utmSource}`);
-  if (data.utmMedium) lines.push(`UTM Medium: ${data.utmMedium}`);
+  if (data.utmSource)   lines.push(`UTM Source: ${data.utmSource}`);
+  if (data.utmMedium)   lines.push(`UTM Medium: ${data.utmMedium}`);
   if (data.utmCampaign) lines.push(`UTM Campaign: ${data.utmCampaign}`);
-  if (data.utmContent) lines.push(`UTM Content: ${data.utmContent}`);
-  if (data.utmTerm) lines.push(`UTM Term: ${data.utmTerm}`);
-  if (data.referrer) lines.push(`Referrer: ${data.referrer}`);
-  if (data.dripStatus) lines.push(`Drip Status: ${data.dripStatus}`);
-  if (data.dripDay !== undefined && data.dripDay !== null) lines.push(`Drip Day: ${data.dripDay}`);
-  if (data.dripScheduledFor) lines.push(`Drip Scheduled For: ${data.dripScheduledFor}`);
-  if (data.dripSentHistory) lines.push(`Drip Sent History: ${JSON.stringify(data.dripSentHistory)}`);
-  return lines.join("\n") || "Not provided";
+  if (data.utmContent)  lines.push(`UTM Content: ${data.utmContent}`);
+  if (data.utmTerm)     lines.push(`UTM Term: ${data.utmTerm}`);
+  if (data.referrer)    lines.push(`Referrer: ${data.referrer}`);
+  return lines.join('\n') || 'Direct';
+}
+
+async function getLeadSettings() {
+  try {
+    const snap = await getDocs(
+      query(collection(db, 'leadSettings'), where('key', '==', 'global'), limit(1))
+    );
+    if (!snap.empty) {
+      return snap.docs[0].data() as any;
+    }
+  } catch {}
+  return { dripEnabled: true, dripHour: -1, slackEnabled: false };
 }
 
 export async function POST(req: Request) {
@@ -46,192 +50,142 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'Asset configuration not found.' }, { status: 404 });
     }
 
-    // Check if Slack notifications are enabled in settings
-    let slackEnabled = false;
-    try {
-      const settingsQuery = query(
-        collection(db, 'formSubmissions'),
-        where('type', '==', 'Settings: LeadsConfig'),
-        limit(1)
-      );
-      const settingsSnap = await getDocs(settingsQuery);
-      if (!settingsSnap.empty) {
-        const s = settingsSnap.docs[0].data();
-        if (s.details && s.details.includes('Slack Enabled: true')) {
-          slackEnabled = true;
-        }
-      }
-    } catch (e: any) {
-      console.warn("Submit Route: Settings check failed (likely blocked by rules):", e.message);
-    }
-
-    // 1. Check if the user already has an active or completed drip for this asset
-    console.log("Submit Route: Querying existing submissions for email:", email);
+    // ── 1. Duplicate check (per email per slug) in leadSubmissions ──
     let hasActiveDrip = false;
     try {
-      const existingQuery = query(
-        collection(db, 'formSubmissions'),
-        where('email', '==', email),
-        limit(20)
+      const existing = await getDocs(
+        query(collection(db, 'leadSubmissions'),
+          where('email', '==', email),
+          where('slug', '==', slug),
+          limit(5))
       );
-      const existingSnap = await getDocs(existingQuery);
-      console.log("Submit Route: Query succeeded, doc count:", existingSnap.docs.length);
-      
-      existingSnap.forEach(dDoc => {
-        const d = dDoc.data();
-        if (d.type === `Lead Magnet: ${slug}`) {
-          // Parse details to read drip status
-          const detailsStr = d.details || '';
-          if (detailsStr.includes('Drip Status: active') || detailsStr.includes('Drip Status: completed')) {
-            hasActiveDrip = true;
-          }
-        }
+      existing.forEach(d => {
+        const s = d.data().dripStatus;
+        if (s === 'active' || s === 'completed') hasActiveDrip = true;
       });
-    } catch (queryErr: any) {
-      console.error("Submit Route: Query FAILED with error:", queryErr.message);
+    } catch (e: any) {
+      console.warn('Lead submit: duplicate check failed (non-fatal):', e.message);
     }
 
-    let dripQueued = false;
+    // ── 2. Schedule first drip email ──
+    const settings = await getLeadSettings();
     const tomorrow = new Date();
     tomorrow.setDate(tomorrow.getDate() + 1);
-
-    // Prepare serialized data to bypass Firestore fields rules
-    const serializedDetails = serializeDetails({
-      utmSource,
-      utmMedium,
-      utmCampaign,
-      utmContent,
-      utmTerm,
-      referrer,
-      dripStatus: hasActiveDrip ? 'duplicate' : 'active',
-      dripDay: hasActiveDrip ? null : 1,
-      dripScheduledFor: hasActiveDrip ? null : tomorrow.toISOString(),
-      dripSentHistory: hasActiveDrip ? null : []
-    });
-
-    // Write submission logs into existing formSubmissions collection (compliant with Firestore Rules)
-    const docData = {
-      email,
-      name: 'Lead Magnet User',
-      type: `Lead Magnet: ${slug}`,
-      country: 'Not provided',
-      sector: 'Not provided',
-      budget: 'Not provided',
-      details: serializedDetails,
-      createdAt: serverTimestamp()
-    };
-
-    console.log("Submit Route: Attempting to write document to formSubmissions...");
-    try {
-      await addDoc(collection(db, 'formSubmissions'), docData);
-      console.log("Submit Route: Document write SUCCEEDED!");
-      dripQueued = !hasActiveDrip;
-    } catch (writeErr: any) {
-      console.error("Submit Route: Document write FAILED with error:", writeErr.message);
-      throw writeErr; // rethrow to return 500
+    if (settings.dripHour >= 0 && settings.dripHour <= 23) {
+      tomorrow.setHours(settings.dripHour, 0, 0, 0);
     }
 
-    // 3. Quota check for Day 0 immediate asset delivery
-    let dailyUsed = 0;
+    // ── 3. Write to dedicated leadSubmissions collection ──
+    let docId: string | null = null;
     try {
-      dailyUsed = await getDailyEmailsSent();
-    } catch (quotaErr: any) {
-      console.warn("Submit Route: Quota check failed (likely blocked by rules):", quotaErr.message);
-    }
-
-    const remaining = DAILY_EMAIL_LIMIT - dailyUsed;
-
-    if (remaining <= 0) {
-      return NextResponse.json({
-        success: true,
-        message: 'Lead registered. Delivery queued due to daily sending quota limits.',
-        dripQueued
+      const docRef = await addDoc(collection(db, 'leadSubmissions'), {
+        email,
+        slug,
+        assetTitle: asset.title,
+        utmSource: utmSource || null,
+        utmMedium: utmMedium || null,
+        utmCampaign: utmCampaign || null,
+        utmContent: utmContent || null,
+        utmTerm: utmTerm || null,
+        referrer: referrer || null,
+        dripStatus: hasActiveDrip ? 'duplicate' : (settings.dripEnabled ? 'active' : 'paused'),
+        dripDay: hasActiveDrip ? 0 : 1,
+        dripScheduledFor: hasActiveDrip ? null : (settings.dripEnabled ? tomorrow.toISOString() : null),
+        dripSentHistory: [],
+        emailOpens: [],
+        capturedAt: serverTimestamp(),
       });
+      docId = docRef.id;
+    } catch (e: any) {
+      console.error('Lead submit: write to leadSubmissions failed:', e.message);
+      // Fallback: write to formSubmissions so capture is never lost
+      try {
+        await addDoc(collection(db, 'formSubmissions'), {
+          name: 'Lead Magnet User',
+          email,
+          country: 'Not provided',
+          sector: 'Not provided',
+          budget: 'Not provided',
+          details: serializeLeadDetails({ utmSource, utmMedium, utmCampaign, utmContent, utmTerm, referrer }),
+          type: `Lead Magnet: ${slug}`,
+          createdAt: serverTimestamp(),
+        });
+      } catch {}
     }
 
-    // 4. Send Instant Asset Email (Day 0)
+    // ── 4. Send Day 0 asset delivery email ──
     const host = process.env.SMTP_HOST || 'smtp.hostinger.com';
     const port = parseInt(process.env.SMTP_PORT || '465');
-    const user = process.env.SMTP_USER || 'info@proconixpmc.com';
-    const pass = process.env.SMTP_PASS || '';
+    const smtpUser = process.env.SMTP_USER || 'info@proconixpmc.com';
+    const smtpPass = process.env.SMTP_PASS || '';
 
-    if (!pass) {
-      console.warn('SMTP_PASS is not set. Lead captured but email skipped.');
+    if (!smtpPass) {
+      console.warn('Lead submit: SMTP_PASS not set — lead captured, email skipped');
       return NextResponse.json({
         success: true,
-        message: 'Lead registered. (SMTP not configured on server)',
-        dripQueued
+        message: 'Lead registered. Email delivery requires SMTP configuration on server.',
+        dripQueued: !hasActiveDrip,
       });
     }
 
     const transporter = nodemailer.createTransport({
-      host,
-      port,
-      secure: port === 465,
-      auth: { user, pass },
+      host, port, secure: port === 465,
+      auth: { user: smtpUser, pass: smtpPass },
     });
 
-    // Theme styled template
-    const emailHtml = `
-      <!DOCTYPE html>
-      <html>
-      <head>
-        <meta charset="utf-8">
-        <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
-      </head>
-      <body style="font-family: 'DM Sans', 'Helvetica Neue', Arial, sans-serif; line-height: 1.7; color: #FFFFFF; background-color: #0B1D35; margin: 0; padding: 0;">
-        <div style="background-color: #07142A; padding: 40px 20px;">
-          <div style="max-width: 600px; margin: 0 auto; background: #122647; border: 1px solid rgba(201,168,76,0.18); border-radius: 4px; overflow: hidden;">
-            <div style="height: 3px; background-color: #C9A84C;"></div>
-            <div style="padding: 40px 40px 20px; text-align: center;">
-              <div style="font-family: 'Cormorant Garamond', serif; color: #FFFFFF; font-size: 28px; font-weight: 600; letter-spacing: 2px; text-transform: uppercase;">PROCONIX</div>
-              <div style="color: #C9A84C; font-size: 10px; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; margin-top: 5px;">Project Management Consultancy</div>
-            </div>
-            <div style="padding: 0 40px 40px; text-align: left;">
-              ${asset.immediateBody}
-            </div>
-            <div style="padding: 30px; text-align: center; font-size: 11px; color: #8EA8C3; border-top: 1px solid rgba(201,168,76,0.1); background: #07142A; letter-spacing: 0.5px;">
-              &copy; 2026 Proconix Project Management Consultancy<br>
-              Project Management Consultancy &middot; Africa &middot; GCC
-            </div>
-          </div>
-        </div>
-      </body>
-      </html>
-    `;
+    const emailHtml = `<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+</head>
+<body style="font-family:'DM Sans','Helvetica Neue',Arial,sans-serif;line-height:1.7;color:#FFFFFF;background-color:#0B1D35;margin:0;padding:0;">
+  <div style="background-color:#07142A;padding:40px 20px;">
+    <div style="max-width:600px;margin:0 auto;background:#122647;border:1px solid rgba(201,168,76,0.18);border-radius:4px;overflow:hidden;">
+      <div style="height:3px;background-color:#C9A84C;"></div>
+      <div style="padding:32px 40px 16px;text-align:center;border-bottom:1px solid rgba(201,168,76,0.08);">
+        <div style="font-family:'Cormorant Garamond',serif;color:#FFFFFF;font-size:26px;font-weight:600;letter-spacing:2px;text-transform:uppercase;">PROCONIX</div>
+        <div style="color:#C9A84C;font-size:10px;font-weight:600;letter-spacing:2px;text-transform:uppercase;margin-top:4px;">Project Management Consultancy</div>
+      </div>
+      <div style="padding:32px 40px 40px;text-align:left;">
+        ${asset.immediateBody}
+      </div>
+      <div style="padding:24px 40px;text-align:center;font-size:11px;color:#8EA8C3;border-top:1px solid rgba(201,168,76,0.08);background:#07142A;letter-spacing:0.5px;">
+        &copy; 2026 Proconix Project Management Consultancy &middot; Africa &middot; GCC
+      </div>
+    </div>
+  </div>
+</body>
+</html>`;
 
-    await transporter.sendMail({
-      from: `"Proconix PMC" <${user}>`,
-      to: email,
-      subject: asset.immediateSubject,
-      html: emailHtml,
-    });
-
-    // Log the successful send to update email quota tracker
     try {
-      await logEmailsSent(1, asset.immediateSubject);
-    } catch (logErr: any) {
-      console.warn("Submit Route: Quota log failed (likely blocked by rules):", logErr.message);
+      await transporter.sendMail({
+        from: `"Proconix PMC" <${smtpUser}>`,
+        to: email,
+        subject: asset.immediateSubject,
+        html: emailHtml,
+      });
+    } catch (mailErr: any) {
+      console.error('Lead submit: Day 0 email failed:', mailErr.message);
     }
 
-    // Trigger Slack notifications if enabled in config settings
-    if (slackEnabled) {
+    // ── 5. Conditional Slack ──
+    if (settings.slackEnabled) {
       try {
         await sendSlackNotification({
           type: `Lead Magnet: ${slug}`,
           name: 'Lead Magnet User',
           email,
-          details: `Source: ${utmSource || 'N/A'}, Medium: ${utmMedium || 'N/A'}, Campaign: ${utmCampaign || 'N/A'}`,
-          priority: 'low'
+          details: `Source: ${utmSource || 'N/A'} | Medium: ${utmMedium || 'N/A'} | Campaign: ${utmCampaign || 'N/A'}`,
+          priority: 'low',
         });
-      } catch (slackError) {
-        console.error("Submit Route: Slack trigger failed:", slackError);
-      }
+      } catch {}
     }
 
-    return NextResponse.json({ success: true, dripQueued });
+    return NextResponse.json({ success: true, dripQueued: !hasActiveDrip });
   } catch (error: any) {
     console.error('Lead Submit Error:', error);
-    return NextResponse.json({ error: error.message || 'Server error processing lead' }, { status: 500 });
+    return NextResponse.json({ error: error.message || 'Server error' }, { status: 500 });
   }
 }

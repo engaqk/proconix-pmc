@@ -1,3 +1,9 @@
 {
-  "name": "proconix-pmc"
+  "name": "proconix-pmc",
+  "crons": [
+    {
+      "path": "/api/cron/drip",
+      "schedule": "0 * * * *"
+    }
+  ]
 }
