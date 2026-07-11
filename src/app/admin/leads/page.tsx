@@ -4,6 +4,31 @@ import { useEffect, useState } from "react";
 import { collection, query, orderBy, onSnapshot, getDocs, deleteDoc, doc } from "firebase/firestore";
 import { db } from "../../../lib/firebase";
 
+function parseDetails(details: string) {
+  const data: any = {};
+  if (!details || details === "Not provided") return data;
+  
+  const lines = details.split("\n");
+  for (const line of lines) {
+    const parts = line.split(": ");
+    if (parts.length >= 2) {
+      const key = parts[0].trim();
+      const val = parts.slice(1).join(": ").trim();
+      
+      if (key === "UTM Source") data.utmSource = val;
+      else if (key === "UTM Medium") data.utmMedium = val;
+      else if (key === "UTM Campaign") data.utmCampaign = val;
+      else if (key === "UTM Content") data.utmContent = val;
+      else if (key === "UTM Term") data.utmTerm = val;
+      else if (key === "Referrer") data.referrer = val;
+      else if (key === "Drip Status") data.dripStatus = val;
+      else if (key === "Drip Day") data.dripDay = parseInt(val);
+      else if (key === "Drip Scheduled For") data.dripScheduledFor = val;
+    }
+  }
+  return data;
+}
+
 export default function LeadsDashboard() {
   const [isAuthorized, setIsAuthorized] = useState(false);
   const [username, setUsername] = useState("");
@@ -39,14 +64,51 @@ export default function LeadsDashboard() {
     if (isAuthorized) {
       setIsLoading(true);
       
-      // Fetch submissions
-      const leadsQuery = query(collection(db, "leadSubmissions"), orderBy("submittedAt", "desc"));
+      // Fetch all submissions from formSubmissions
+      const leadsQuery = query(collection(db, "formSubmissions"), orderBy("createdAt", "desc"));
       const unsubscribeLeads = onSnapshot(leadsQuery, (snapshot) => {
-        const data = snapshot.docs.map(doc => ({
+        const allData = snapshot.docs.map(doc => ({
           id: doc.id,
           ...doc.data()
-        }));
-        setLeads(data);
+        })) as any[];
+        
+        // Filter only Lead Magnet funnels
+        const leadMagnets = allData.filter(item => item.type && item.type.startsWith("Lead Magnet: "));
+        const mappedLeads = leadMagnets.map(item => {
+          const parsed = parseDetails(item.details || '');
+          return {
+            ...item,
+            slug: item.type.replace("Lead Magnet: ", ""),
+            utmSource: parsed.utmSource || null,
+            utmMedium: parsed.utmMedium || null,
+            utmCampaign: parsed.utmCampaign || null,
+            displayDetails: Object.keys(parsed).length > 0 
+              ? `Source: ${parsed.utmSource || 'N/A'}, Medium: ${parsed.utmMedium || 'N/A'}, Campaign: ${parsed.utmCampaign || 'N/A'}` 
+              : item.details
+          };
+        });
+        
+        setLeads(mappedLeads);
+
+        // Map drip workflow states from the same dataset
+        const activeDrips = leadMagnets.filter(item => {
+          const parsed = parseDetails(item.details || '');
+          return parsed.dripStatus;
+        });
+        
+        const mappedDrips = activeDrips.map(item => {
+          const parsed = parseDetails(item.details || '');
+          return {
+            id: item.id,
+            email: item.email,
+            slug: item.type.replace("Lead Magnet: ", ""),
+            currentDay: parsed.dripDay || 0,
+            scheduledFor: parsed.dripScheduledFor || null,
+            status: parsed.dripStatus
+          };
+        });
+        setDrips(mappedDrips);
+        
         setIsLoading(false);
         setFirebaseError(null);
       }, (err) => {
@@ -55,21 +117,8 @@ export default function LeadsDashboard() {
         setIsLoading(false);
       });
 
-      // Fetch drip states
-      const dripsQuery = query(collection(db, "leadDripStates"));
-      const unsubscribeDrips = onSnapshot(dripsQuery, (snapshot) => {
-        const data = snapshot.docs.map(doc => ({
-          id: doc.id,
-          ...doc.data()
-        }));
-        setDrips(data);
-      }, (err) => {
-        console.error("Error fetching drip states:", err);
-      });
-
       return () => {
         unsubscribeLeads();
-        unsubscribeDrips();
       };
     }
   }, [isAuthorized]);
@@ -78,13 +127,12 @@ export default function LeadsDashboard() {
     if (confirm("Are you sure you want to delete ALL captured leads and drip queue records? This action is irreversible.") &&
         confirm("Are you absolutely sure?")) {
       try {
-        const leadSnap = await getDocs(collection(db, "leadSubmissions"));
-        const leadDeletes = leadSnap.docs.map(d => deleteDoc(doc(db, "leadSubmissions", d.id)));
+        const leadSnap = await getDocs(collection(db, "formSubmissions"));
+        const leadDeletes = leadSnap.docs
+          .filter(d => d.data().type && d.data().type.startsWith("Lead Magnet: "))
+          .map(d => deleteDoc(doc(db, "formSubmissions", d.id)));
 
-        const dripSnap = await getDocs(collection(db, "leadDripStates"));
-        const dripDeletes = dripSnap.docs.map(d => deleteDoc(doc(db, "leadDripStates", d.id)));
-
-        await Promise.all([...leadDeletes, ...dripDeletes]);
+        await Promise.all(leadDeletes);
         alert("All lead records have been successfully cleared.");
       } catch (e: any) {
         alert("Failed to clear records: " + e.message);
@@ -282,7 +330,7 @@ export default function LeadsDashboard() {
                     {leads.map((lead) => (
                       <tr key={lead.id} style={{ borderBottom: "1px solid rgba(255,255,255,0.05)", fontSize: "0.9rem" }}>
                         <td style={{ padding: "15px", color: "#8EA8C3" }}>
-                          {lead.submittedAt ? new Date(lead.submittedAt).toLocaleString() : 'N/A'}
+                          {lead.createdAt ? new Date(lead.createdAt.toDate ? lead.createdAt.toDate() : lead.createdAt).toLocaleString() : 'N/A'}
                         </td>
                         <td style={{ padding: "15px", color: "#FFFFFF", fontWeight: "bold" }}>{lead.email}</td>
                         <td style={{ padding: "15px", color: "#C9A84C" }}>{lead.slug}</td>

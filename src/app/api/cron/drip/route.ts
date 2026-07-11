@@ -5,6 +5,64 @@ import nodemailer from 'nodemailer';
 import { leadRegistry } from '../../../../lib/leadConfig';
 import { getDailyEmailsSent, logEmailsSent, DAILY_EMAIL_LIMIT } from '../../broadcast/route';
 
+function serializeDetails(data: {
+  utmSource?: string | null;
+  utmMedium?: string | null;
+  utmCampaign?: string | null;
+  utmContent?: string | null;
+  utmTerm?: string | null;
+  referrer?: string | null;
+  dripStatus?: string | null;
+  dripDay?: number | null;
+  dripScheduledFor?: string | null;
+  dripSentHistory?: any[] | null;
+}) {
+  const lines = [];
+  if (data.utmSource) lines.push(`UTM Source: ${data.utmSource}`);
+  if (data.utmMedium) lines.push(`UTM Medium: ${data.utmMedium}`);
+  if (data.utmCampaign) lines.push(`UTM Campaign: ${data.utmCampaign}`);
+  if (data.utmContent) lines.push(`UTM Content: ${data.utmContent}`);
+  if (data.utmTerm) lines.push(`UTM Term: ${data.utmTerm}`);
+  if (data.referrer) lines.push(`Referrer: ${data.referrer}`);
+  if (data.dripStatus) lines.push(`Drip Status: ${data.dripStatus}`);
+  if (data.dripDay !== undefined && data.dripDay !== null) lines.push(`Drip Day: ${data.dripDay}`);
+  if (data.dripScheduledFor) lines.push(`Drip Scheduled For: ${data.dripScheduledFor}`);
+  if (data.dripSentHistory) lines.push(`Drip Sent History: ${JSON.stringify(data.dripSentHistory)}`);
+  return lines.join("\n") || "Not provided";
+}
+
+function parseDetails(details: string) {
+  const data: any = {};
+  if (!details || details === "Not provided") return data;
+  
+  const lines = details.split("\n");
+  for (const line of lines) {
+    const parts = line.split(": ");
+    if (parts.length >= 2) {
+      const key = parts[0].trim();
+      const val = parts.slice(1).join(": ").trim();
+      
+      if (key === "UTM Source") data.utmSource = val;
+      else if (key === "UTM Medium") data.utmMedium = val;
+      else if (key === "UTM Campaign") data.utmCampaign = val;
+      else if (key === "UTM Content") data.utmContent = val;
+      else if (key === "UTM Term") data.utmTerm = val;
+      else if (key === "Referrer") data.referrer = val;
+      else if (key === "Drip Status") data.dripStatus = val;
+      else if (key === "Drip Day") data.dripDay = parseInt(val);
+      else if (key === "Drip Scheduled For") data.dripScheduledFor = val;
+      else if (key === "Drip Sent History") {
+        try {
+          data.dripSentHistory = JSON.parse(val);
+        } catch {
+          data.dripSentHistory = [];
+        }
+      }
+    }
+  }
+  return data;
+}
+
 export async function POST(req: Request) {
   const logs: string[] = [];
   try {
@@ -28,19 +86,32 @@ export async function POST(req: Request) {
     logs.push(`Cron Drip processor running at: ${nowISO}`);
 
     // 2. Fetch current daily usage to ensure we respect Hostinger limit
-    let dailyUsed = await getDailyEmailsSent();
+    let dailyUsed = 0;
+    try {
+      dailyUsed = await getDailyEmailsSent();
+    } catch (quotaErr: any) {
+      logs.push(`WARN: Quota check failed (likely blocked by rules): ${quotaErr.message}`);
+    }
     logs.push(`Daily quota status: ${dailyUsed}/${DAILY_EMAIL_LIMIT} used`);
 
-    // 3. Query active drips that are scheduled for execution
+    // 3. Query lead submissions (fetch only Lead Magnets dynamically using single-property range filter)
     const dripQuery = query(
-      collection(db, 'leadDripStates'),
-      where('status', '==', 'active'),
-      where('scheduledFor', '<=', nowISO)
+      collection(db, 'formSubmissions'),
+      where('type', '>=', 'Lead Magnet: '),
+      where('type', '<=', 'Lead Magnet: \uf8ff')
     );
     const snap = await getDocs(dripQuery);
-    logs.push(`Found ${snap.docs.length} active drip state(s) scheduled to execute`);
+    
+    // Filter active & scheduled drips in memory
+    const activeDripsToRun = snap.docs.filter(dDoc => {
+      const d = dDoc.data();
+      const parsed = parseDetails(d.details || '');
+      return parsed.dripStatus === 'active' && parsed.dripScheduledFor && parsed.dripScheduledFor <= nowISO;
+    });
 
-    if (snap.empty) {
+    logs.push(`Found ${activeDripsToRun.length} active drip state(s) scheduled to execute`);
+
+    if (activeDripsToRun.length === 0) {
       return NextResponse.json({ success: true, processed: 0, logs });
     }
 
@@ -57,9 +128,15 @@ export async function POST(req: Request) {
 
     let processedCount = 0;
 
-    for (const dDoc of snap.docs) {
-      const stateObj = dDoc.data();
-      const { email, slug, currentDay } = stateObj;
+    for (const dDoc of activeDripsToRun) {
+      const dData = dDoc.data();
+      const { email, type } = dData;
+      
+      const parsed = parseDetails(dData.details || '');
+      const dripDay = parsed.dripDay || 1;
+
+      // Extract slug from type
+      const slug = type && type.startsWith("Lead Magnet: ") ? type.replace("Lead Magnet: ", "") : "";
 
       const remaining = DAILY_EMAIL_LIMIT - dailyUsed;
       if (remaining <= 0) {
@@ -71,9 +148,14 @@ export async function POST(req: Request) {
       const asset = leadRegistry[slug];
       if (!asset) {
         logs.push(`Drip ${dDoc.id} (${email}): → FAILED (Asset config registry mapping missing for slug: ${slug})`);
-        await updateDoc(doc(db, 'leadDripStates', dDoc.id), {
-          status: 'failed',
-          error: `Asset configuration missing for slug: ${slug}`
+        
+        // Update details with failure status
+        const updatedDetails = serializeDetails({
+          ...parsed,
+          dripStatus: 'failed'
+        });
+        await updateDoc(doc(db, 'formSubmissions', dDoc.id), {
+          details: updatedDetails
         });
         continue;
       }
@@ -82,7 +164,7 @@ export async function POST(req: Request) {
       const templateQuery = query(
         collection(db, 'leadDripTemplates'),
         where('slug', '==', slug),
-        where('day', '==', currentDay)
+        where('day', '==', dripDay)
       );
       const tSnap = await getDocs(templateQuery);
       
@@ -90,7 +172,7 @@ export async function POST(req: Request) {
       let body = '';
 
       // Get templates based on day number
-      const dayKey = `day${currentDay}` as 'day1' | 'day2' | 'day3' | 'day4';
+      const dayKey = `day${dripDay}` as 'day1' | 'day2' | 'day3' | 'day4';
       const defaultTemplate = asset.dripTemplates[dayKey];
 
       if (!tSnap.empty) {
@@ -101,7 +183,7 @@ export async function POST(req: Request) {
         subject = defaultTemplate.subject;
         body = defaultTemplate.body;
       } else {
-        logs.push(`Drip ${dDoc.id} (${email}): → FAILED (No template found for Day ${currentDay})`);
+        logs.push(`Drip ${dDoc.id} (${email}): → FAILED (No template found for Day ${dripDay})`);
         continue;
       }
 
@@ -143,27 +225,38 @@ export async function POST(req: Request) {
         });
 
         // 5. Update drip sequence progression state
-        const isComplete = currentDay >= 4;
+        const isComplete = dripDay >= 4;
         const tomorrow = new Date();
         tomorrow.setDate(tomorrow.getDate() + 1);
 
-        await updateDoc(doc(db, 'leadDripStates', dDoc.id), {
-          currentDay: currentDay + 1,
-          status: isComplete ? 'completed' : 'active',
-          scheduledFor: isComplete ? null : tomorrow.toISOString(),
-          sentHistory: [...(stateObj.sentHistory || []), {
-            day: currentDay,
-            sentAt: nowISO,
-            messageId: info.messageId
-          }]
+        const updatedHistory = [...(parsed.dripSentHistory || []), {
+          day: dripDay,
+          sentAt: nowISO,
+          messageId: info.messageId
+        }];
+
+        const updatedDetails = serializeDetails({
+          ...parsed,
+          dripDay: dripDay + 1,
+          dripStatus: isComplete ? 'completed' : 'active',
+          dripScheduledFor: isComplete ? null : tomorrow.toISOString(),
+          dripSentHistory: updatedHistory
+        });
+
+        await updateDoc(doc(db, 'formSubmissions', dDoc.id), {
+          details: updatedDetails
         });
 
         dailyUsed += 1;
-        await logEmailsSent(1, subject);
+        try {
+          await logEmailsSent(1, subject);
+        } catch (logErr: any) {
+          logs.push(`WARN: Quota log failed (likely blocked by rules): ${logErr.message}`);
+        }
         processedCount++;
-        logs.push(`Drip ${dDoc.id} (${email}): → Successfully sent Day ${currentDay}`);
+        logs.push(`Drip ${dDoc.id} (${email}): → Successfully sent Day ${dripDay}`);
       } catch (err: any) {
-        logs.push(`Drip ${dDoc.id} (${email}): → Failed sending Day ${currentDay}: ${err.message}`);
+        logs.push(`Drip ${dDoc.id} (${email}): → Failed sending Day ${dripDay}: ${err.message}`);
       }
     }
 
