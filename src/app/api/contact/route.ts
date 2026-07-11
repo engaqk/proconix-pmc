@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import nodemailer from 'nodemailer';
-import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
+import { collection, addDoc, query, where, getDocs, limit, serverTimestamp } from 'firebase/firestore';
 import { db } from '../../../lib/firebase';
 import { sendSlackNotification } from '../../../lib/slack';
 
@@ -179,19 +179,27 @@ export async function POST(req: Request) {
       console.error("CRITICAL: Firestore Save Error:", dbError);
     }
 
-    // 2. Notify Slack (High Reliability)
+    // 2. Notify Slack ONLY if enabled from admin settings (Email is always the primary notification)
     try {
-      await sendSlackNotification({
-        type: displayType,
-        name: name || 'Anonymous',
-        email: email || 'N/A',
-        country: country,
-        sector: sector || budget,
-        details: incomingDetails || (budget ? `Budget: ${budget}` : undefined),
-        priority: displayType.includes('Call') || displayType.includes('Audit') || displayType.includes('Simulator') ? 'high' : displayType.includes('WhatsApp') ? 'medium' : 'low'
-      });
+      const settingsSnap = await getDocs(
+        query(collection(db, 'formSubmissions'), where('type', '==', 'Settings: LeadsConfig'), limit(1))
+      );
+      const slackEnabled = !settingsSnap.empty &&
+        settingsSnap.docs[0].data().details?.includes('Slack Enabled: true');
+
+      if (slackEnabled) {
+        await sendSlackNotification({
+          type: displayType,
+          name: name || 'Anonymous',
+          email: email || 'N/A',
+          country: country,
+          sector: sector || budget,
+          details: incomingDetails || (budget ? `Budget: ${budget}` : undefined),
+          priority: displayType.includes('Call') || displayType.includes('Audit') || displayType.includes('Simulator') ? 'high' : displayType.includes('WhatsApp') ? 'medium' : 'low'
+        });
+      }
     } catch (slackError) {
-      console.error('Slack Notification Error:', slackError);
+      console.error('Slack Notification Error (non-fatal):', slackError);
     }
 
     // 3. Trigger email to Admin (Premium HTML Template)

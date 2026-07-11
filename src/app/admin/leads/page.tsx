@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { collection, query, orderBy, onSnapshot, getDocs, deleteDoc, doc } from "firebase/firestore";
+import { collection, query, orderBy, where, onSnapshot, getDocs, deleteDoc, doc, updateDoc, addDoc, limit, serverTimestamp } from "firebase/firestore";
 import { db } from "../../../lib/firebase";
 
 function parseDetails(details: string) {
@@ -40,7 +40,11 @@ export default function LeadsDashboard() {
   const [isLoading, setIsLoading] = useState(true);
   const [firebaseError, setFirebaseError] = useState<string | null>(null);
 
-  const [activeTab, setActiveTab] = useState<'analytics' | 'submissions' | 'drips'>('analytics');
+  const [activeTab, setActiveTab] = useState<'analytics' | 'submissions' | 'drips' | 'links'>('analytics');
+  const [copiedSlug, setCopiedSlug] = useState<string | null>(null);
+  
+  const [isSlackEnabled, setIsSlackEnabled] = useState(false);
+  const [isUpdatingSlack, setIsUpdatingSlack] = useState(false);
 
   useEffect(() => {
     const savedLogin = localStorage.getItem("proconix_admin_logged_in");
@@ -57,6 +61,43 @@ export default function LeadsDashboard() {
       setLoginError("");
     } else {
       setLoginError("Invalid credentials. Please try again.");
+    }
+  };
+
+  const handleToggleSlack = async () => {
+    setIsUpdatingSlack(true);
+    try {
+      const snap = await getDocs(
+        query(collection(db, "formSubmissions"), where("type", "==", "Settings: LeadsConfig"), limit(1))
+      );
+      
+      const newSlackState = !isSlackEnabled;
+      const detailsText = `Slack Enabled: ${newSlackState}`;
+      
+      if (!snap.empty) {
+        // Update existing Settings doc
+        await updateDoc(doc(db, "formSubmissions", snap.docs[0].id), {
+          details: detailsText,
+          createdAt: serverTimestamp()
+        });
+      } else {
+        // Create new Settings doc
+        await addDoc(collection(db, "formSubmissions"), {
+          name: "System Settings",
+          email: "system@proconixpmc.com",
+          type: "Settings: LeadsConfig",
+          country: "System",
+          sector: "System",
+          budget: "System",
+          details: detailsText,
+          createdAt: serverTimestamp()
+        });
+      }
+      setIsSlackEnabled(newSlackState);
+    } catch (e: any) {
+      alert("Failed to update Slack setting: " + e.message);
+    } finally {
+      setIsUpdatingSlack(false);
     }
   };
 
@@ -108,6 +149,14 @@ export default function LeadsDashboard() {
           };
         });
         setDrips(mappedDrips);
+
+        // Check for Slack Settings doc
+        const settingsDoc = allData.find(item => item.type === 'Settings: LeadsConfig');
+        if (settingsDoc && settingsDoc.details && settingsDoc.details.includes('Slack Enabled: true')) {
+          setIsSlackEnabled(true);
+        } else {
+          setIsSlackEnabled(false);
+        }
         
         setIsLoading(false);
         setFirebaseError(null);
@@ -241,6 +290,12 @@ export default function LeadsDashboard() {
           >
             Drip Queue Active Channels ({drips.filter(d => d.status === 'active').length})
           </button>
+          <button 
+            onClick={() => setActiveTab('links')}
+            style={{ padding: "10px 20px", background: activeTab === 'links' ? "#C9A84C" : "transparent", color: activeTab === 'links' ? "#0B1D35" : "#FFFFFF", border: "none", borderRadius: "4px 4px 0 0", cursor: "pointer", fontWeight: "bold", transition: "all 0.2s" }}
+          >
+            🔗 Funnel Share Links
+          </button>
         </div>
 
         {firebaseError && (
@@ -252,7 +307,40 @@ export default function LeadsDashboard() {
         {/* Tab content 1: Analytics */}
         {activeTab === 'analytics' && (
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: "25px" }}>
-            
+
+            {/* Slack Notifications Settings Card */}
+            <div style={{ background: "#122647", borderRadius: "8px", border: "1px solid rgba(201,168,76,0.2)", padding: "24px", gridColumn: "1 / -1" }}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "15px" }}>
+                <div>
+                  <h3 style={{ margin: "0 0 4px 0", color: "#FFFFFF", fontFamily: "'Cormorant Garamond', serif", fontSize: "20px" }}>Notification Settings</h3>
+                  <p style={{ margin: 0, color: "#8EA8C3", fontSize: "0.85rem" }}>New leads always trigger an internal email via <strong style={{ color: "#C9A84C" }}>info@proconixpmc.com</strong>. Optionally, also send Slack alerts.</p>
+                </div>
+                <div style={{ display: "flex", alignItems: "center", gap: "14px" }}>
+                  <span style={{ fontSize: "0.9rem", color: isSlackEnabled ? "#4CAF50" : "#8EA8C3" }}>
+                    {isSlackEnabled ? "🟢 Slack Alerts ON" : "⚪ Slack Alerts OFF"}
+                  </span>
+                  <button
+                    onClick={handleToggleSlack}
+                    disabled={isUpdatingSlack}
+                    style={{
+                      padding: "8px 20px",
+                      background: isSlackEnabled ? "rgba(229, 115, 115, 0.15)" : "rgba(201,168,76,0.15)",
+                      border: `1px solid ${isSlackEnabled ? "rgba(229,115,115,0.4)" : "rgba(201,168,76,0.4)"}`,
+                      color: isSlackEnabled ? "#e57373" : "#C9A84C",
+                      borderRadius: "4px",
+                      cursor: isUpdatingSlack ? "wait" : "pointer",
+                      fontWeight: "bold",
+                      fontSize: "0.85rem",
+                      opacity: isUpdatingSlack ? 0.6 : 1,
+                      transition: "all 0.2s"
+                    }}
+                  >
+                    {isUpdatingSlack ? "Saving..." : isSlackEnabled ? "Disable Slack" : "Enable Slack"}
+                  </button>
+                </div>
+              </div>
+            </div>
+
             {/* Traffic Channel Sources */}
             <div style={{ background: "#122647", borderRadius: "8px", border: "1px solid rgba(255,255,255,0.05)", padding: "24px" }}>
               <h3 style={{ margin: "0 0 20px 0", color: "#C9A84C", fontFamily: "'Cormorant Garamond', serif", fontSize: "20px" }}>Marketing Channels (UTM Source)</h3>
@@ -406,6 +494,75 @@ export default function LeadsDashboard() {
             )}
           </div>
         )}
+
+        {/* Tab content 4: Funnel Share Links */}
+        {activeTab === 'links' && (() => {
+          const BASE_URL = 'https://proconixpmc.com';
+          const funnels = [
+            { slug: 'pre-construction-checklist',   title: 'Pre-Construction Governance Checklist',       icon: '📋' },
+            { slug: 'contractor-risk-audit',         title: 'Contractor Risk Audit Guide',                 icon: '🔍' },
+            { slug: 'capex-allocation-strategy',     title: 'CAPEX Allocation Strategy Guide',             icon: '💰' },
+            { slug: 'epcm-execution-playbook',       title: 'EPCM Execution Playbook',                     icon: '📘' },
+            { slug: 'procurement-intelligence',      title: 'Africa Construction Procurement Intelligence', icon: '🌍' },
+            { slug: 'hospitality-resort-governance', title: 'Zanzibar & East Africa Resort Governance',    icon: '🏨' },
+            { slug: 'cost-control-protocol',         title: 'Variations & Cost Control Protocol',          icon: '📊' },
+            { slug: 'capital-project-reporting',     title: 'Board-Level Capital Project Reporting',       icon: '📈' },
+            { slug: 'constructability-standards',    title: 'Constructability Review Standards',           icon: '🏗️' },
+            { slug: 'delay-avoidance',               title: 'Construction Delay & Dispute Avoidance',      icon: '⚠️' },
+          ];
+
+          const handleCopy = (slug: string, url: string) => {
+            navigator.clipboard.writeText(url).then(() => {
+              setCopiedSlug(slug);
+              setTimeout(() => setCopiedSlug(null), 2000);
+            });
+          };
+
+          return (
+            <div style={{ background: '#122647', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.05)', overflow: 'hidden' }}>
+              <div style={{ padding: '20px 24px', borderBottom: '1px solid rgba(201,168,76,0.1)', background: '#0B1D35', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <div>
+                  <h3 style={{ margin: 0, color: '#FFFFFF', fontFamily: "'Cormorant Garamond', serif", fontSize: '20px' }}>Lead Magnet Funnel Share Links</h3>
+                  <p style={{ margin: '4px 0 0', color: '#8EA8C3', fontSize: '0.82rem' }}>Copy and share these URLs in email campaigns, LinkedIn posts, WhatsApp, or any marketing channel.</p>
+                </div>
+              </div>
+              <div style={{ padding: '24px', display: 'flex', flexDirection: 'column', gap: '14px' }}>
+                {funnels.map((f, i) => {
+                  const url = `${BASE_URL}/leads/${f.slug}`;
+                  const isCopied = copiedSlug === f.slug;
+                  return (
+                    <div key={f.slug} style={{ display: 'flex', alignItems: 'center', gap: '14px', background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)', borderRadius: '6px', padding: '14px 18px' }}>
+                      <span style={{ fontSize: '22px', flexShrink: 0 }}>{f.icon}</span>
+                      <div style={{ flex: 1, minWidth: 0 }}>
+                        <div style={{ color: '#FFFFFF', fontWeight: 600, fontSize: '0.9rem', marginBottom: '4px' }}>
+                          <span style={{ color: '#C9A84C', marginRight: '8px', fontSize: '0.8rem' }}>#{i + 1}</span>
+                          {f.title}
+                        </div>
+                        <div style={{ color: '#8EA8C3', fontSize: '0.78rem', fontFamily: 'monospace', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                          {url}
+                        </div>
+                      </div>
+                      <a
+                        href={url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        style={{ padding: '6px 12px', background: 'rgba(201,168,76,0.1)', border: '1px solid rgba(201,168,76,0.3)', color: '#C9A84C', borderRadius: '4px', textDecoration: 'none', fontSize: '0.78rem', fontWeight: 'bold', whiteSpace: 'nowrap' }}
+                      >
+                        Preview
+                      </a>
+                      <button
+                        onClick={() => handleCopy(f.slug, url)}
+                        style={{ padding: '6px 14px', background: isCopied ? 'rgba(46,125,50,0.15)' : 'rgba(255,255,255,0.06)', border: `1px solid ${isCopied ? 'rgba(46,125,50,0.4)' : 'rgba(255,255,255,0.12)'}`, color: isCopied ? '#81c784' : '#FFFFFF', borderRadius: '4px', cursor: 'pointer', fontSize: '0.78rem', fontWeight: 'bold', whiteSpace: 'nowrap', transition: 'all 0.2s' }}
+                      >
+                        {isCopied ? '✓ Copied!' : 'Copy Link'}
+                      </button>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          );
+        })()}
 
       </div>
     </div>

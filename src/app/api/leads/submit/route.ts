@@ -4,6 +4,7 @@ import { collection, addDoc, query, where, getDocs, limit, serverTimestamp } fro
 import nodemailer from 'nodemailer';
 import { leadRegistry } from '../../../../lib/leadConfig';
 import { getDailyEmailsSent, logEmailsSent, DAILY_EMAIL_LIMIT } from '../../broadcast/route';
+import { sendSlackNotification } from '../../../../lib/slack';
 
 function serializeDetails(data: {
   utmSource?: string | null;
@@ -43,6 +44,25 @@ export async function POST(req: Request) {
     const asset = leadRegistry[slug];
     if (!asset) {
       return NextResponse.json({ error: 'Asset configuration not found.' }, { status: 404 });
+    }
+
+    // Check if Slack notifications are enabled in settings
+    let slackEnabled = false;
+    try {
+      const settingsQuery = query(
+        collection(db, 'formSubmissions'),
+        where('type', '==', 'Settings: LeadsConfig'),
+        limit(1)
+      );
+      const settingsSnap = await getDocs(settingsQuery);
+      if (!settingsSnap.empty) {
+        const s = settingsSnap.docs[0].data();
+        if (s.details && s.details.includes('Slack Enabled: true')) {
+          slackEnabled = true;
+        }
+      }
+    } catch (e: any) {
+      console.warn("Submit Route: Settings check failed (likely blocked by rules):", e.message);
     }
 
     // 1. Check if the user already has an active or completed drip for this asset
@@ -192,6 +212,21 @@ export async function POST(req: Request) {
       await logEmailsSent(1, asset.immediateSubject);
     } catch (logErr: any) {
       console.warn("Submit Route: Quota log failed (likely blocked by rules):", logErr.message);
+    }
+
+    // Trigger Slack notifications if enabled in config settings
+    if (slackEnabled) {
+      try {
+        await sendSlackNotification({
+          type: `Lead Magnet: ${slug}`,
+          name: 'Lead Magnet User',
+          email,
+          details: `Source: ${utmSource || 'N/A'}, Medium: ${utmMedium || 'N/A'}, Campaign: ${utmCampaign || 'N/A'}`,
+          priority: 'low'
+        });
+      } catch (slackError) {
+        console.error("Submit Route: Slack trigger failed:", slackError);
+      }
     }
 
     return NextResponse.json({ success: true, dripQueued });
