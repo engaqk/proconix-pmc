@@ -305,6 +305,351 @@ export default function ResourcePage() {
     );
   }
 
+  if (slug === 'pre-construction-checklist') {
+    return (
+      <div className="diag-body">
+        <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet" />
+        <style dangerouslySetInnerHTML={{ __html: `
+          :root {
+            --diag-bg: #12181C;
+            --diag-bg-deep: #0A0E11;
+            --diag-card: #1B2329;
+            --diag-amber: #F2994A;
+            --diag-amber-bright: #FFB35C;
+            --diag-teal: #2DD4C8;
+            --diag-white: #F6F7F8;
+            --diag-muted: #98A3AA;
+            --diag-border: rgba(242,153,74,0.25);
+          }
+          .diag-body {
+            background: radial-gradient(ellipse at top, #182129 0%, var(--diag-bg-deep) 65%);
+            color: var(--diag-white);
+            font-family: 'DM Sans', -apple-system, sans-serif;
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+            min-height: 100vh;
+            padding: 0;
+            margin: 0;
+          }
+          .diag-wrap {
+            max-width: 720px;
+            margin: 0 auto;
+            padding: 48px 24px 80px;
+          }
+          .diag-logo-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 30px;
+          }
+          .diag-logo-row img {
+            width: 56px;
+            height: 56px;
+            border-radius: 10px;
+            display: block;
+            object-fit: cover;
+          }
+          .diag-logo-row .diag-word {
+            font-family: 'Cormorant Garamond', serif;
+            font-weight: 600;
+            font-size: 20px;
+            letter-spacing: 0.04em;
+            color: var(--diag-white);
+            line-height: 1.2;
+          }
+          .diag-logo-row .diag-word span {
+            display: block;
+            font-family: 'DM Sans', sans-serif;
+            font-weight: 400;
+            font-size: 10.5px;
+            letter-spacing: 0.12em;
+            color: var(--diag-muted);
+            text-transform: uppercase;
+            margin-top: 2px;
+          }
+          .diag-eyebrow {
+            display: inline-block;
+            font-family: 'DM Sans', sans-serif;
+            font-weight: 600;
+            font-size: 12.5px;
+            letter-spacing: 0.14em;
+            color: var(--diag-bg-deep);
+            background: linear-gradient(120deg, var(--diag-amber-bright), var(--diag-amber));
+            padding: 7px 16px;
+            border-radius: 999px;
+            margin-bottom: 26px;
+            text-transform: uppercase;
+          }
+          .diag-h1 {
+            font-family: 'Cormorant Garamond', serif;
+            font-weight: 700;
+            font-size: clamp(34px, 6vw, 48px);
+            line-height: 1.14;
+            color: var(--diag-white);
+            margin-bottom: 18px;
+            letter-spacing: -0.01em;
+          }
+          .diag-h1 span {
+            color: var(--diag-amber-bright);
+          }
+          .diag-sub {
+            font-size: 17px;
+            color: var(--diag-muted);
+            max-width: 600px;
+            margin-bottom: 34px;
+          }
+          .diag-sub b {
+            color: var(--diag-white);
+            font-weight: 600;
+          }
+          .diag-divider {
+            height: 1px;
+            background: linear-gradient(90deg, var(--diag-border), transparent);
+            margin: 8px 0 34px;
+          }
+          .diag-bullets {
+            list-style: none;
+            margin-bottom: 38px;
+            padding: 0;
+          }
+          .diag-bullets li {
+            display: flex;
+            gap: 14px;
+            align-items: flex-start;
+            background: var(--diag-card);
+            border: 1px solid var(--diag-border);
+            border-radius: 14px;
+            padding: 18px 20px;
+            margin-bottom: 14px;
+          }
+          .diag-check {
+            flex-shrink: 0;
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--diag-teal), #1AA79C);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--diag-bg-deep);
+            margin-top: 2px;
+          }
+          .diag-bullets p {
+            font-size: 15.5px;
+            color: var(--diag-white);
+            margin: 0;
+          }
+          .diag-bullets p b {
+            color: var(--diag-amber-bright);
+          }
+          .diag-cta-block {
+            text-align: center;
+            margin: 44px 0 38px;
+            padding: 34px 26px;
+            background: linear-gradient(160deg, #1E2730, #141B20);
+            border: 1px solid var(--diag-border);
+            border-radius: 18px;
+          }
+          .diag-cta-btn {
+            display: inline-block;
+            font-family: 'DM Sans', sans-serif;
+            font-weight: 700;
+            font-size: 18px;
+            color: var(--diag-bg-deep);
+            background: linear-gradient(120deg, var(--diag-amber-bright), var(--diag-amber));
+            padding: 18px 38px;
+            border-radius: 12px;
+            text-decoration: none;
+            box-shadow: 0 8px 24px rgba(242,153,74,0.28);
+            transition: transform .15s ease;
+            border: none;
+            cursor: pointer;
+            width: 100%;
+          }
+          .diag-cta-btn:hover {
+            transform: translateY(-2px);
+          }
+          .diag-micro {
+            font-size: 13px;
+            color: var(--diag-muted);
+            margin-top: 16px;
+          }
+          .diag-keyword {
+            color: var(--diag-teal);
+            font-weight: 700;
+            letter-spacing: 0.04em;
+          }
+          .diag-authority {
+            border-top: 1px solid var(--diag-border);
+            padding-top: 34px;
+            margin-top: 12px;
+          }
+          .diag-authority h3 {
+            font-family: 'DM Sans', sans-serif;
+            font-size: 13px;
+            letter-spacing: 0.12em;
+            color: var(--diag-teal);
+            margin-bottom: 14px;
+            text-transform: uppercase;
+          }
+          .diag-authority p {
+            font-size: 14.5px;
+            color: var(--diag-muted);
+            margin-bottom: 10px;
+          }
+          .diag-authority p b {
+            color: var(--diag-white);
+          }
+          .diag-authority .diag-credentials {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px 10px;
+            margin: 14px 0 16px;
+          }
+          .diag-tag {
+            font-size: 12px;
+            color: var(--diag-amber-bright);
+            border: 1px solid var(--diag-border);
+            padding: 5px 12px;
+            border-radius: 999px;
+          }
+          .diag-footer {
+            text-align: center;
+            font-size: 12.5px;
+            color: #5C666C;
+            margin-top: 40px;
+          }
+          .diag-footer a {
+            color: var(--diag-teal);
+            text-decoration: none;
+          }
+          @media (max-width:480px){
+            .diag-wrap {
+              padding: 36px 18px 60px;
+            }
+            .diag-cta-btn {
+              width: 100%;
+              text-align: center;
+            }
+          }
+        `}} />
+        <div className="diag-wrap">
+          {/* Logo row */}
+          <div className="diag-logo-row">
+            <img src="/icon.jpg" alt="Proconix Logo" />
+            <div className="diag-word">
+              PROCONIX
+              <span>Project Management Consultancy</span>
+            </div>
+          </div>
+
+          {/* Eyebrow, H1, Subheadline, divider */}
+          <div className="diag-eyebrow">FREE DIAGNOSTIC</div>
+          <h1 className="diag-h1">The Hidden Cost <span>Identifier</span></h1>
+          <p className="diag-sub">
+            If you are sponsoring a <b>$5M–$100M+ construction project</b> in Africa, the decisions made in the next 90 days will define whether your capital is protected or exposed.
+          </p>
+          <div className="diag-divider"></div>
+
+          {/* Bullets */}
+          <ul className="diag-bullets">
+            <li>
+              <div className="diag-check">✓</div>
+              <p>A <b>13-point pre-construction governance diagnostic</b> tailored for African capital projects</p>
+            </li>
+            <li>
+              <div className="diag-check">✓</div>
+              <p>Identify which <b>governance gaps</b> will cause cost overruns before your first payment certificate</p>
+            </li>
+            <li>
+              <div className="diag-check">✓</div>
+              <p><b>Design freeze milestone checklist</b> to prevent premature contractor mobilisation</p>
+            </li>
+            <li>
+              <div className="diag-check">✓</div>
+              <p><b>Variation control protocol template</b> to block unbudgeted retrospective claims</p>
+            </li>
+            <li>
+              <div className="diag-check">✓</div>
+              <p><b>Constructability review criteria</b> to align international designs with local execution realities</p>
+            </li>
+          </ul>
+
+          {/* CTA Block / Email capture form */}
+          <div className="diag-cta-block" id="download">
+            {!submitted ? (
+              <form onSubmit={handleSubmit}>
+                <p style={{ fontSize: '0.8rem', color: '#FFB35C', marginBottom: '14px', fontStyle: 'italic', fontWeight: 500 }}>
+                  ⚠ Please double-check your email address — the diagnostic copy is delivered instantly.
+                </p>
+                <input
+                  type="email"
+                  value={email}
+                  onChange={e => setEmail(e.target.value)}
+                  placeholder="Your professional email address"
+                  required
+                  style={{
+                    width: '100%',
+                    padding: '16px 20px',
+                    background: '#0A0E11',
+                    border: '1px solid rgba(242,153,74,0.4)',
+                    borderRadius: '12px',
+                    color: '#FFFFFF',
+                    fontSize: '1rem',
+                    marginBottom: '16px',
+                    outline: 'none',
+                    textAlign: 'center',
+                    boxShadow: 'inset 0 2px 4px rgba(0,0,0,0.5)'
+                  }}
+                />
+                <button type="submit" disabled={loading} className="diag-cta-btn">
+                  {loading ? 'Processing...' : 'Get Free Diagnostic'}
+                </button>
+                {error && <p style={{ color: '#e57373', marginTop: '12px', fontSize: '0.88rem', fontWeight: 500 }}>{error}</p>}
+                <p className="diag-micro">
+                  We respect your privacy. No spam — only 4 days of relevant project governance insights.
+                </p>
+              </form>
+            ) : (
+              <div style={{ background: 'rgba(46,125,50,0.15)', border: '1px solid rgba(46,125,50,0.4)', borderRadius: '12px', padding: '28px', textAlign: 'center' }}>
+                <div style={{ fontSize: '40px', marginBottom: '14px' }}>✅</div>
+                <h3 style={{ color: '#81c784', marginBottom: '10px', fontFamily: "'Cormorant Garamond', serif", fontSize: '24px', fontWeight: 700 }}>Diagnostic Sent!</h3>
+                <p style={{ color: '#F6F7F8', fontSize: '0.95rem', lineHeight: 1.6 }}>
+                  Check your inbox for <strong style={{ color: '#FFB35C' }}>{email}</strong>. Your <em>Pre-Construction Governance Checklist</em> is on its way. Over the next 4 days, you will receive follow-up insights from our Principal Consultant.
+                </p>
+              </div>
+            )}
+          </div>
+
+          {/* Authority */}
+          <div className="diag-authority">
+            <h3>Independent Project Governance</h3>
+            <p style={{ lineHeight: 1.6 }}>
+              Led by <b>Talibbhai Khanji</b>, Founder &amp; Principal Consultant at Proconix PMC.
+            </p>
+            <div className="diag-credentials">
+              <div className="diag-tag">15+ Years in African Capital Projects</div>
+              <div className="diag-tag">$500M+ Capital Projects Governed</div>
+              <div className="diag-tag">GCC &amp; Africa Operational Mandate</div>
+            </div>
+          </div>
+
+          {/* Footer */}
+          <footer className="diag-footer">
+            <div style={{ fontSize: '11px', color: '#5C666C' }}>
+              &copy; 2026 Proconix Project Management Consultancy. All rights reserved.
+            </div>
+            <div style={{ marginTop: '8px' }}>
+              <a href="https://proconixpmc.com" target="_blank" rel="noopener noreferrer" style={{ color: '#2DD4C8' }}>proconixpmc.com</a>
+            </div>
+          </footer>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div style={{ minHeight: '100vh', background: '#07142A', fontFamily: "'DM Sans', 'Helvetica Neue', Arial, sans-serif", color: '#FFFFFF' }}>
       <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
