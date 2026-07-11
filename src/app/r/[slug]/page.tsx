@@ -256,9 +256,10 @@ const CONTENT: Record<string, {
 
 export default function ResourcePage() {
   const params = useParams();
-  const slug = params?.slug as string;
+  const slug = (params?.slug as string || '').toLowerCase();
   const content = CONTENT[slug];
 
+  const [mounted, setMounted] = useState(false);
   const [email, setEmail] = useState('');
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -266,6 +267,7 @@ export default function ResourcePage() {
   const [utm, setUtm] = useState<Record<string, string>>({});
 
   useEffect(() => {
+    setMounted(true);
     const p = new URLSearchParams(window.location.search);
     setUtm({
       utmSource: p.get('utm_source') || '',
@@ -292,6 +294,12 @@ export default function ResourcePage() {
     } catch { setError('Network error. Please check your connection.'); }
     finally { setLoading(false); }
   };
+
+  if (!mounted) {
+    return (
+      <div style={{ minHeight: '100vh', background: '#07142A' }} />
+    );
+  }
 
   if (!content) {
     return (
