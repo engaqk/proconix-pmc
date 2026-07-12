@@ -76,6 +76,13 @@ export default function LeadsDashboard() {
   const [isRunningDrip, setIsRunningDrip] = useState(false);
   const [dripRunLog, setDripRunLog]       = useState<string[] | null>(null);
 
+  // Email template state
+  const [showTemplates, setShowTemplates] = useState(false);
+  const [isSavingTemplates, setIsSavingTemplates] = useState(false);
+  const [templatesSaved, setTemplatesSaved] = useState(false);
+  const [emailTemplates, setEmailTemplates] = useState<Record<string, { subject: string; body: string }>>({});
+  const [templateSlug, setTemplateSlug] = useState('pre-construction-checklist');
+
   // ── Auth ──────────────────────────────────────────────────────────────────
   useEffect(() => {
     if (localStorage.getItem("proconix_admin_logged_in") === "true") setIsAuthorized(true);
@@ -319,10 +326,10 @@ export default function LeadsDashboard() {
 
         {/* Tabs */}
         <div style={{ display: "flex", gap: "8px", marginBottom: "24px", borderBottom: "1px solid rgba(255,255,255,0.06)", paddingBottom: "0", flexWrap: "wrap" }}>
-          {tabBtn("analytics",   "📊 Analytics & Settings")}
           {tabBtn("links",       "🔗 Share Links")}
-          {tabBtn("submissions", `📥 Submissions (${totalLeads})`)}
-          {tabBtn("drips",       `📧 Drip Queue (${activeLeads} active)`)}
+          {tabBtn("submissions", `📋 Leads Captured (${totalLeads})`)} 
+          {tabBtn("analytics",   "⚙️ Cron Settings")}
+          {tabBtn("drips",       `📧 Email Queue (${activeLeads} active)`)}
         </div>
 
         {firebaseError && (
@@ -337,7 +344,7 @@ export default function LeadsDashboard() {
 
             {/* Drip Settings Card */}
             <div style={{ background: "#122647", borderRadius: "8px", border: "1px solid rgba(201,168,76,0.2)", padding: "28px" }}>
-              <h3 style={{ margin: "0 0 20px", color: "#C9A84C", fontFamily: "'Cormorant Garamond', serif", fontSize: "20px" }}>⚙️ Drip Email Settings</h3>
+              <h3 style={{ margin: "0 0 20px", color: "#C9A84C", fontFamily: "'Cormorant Garamond', serif", fontSize: "20px" }}>⚙️ Cron & Drip Settings</h3>
               <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))", gap: "20px", marginBottom: "24px" }}>
 
                 {/* Drip toggle */}
@@ -396,10 +403,77 @@ export default function LeadsDashboard() {
                   style={{ padding: "10px 28px", background: settingsSaved ? "rgba(46,125,50,0.3)" : "#C9A84C", color: settingsSaved ? "#81c784" : "#0B1D35", border: `1px solid ${settingsSaved ? "rgba(46,125,50,0.5)" : "transparent"}`, borderRadius: "4px", cursor: isSavingSettings ? "wait" : "pointer", fontWeight: "bold", fontSize: "0.85rem", transition: "all 0.2s" }}>
                   {isSavingSettings ? "Saving..." : settingsSaved ? "✓ Saved!" : "Save Settings"}
                 </button>
+                <button onClick={() => setShowTemplates(v => !v)}
+                  style={{ padding: "10px 24px", background: showTemplates ? "rgba(201,168,76,0.2)" : "rgba(255,255,255,0.05)", border: `1px solid ${showTemplates ? "rgba(201,168,76,0.5)" : "rgba(255,255,255,0.15)"}`, color: showTemplates ? "#C9A84C" : "#FFFFFF", borderRadius: "4px", cursor: "pointer", fontWeight: "bold", fontSize: "0.85rem", transition: "all 0.2s" }}>
+                  ✉️ Configure Email Templates {showTemplates ? "▲" : "▼"}
+                </button>
                 <p style={{ margin: 0, fontSize: "0.78rem", color: "#8EA8C3" }}>
-                  Vercel cron runs every hour. Drip fires at the scheduled time for each lead.
+                  Cron runs daily at midnight UTC. Drip fires at the scheduled time for each lead.
                 </p>
               </div>
+
+              {/* Email Template Editor */}
+              {showTemplates && (
+                <div style={{ marginTop: "28px", borderTop: "1px solid rgba(201,168,76,0.12)", paddingTop: "24px" }}>
+                  <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "20px", flexWrap: "wrap", gap: "12px" }}>
+                    <h4 style={{ margin: 0, color: "#FFFFFF", fontFamily: "'Cormorant Garamond', serif", fontSize: "18px" }}>✉️ Drip Email Templates</h4>
+                    <select value={templateSlug} onChange={e => { setTemplateSlug(e.target.value); setEmailTemplates({}); }}
+                      style={{ padding: "8px 14px", background: "#0B1D35", border: "1px solid rgba(201,168,76,0.3)", color: "#FFFFFF", borderRadius: "4px", fontSize: "0.82rem" }}>
+                      {["pre-construction-checklist","contractor-risk-audit","capex-allocation-strategy","epcm-execution-playbook","procurement-intelligence","hospitality-resort-governance","cost-control-protocol","capital-project-reporting","constructability-standards","delay-avoidance"].map(s => (
+                        <option key={s} value={s}>{s.replace(/-/g, " ")}</option>
+                      ))}
+                    </select>
+                  </div>
+                  <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
+                    {[1,2,3,4].map(day => (
+                      <div key={day} style={{ background: "rgba(255,255,255,0.03)", borderRadius: "6px", padding: "18px", border: "1px solid rgba(255,255,255,0.06)" }}>
+                        <div style={{ fontSize: "0.8rem", color: "#C9A84C", fontWeight: "bold", letterSpacing: "1px", marginBottom: "12px", textTransform: "uppercase" }}>Day {day} Email</div>
+                        <input
+                          placeholder={`Day ${day} subject line…`}
+                          value={emailTemplates[`day${day}_subject`] ?? ""}
+                          onChange={e => setEmailTemplates(prev => ({ ...prev, [`day${day}_subject`]: e.target.value }))}
+                          style={{ width: "100%", padding: "9px 12px", background: "#0B1D35", border: "1px solid rgba(255,255,255,0.1)", color: "#FFFFFF", borderRadius: "4px", fontSize: "0.85rem", marginBottom: "10px", outline: "none" }}
+                        />
+                        <textarea
+                          placeholder={`Day ${day} email body HTML…`}
+                          value={emailTemplates[`day${day}_body`] ?? ""}
+                          onChange={e => setEmailTemplates(prev => ({ ...prev, [`day${day}_body`]: e.target.value }))}
+                          rows={4}
+                          style={{ width: "100%", padding: "9px 12px", background: "#0B1D35", border: "1px solid rgba(255,255,255,0.1)", color: "#FFFFFF", borderRadius: "4px", fontSize: "0.82rem", resize: "vertical", outline: "none", fontFamily: "monospace", lineHeight: "1.5" }}
+                        />
+                      </div>
+                    ))}
+                  </div>
+                  <div style={{ marginTop: "16px", display: "flex", gap: "12px", alignItems: "center" }}>
+                    <button
+                      disabled={isSavingTemplates}
+                      onClick={async () => {
+                        setIsSavingTemplates(true);
+                        try {
+                          const { doc, setDoc } = await import('firebase/firestore');
+                          await setDoc(doc(db, 'leadEmailTemplates', templateSlug), {
+                            slug: templateSlug,
+                            day1: { subject: emailTemplates['day1_subject'] || '', body: emailTemplates['day1_body'] || '' },
+                            day2: { subject: emailTemplates['day2_subject'] || '', body: emailTemplates['day2_body'] || '' },
+                            day3: { subject: emailTemplates['day3_subject'] || '', body: emailTemplates['day3_body'] || '' },
+                            day4: { subject: emailTemplates['day4_subject'] || '', body: emailTemplates['day4_body'] || '' },
+                            updatedAt: new Date().toISOString(),
+                          });
+                          setTemplatesSaved(true);
+                          setTimeout(() => setTemplatesSaved(false), 3000);
+                        } catch (err: any) {
+                          alert('Save failed: ' + err.message);
+                        } finally {
+                          setIsSavingTemplates(false);
+                        }
+                      }}
+                      style={{ padding: "10px 28px", background: templatesSaved ? "rgba(46,125,50,0.3)" : "#C9A84C", color: templatesSaved ? "#81c784" : "#0B1D35", border: `1px solid ${templatesSaved ? "rgba(46,125,50,0.5)" : "transparent"}`, borderRadius: "4px", cursor: isSavingTemplates ? "wait" : "pointer", fontWeight: "bold", fontSize: "0.85rem", transition: "all 0.2s" }}>
+                      {isSavingTemplates ? "Saving..." : templatesSaved ? "✓ Templates Saved!" : "Save Templates"}
+                    </button>
+                    <span style={{ fontSize: "0.75rem", color: "#4a6a8a" }}>Templates saved here will override the default hardcoded templates for this funnel.</span>
+                  </div>
+                </div>
+              )}
             </div>
 
             {/* Run Drip Now */}
