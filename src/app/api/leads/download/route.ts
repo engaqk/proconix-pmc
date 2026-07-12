@@ -20,38 +20,53 @@ export async function GET(req: Request) {
           linkClickedAt: new Date().toISOString(),
           linkClicks: currentClicks + 1,
         });
-        console.log(`Track Click: doc=${id} slug=${slug} totalClicks=${currentClicks + 1}`);
       }
     } catch (e: any) {
       console.warn('Track Click: failed (non-fatal):', e.message);
     }
   }
 
-  // 2. Locate and serve the PDF
+  // 2. Try Firestore base64 first (uploaded via admin panel)
+  try {
+    const pdfSnap = await getDoc(doc(db, 'leadPdfs', slug));
+    if (pdfSnap.exists()) {
+      const data = pdfSnap.data();
+      const buffer = Buffer.from(data.base64, 'base64');
+      const filename = data.filename || `${slug}.pdf`;
+      console.log(`Download: Serving ${slug} from Firestore (${Math.round(buffer.length/1024)}KB)`);
+      return new Response(buffer, {
+        headers: {
+          'Content-Type': 'application/pdf',
+          'Content-Disposition': `attachment; filename="${filename}"`,
+        },
+      });
+    }
+  } catch (e: any) {
+    console.warn('Firestore PDF fetch failed (non-fatal):', e.message);
+  }
+
+  // 3. Fall back to local static file (committed to repo)
   try {
     const filename = `${slug}.pdf`;
     let filePath = path.join(process.cwd(), 'public', 'assets', 'lead-magnets', filename);
-    let outputFilename = filename;
 
     if (!fs.existsSync(filePath)) {
       filePath = path.join(process.cwd(), 'public', 'proconix-checklist.pdf');
-      outputFilename = 'proconix-checklist.pdf';
     }
-    
+
     if (fs.existsSync(filePath)) {
       const fileBuffer = fs.readFileSync(filePath);
+      console.log(`Download: Serving ${slug} from local file`);
       return new Response(fileBuffer, {
         headers: {
           'Content-Type': 'application/pdf',
-          'Content-Disposition': `attachment; filename="${outputFilename}"`,
+          'Content-Disposition': `attachment; filename="${slug}.pdf"`,
         },
       });
-    } else {
-      // Fallback redirect if file is not found
-      return NextResponse.redirect(new URL('/proconix-checklist.pdf', req.url));
     }
-  } catch (error: any) {
-    console.error('Download serve error:', error.message);
-    return NextResponse.json({ error: 'Failed to download file.' }, { status: 500 });
+  } catch (e: any) {
+    console.warn('Local file fallback failed:', e.message);
   }
+
+  return NextResponse.json({ error: 'PDF not found. Please upload it in the admin panel.' }, { status: 404 });
 }

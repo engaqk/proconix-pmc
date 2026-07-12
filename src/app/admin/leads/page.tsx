@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState, useCallback } from "react";
-import { collection, query, orderBy, onSnapshot, deleteDoc, doc } from "firebase/firestore";
+import { collection, query, orderBy, onSnapshot, deleteDoc, doc, getDoc } from "firebase/firestore";
 import { db } from "../../../lib/firebase";
 
 const AUTH = "Bearer admin53";
@@ -62,7 +62,8 @@ export default function LeadsDashboard() {
 
   // PDF Upload states
   const [uploadingSlug, setUploadingSlug] = useState<string | null>(null);
-  const [uploadStatus, setUploadStatus] = useState<Record<string, string>>({});
+  const [uploadStatus, setUploadStatus] = useState<Record<string, string>>({}); // session status
+  const [pdfStatuses, setPdfStatuses] = useState<Record<string, { filename: string; sizeKb: number; uploadedAt: string }>>({});
 
   // Settings state
   const [dripEnabled, setDripEnabled]     = useState(true);
@@ -140,11 +141,30 @@ export default function LeadsDashboard() {
     }
   };
 
+  // ── Load persistent PDF statuses from Firestore ──────────────────────────
+  const loadPdfStatuses = async (slugList: string[]) => {
+    const statuses: Record<string, { filename: string; sizeKb: number; uploadedAt: string }> = {};
+    await Promise.all(slugList.map(async (slug) => {
+      try {
+        const snap = await getDoc(doc(db, 'leadPdfs', slug));
+        if (snap.exists()) {
+          const d = snap.data();
+          statuses[slug] = {
+            filename: d.filename || `${slug}.pdf`,
+            sizeKb: Math.round((d.sizeBytes || 0) / 1024),
+            uploadedAt: d.uploadedAt?.toDate ? new Date(d.uploadedAt.toDate()).toLocaleDateString() : '',
+          };
+        }
+      } catch {}
+    }));
+    setPdfStatuses(statuses);
+  };
+
   // ── Upload PDF ────────────────────────────────────────────────────────────
   const handleFileUpload = async (slug: string, file: File) => {
     if (!file) return;
     setUploadingSlug(slug);
-    setUploadStatus(prev => ({ ...prev, [slug]: "Uploading..." }));
+    setUploadStatus(prev => ({ ...prev, [slug]: "⏳ Uploading..." }));
     
     const formData = new FormData();
     formData.append("file", file);
@@ -156,11 +176,13 @@ export default function LeadsDashboard() {
         headers: { Authorization: AUTH },
         body: formData,
       });
+      const d = await res.json();
       if (res.ok) {
-        setUploadStatus(prev => ({ ...prev, [slug]: "✓ PDF Saved!" }));
+        setUploadStatus(prev => ({ ...prev, [slug]: `✓ Saved (${d.sizeKb}KB)` }));
+        // Refresh persistent status from Firestore
+        await loadPdfStatuses([slug]);
       } else {
-        const d = await res.json();
-        setUploadStatus(prev => ({ ...prev, [slug]: `✗ Error: ${d.error}` }));
+        setUploadStatus(prev => ({ ...prev, [slug]: `✗ ${d.error}` }));
       }
     } catch {
       setUploadStatus(prev => ({ ...prev, [slug]: "✗ Connection error" }));
@@ -173,6 +195,9 @@ export default function LeadsDashboard() {
   useEffect(() => {
     if (!isAuthorized) return;
     loadSettings();
+    // Load persistent PDF upload statuses
+    const allSlugs = ["pre-construction-checklist","contractor-risk-audit","capex-allocation-strategy","epcm-execution-playbook","procurement-intelligence","hospitality-resort-governance","cost-control-protocol","capital-project-reporting","constructability-standards","delay-avoidance"];
+    loadPdfStatuses(allSlugs);
     setIsLoading(true);
     const q = query(collection(db, "leadSubmissions"), orderBy("capturedAt", "desc"));
     const unsub = onSnapshot(q, snap => {
@@ -270,9 +295,6 @@ export default function LeadsDashboard() {
             <a href="/admin" style={{ padding: "8px 16px", background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.15)", color: "#FFFFFF", borderRadius: "4px", textDecoration: "none", fontWeight: "bold", fontSize: "0.85rem" }}>
               ← Main Admin
             </a>
-            <a href="/lead" target="_blank" rel="noopener noreferrer" style={{ padding: "8px 16px", background: "rgba(201,168,76,0.15)", border: "1px solid rgba(201,168,76,0.4)", color: "#C9A84C", borderRadius: "4px", textDecoration: "none", fontWeight: "bold", fontSize: "0.85rem" }}>
-              👁️ View Lead Page
-            </a>
             <button onClick={handleClearAll}
               style={{ padding: "8px 16px", background: "rgba(229,115,115,0.1)", border: "1px solid rgba(229,115,115,0.3)", color: "#e57373", borderRadius: "4px", cursor: "pointer", fontWeight: "bold", fontSize: "0.85rem" }}>
               Clear All Leads
@@ -298,9 +320,9 @@ export default function LeadsDashboard() {
         {/* Tabs */}
         <div style={{ display: "flex", gap: "8px", marginBottom: "24px", borderBottom: "1px solid rgba(255,255,255,0.06)", paddingBottom: "0", flexWrap: "wrap" }}>
           {tabBtn("analytics",   "📊 Analytics & Settings")}
+          {tabBtn("links",       "🔗 Share Links")}
           {tabBtn("submissions", `📥 Submissions (${totalLeads})`)}
           {tabBtn("drips",       `📧 Drip Queue (${activeLeads} active)`)}
-          {tabBtn("links",       "🔗 Share Links")}
         </div>
 
         {firebaseError && (
@@ -442,10 +464,10 @@ export default function LeadsDashboard() {
                     <thead>
                       <tr style={{ background: "rgba(11,29,53,0.5)", color: "#C9A84C", textTransform: "uppercase", fontSize: "0.75rem", letterSpacing: "1px" }}>
                         <th style={{ padding: "14px 16px", textAlign: "left" }}>Date</th>
+                        <th style={{ padding: "14px 16px", textAlign: "left" }}>Name</th>
                         <th style={{ padding: "14px 16px", textAlign: "left" }}>Email</th>
                         <th style={{ padding: "14px 16px", textAlign: "left" }}>Funnel</th>
-                        <th style={{ padding: "14px 16px", textAlign: "left" }}>Source</th>
-                        <th style={{ padding: "14px 16px", textAlign: "left" }}>Campaign</th>
+                        <th style={{ padding: "14px 16px", textAlign: "left" }}>PDF Clicked</th>
                         <th style={{ padding: "14px 16px", textAlign: "left" }}>Drip</th>
                       </tr>
                     </thead>
@@ -455,10 +477,18 @@ export default function LeadsDashboard() {
                           <td style={{ padding: "13px 16px", color: "#8EA8C3", whiteSpace: "nowrap" }}>
                             {lead.capturedAt?.toDate ? new Date(lead.capturedAt.toDate()).toLocaleDateString() : "—"}
                           </td>
-                          <td style={{ padding: "13px 16px", color: "#FFFFFF", fontWeight: 600 }}>{lead.email}</td>
-                          <td style={{ padding: "13px 16px", color: "#C9A84C", fontSize: "0.78rem" }}>{(lead.slug || "").replace(/-/g, " ")}</td>
-                          <td style={{ padding: "13px 16px", color: "#C2D4E4" }}>{lead.utmSource || "—"}</td>
-                          <td style={{ padding: "13px 16px", color: "#C2D4E4" }}>{lead.utmCampaign || "—"}</td>
+                          <td style={{ padding: "13px 16px", color: "#FFFFFF", fontWeight: 600 }}>{lead.name || "—"}</td>
+                          <td style={{ padding: "13px 16px", color: "#C9A84C" }}><a href={`mailto:${lead.email}`} style={{ color: "#C9A84C", textDecoration: "none" }}>{lead.email}</a></td>
+                          <td style={{ padding: "13px 16px", color: "#C2D4E4", fontSize: "0.78rem" }}>{(lead.slug || "").replace(/-/g, " ")}</td>
+                          <td style={{ padding: "13px 16px" }}>
+                            {lead.linkClicks > 0 ? (
+                              <span style={{ background: "rgba(46,125,50,0.15)", color: "#81c784", border: "1px solid rgba(46,125,50,0.3)", padding: "3px 10px", borderRadius: "12px", fontSize: "0.72rem", fontWeight: "bold" }}>
+                                ✓ {lead.linkClicks}x clicked
+                              </span>
+                            ) : (
+                              <span style={{ color: "#4a6a8a", fontSize: "0.78rem" }}>Not yet</span>
+                            )}
+                          </td>
                           <td style={{ padding: "13px 16px" }}><StatusBadge status={lead.dripStatus || "unknown"} /></td>
                         </tr>
                       ))}
@@ -484,8 +514,9 @@ export default function LeadsDashboard() {
                   <table style={{ width: "100%", borderCollapse: "collapse" }}>
                     <thead>
                       <tr style={{ background: "rgba(11,29,53,0.5)", color: "#C9A84C", textTransform: "uppercase", fontSize: "0.75rem", letterSpacing: "1px" }}>
+                        <th style={{ padding: "14px 16px", textAlign: "left" }}>Name</th>
                         <th style={{ padding: "14px 16px", textAlign: "left" }}>Email</th>
-                        <th style={{ padding: "14px 16px", textAlign: "left" }}>Funnel</th>
+                        <th style={{ padding: "14px 16px", textAlign: "left" }}>PDF Clicked</th>
                         <th style={{ padding: "14px 16px", textAlign: "left" }}>Status</th>
                         <th style={{ padding: "14px 16px", textAlign: "left" }}>Day Progress + Opens</th>
                         <th style={{ padding: "14px 16px", textAlign: "left" }}>Next Send</th>
@@ -494,8 +525,17 @@ export default function LeadsDashboard() {
                     <tbody>
                       {leads.filter(l => l.dripStatus && l.dripStatus !== "duplicate").map(lead => (
                         <tr key={lead.id} style={{ borderBottom: "1px solid rgba(255,255,255,0.04)", fontSize: "0.85rem" }}>
-                          <td style={{ padding: "14px 16px", color: "#FFFFFF", fontWeight: 600 }}>{lead.email}</td>
-                          <td style={{ padding: "14px 16px", color: "#C9A84C", fontSize: "0.78rem" }}>{(lead.slug || "").replace(/-/g, " ")}</td>
+                          <td style={{ padding: "14px 16px", color: "#FFFFFF", fontWeight: 600 }}>{lead.name || "—"}</td>
+                          <td style={{ padding: "14px 16px", color: "#C9A84C" }}><a href={`mailto:${lead.email}`} style={{ color: "#C9A84C", textDecoration: "none" }}>{lead.email}</a></td>
+                          <td style={{ padding: "14px 16px" }}>
+                            {lead.linkClicks > 0 ? (
+                              <span style={{ background: "rgba(46,125,50,0.15)", color: "#81c784", border: "1px solid rgba(46,125,50,0.3)", padding: "3px 10px", borderRadius: "12px", fontSize: "0.72rem", fontWeight: "bold" }}>
+                                ✓ {lead.linkClicks}x · {lead.linkClickedAt ? new Date(lead.linkClickedAt).toLocaleDateString() : ""}
+                              </span>
+                            ) : (
+                              <span style={{ color: "#4a6a8a", fontSize: "0.78rem" }}>Not yet</span>
+                            )}
+                          </td>
                           <td style={{ padding: "14px 16px" }}><StatusBadge status={lead.dripStatus} /></td>
                           <td style={{ padding: "14px 16px" }}>
                             <OpenDots opens={lead.emailOpens || []} sentHistory={lead.dripSentHistory || []} />
@@ -545,18 +585,33 @@ export default function LeadsDashboard() {
                     </button>
 
                     {/* PDF Upload */}
-                    <div style={{ display: "flex", alignItems: "center", gap: "8px", borderLeft: "1px solid rgba(255,255,255,0.08)", paddingLeft: "14px" }}>
-                      <label style={{ cursor: "pointer", background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.1)", borderRadius: "4px", padding: "6px 12px", fontSize: "0.75rem", fontWeight: "bold", whiteSpace: "nowrap" }}>
-                        Upload PDF
-                        <input type="file" accept=".pdf" style={{ display: "none" }} onChange={(e) => {
-                          const file = e.target.files?.[0];
-                          if (file) handleFileUpload(f.slug, file);
-                        }} />
-                      </label>
-                      {uploadStatus[f.slug] && (
-                        <span style={{ fontSize: "0.72rem", color: uploadStatus[f.slug].includes("✓") ? "#81c784" : uploadStatus[f.slug].includes("✗") ? "#e57373" : "#C9A84C", fontWeight: "bold" }}>
-                          {uploadStatus[f.slug]}
-                        </span>
+                    <div style={{ display: "flex", flexDirection: "column", gap: "6px", borderLeft: "1px solid rgba(255,255,255,0.08)", paddingLeft: "14px" }}>
+                      <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                        <label style={{ cursor: uploadingSlug === f.slug ? "wait" : "pointer", background: uploadingSlug === f.slug ? "rgba(255,255,255,0.03)" : "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.1)", borderRadius: "4px", padding: "6px 12px", fontSize: "0.75rem", fontWeight: "bold", whiteSpace: "nowrap", color: uploadingSlug === f.slug ? "#8EA8C3" : "#FFFFFF" }}>
+                          {uploadingSlug === f.slug ? "⏳ Uploading..." : "📤 Upload PDF"}
+                          <input type="file" accept=".pdf" disabled={uploadingSlug === f.slug} style={{ display: "none" }} onChange={(e) => {
+                            const file = e.target.files?.[0];
+                            if (file) handleFileUpload(f.slug, file);
+                          }} />
+                        </label>
+                        {uploadStatus[f.slug] && (
+                          <span style={{ fontSize: "0.72rem", color: uploadStatus[f.slug].includes("✓") ? "#81c784" : uploadStatus[f.slug].includes("✗") ? "#e57373" : "#C9A84C", fontWeight: "bold", whiteSpace: "nowrap" }}>
+                            {uploadStatus[f.slug]}
+                          </span>
+                        )}
+                      </div>
+                      {/* Persistent status from Firestore */}
+                      {pdfStatuses[f.slug] ? (
+                        <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+                          <span style={{ background: "rgba(46,125,50,0.15)", color: "#81c784", border: "1px solid rgba(46,125,50,0.3)", padding: "2px 8px", borderRadius: "10px", fontSize: "0.68rem", fontWeight: "bold" }}>
+                            ✓ PDF Ready
+                          </span>
+                          <span style={{ color: "#4a6a8a", fontSize: "0.68rem" }}>
+                            {pdfStatuses[f.slug].filename} · {pdfStatuses[f.slug].sizeKb}KB · {pdfStatuses[f.slug].uploadedAt}
+                          </span>
+                        </div>
+                      ) : (
+                        <span style={{ color: "#4a6a8a", fontSize: "0.68rem" }}>No PDF uploaded yet — using default file</span>
                       )}
                     </div>
                   </div>

@@ -1,8 +1,9 @@
 import { NextResponse } from 'next/server';
-import fs from 'fs';
-import path from 'path';
+import { db } from '../../../../../lib/firebase';
+import { doc, setDoc, serverTimestamp } from 'firebase/firestore';
 
 const AUTH = "Bearer admin53";
+const MAX_SIZE_BYTES = 900 * 1024; // 900KB limit (Firestore doc is 1MB max)
 
 export async function POST(req: Request) {
   try {
@@ -19,19 +20,24 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'File and slug are required.' }, { status: 400 });
     }
 
-    const arrayBuffer = await file.arrayBuffer();
-    const buffer = Buffer.from(arrayBuffer);
-
-    const dirPath = path.join(process.cwd(), 'public', 'assets', 'lead-magnets');
-    if (!fs.existsSync(dirPath)) {
-      fs.mkdirSync(dirPath, { recursive: true });
+    if (file.size > MAX_SIZE_BYTES) {
+      return NextResponse.json({ error: `PDF too large (${Math.round(file.size/1024)}KB). Max is 900KB.` }, { status: 400 });
     }
 
-    const filePath = path.join(dirPath, `${slug}.pdf`);
-    fs.writeFileSync(filePath, buffer);
+    // Convert to base64 and store in Firestore (free, works on Vercel)
+    const arrayBuffer = await file.arrayBuffer();
+    const base64 = Buffer.from(arrayBuffer).toString('base64');
 
-    console.log(`Admin Upload: Saved PDF for slug=${slug} at ${filePath}`);
-    return NextResponse.json({ success: true, path: `/assets/lead-magnets/${slug}.pdf` });
+    await setDoc(doc(db, 'leadPdfs', slug), {
+      slug,
+      filename: file.name,
+      base64,
+      sizeBytes: file.size,
+      uploadedAt: serverTimestamp(),
+    });
+
+    console.log(`Admin Upload: Stored PDF for slug=${slug} in Firestore (${Math.round(file.size/1024)}KB)`);
+    return NextResponse.json({ success: true, sizeKb: Math.round(file.size / 1024) });
   } catch (error: any) {
     console.error('Admin PDF Upload Error:', error);
     return NextResponse.json({ error: error.message || 'Server error' }, { status: 500 });
