@@ -137,13 +137,19 @@ export async function POST(req: Request) {
     let bodyHtml = asset.immediateBody;
     const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://proconixpmc.com';
     if (docId) {
-      const downloadUrl = `${baseUrl}/api/leads/download?id=${docId}&slug=${slug}`;
+      // Point to branded landing page — opens page first, then auto-downloads the PDF
+      const downloadUrl = `${baseUrl}/leads/${slug}?id=${docId}`;
       bodyHtml = bodyHtml.replace(
         /href="https:\/\/proconixpmc\.com\/assets\/lead-magnets\/[a-zA-Z0-9_-]+\.pdf"/g,
         `href="${downloadUrl}"`
       );
       bodyHtml = bodyHtml.replace(
         /href="\/assets\/lead-magnets\/[a-zA-Z0-9_-]+\.pdf"/g,
+        `href="${downloadUrl}"`
+      );
+      // Also replace any existing direct API download links
+      bodyHtml = bodyHtml.replace(
+        /href="https?:\/\/[^"]*\/api\/leads\/download[^"]*"/g,
         `href="${downloadUrl}"`
       );
     }

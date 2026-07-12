@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import './globals.css';
 import InstallPrompt from './InstallPrompt';
 import FloatingWhatsApp from './FloatingWhatsApp';
+import ScrollToTop from './ScrollToTop';
 
 export const metadata: Metadata = {
   title: 'Proconix PMC — Construction Project Governance in Africa | Talibbhai Khanji',
@@ -31,6 +32,7 @@ export default function RootLayout({
         {children}
         <InstallPrompt />
         <FloatingWhatsApp />
+        <ScrollToTop />
         <script
           dangerouslySetInnerHTML={{
             __html: `
