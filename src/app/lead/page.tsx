@@ -95,10 +95,13 @@ export default function LeadPage() {
       <nav id="main-nav" style={{ padding: navPadding }}>
         <div className="container">
           <div className="nav-inner">
-            <div className="nav-logo-wrapper">
-              <div className="nav-logo">PROCONIX</div>
-              <div className="nav-tagline">Project Management Consultancy</div>
-            </div>
+            <Link href="/" className="nav-logo-wrapper">
+              <img src="/logo.png" alt="Proconix Logo" className="nav-logo-img" />
+              <div className="nav-logo-text-group">
+                <div className="nav-logo">PROCONIX</div>
+                <div className="nav-tagline">Project Management Consultancy</div>
+              </div>
+            </Link>
 
             <ul className="nav-links">
               <li><Link href="/">Home</Link></li>

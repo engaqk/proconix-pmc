@@ -221,6 +221,15 @@ export default function AdminDashboard() {
     }
   }, [isLoggedIn]);
 
+  // Filter out any lead magnet or checklist interactions to keep it strictly for main page submissions
+  const standardSubmissions = submissions.filter(sub => {
+    const type = sub.type || '';
+    const name = sub.name || '';
+    return !type.toLowerCase().includes('lead') && 
+           !type.toLowerCase().includes('checklist') && 
+           name !== 'Anonymous Click';
+  });
+
   if (!isLoggedIn) {
     return (
       <div style={{ minHeight: "100vh", display: "flex", justifyContent: "center", alignItems: "center", backgroundColor: "#0B1D35", color: "#F7F8FA" }}>
@@ -268,7 +277,13 @@ export default function AdminDashboard() {
         <div style={{ maxWidth: "1200px", margin: "0 auto" }}>
         <div className="admin-header">
           <h1 className="admin-title" style={{ color: "#FFFFFF", margin: 0, fontFamily: "'Cormorant Garamond', serif" }}>PROCONIX <span style={{ color: "#C9A84C" }}>DASHBOARD</span></h1>
-          <div className="admin-header-actions">
+          <div className="admin-header-actions" style={{ display: "flex", gap: "10px", alignItems: "center", flexWrap: "wrap" }}>
+            <a href="/admin/leads" style={{ padding: "8px 16px", background: "rgba(201,168,76,0.15)", border: "1px solid rgba(201,168,76,0.4)", color: "#C9A84C", borderRadius: "4px", textDecoration: "none", fontWeight: "bold", fontSize: "0.85rem", fontFamily: "'DM Sans', sans-serif" }}>
+              📧 Lead Management
+            </a>
+            <a href="/lead" target="_blank" rel="noopener noreferrer" style={{ padding: "8px 16px", background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.15)", color: "#FFFFFF", borderRadius: "4px", textDecoration: "none", fontWeight: "bold", fontSize: "0.85rem", fontFamily: "'DM Sans', sans-serif" }}>
+              👁️ View Lead Page
+            </a>
             <button onClick={() => {
               const newState = !showBroadcast;
               setShowBroadcast(newState);
@@ -408,25 +423,19 @@ export default function AdminDashboard() {
           <div style={{ background: "#122647", padding: "20px", borderRadius: "8px", boxShadow: "0 8px 24px rgba(0,0,0,0.15)", borderLeft: "4px solid #C9A84C", borderTop: "1px solid rgba(255,255,255,0.05)", borderRight: "1px solid rgba(255,255,255,0.05)", borderBottom: "1px solid rgba(255,255,255,0.05)" }}>
             <h4 style={{ margin: "0 0 10px 0", color: "#8EA8C3", fontSize: "0.85rem", textTransform: "uppercase", letterSpacing: "1px" }}>Total Unique Emails</h4>
             <div style={{ fontSize: "2.2rem", fontWeight: "bold", color: "#FFFFFF", fontFamily: "'Cormorant Garamond', serif" }}>
-              {Array.from(new Set(submissions.map(s => s.email).filter(e => e && e.includes('@')))).length}
-            </div>
-          </div>
-          <div style={{ background: "#122647", padding: "20px", borderRadius: "8px", boxShadow: "0 8px 24px rgba(0,0,0,0.15)", borderLeft: "4px solid #C9A84C", borderTop: "1px solid rgba(255,255,255,0.05)", borderRight: "1px solid rgba(255,255,255,0.05)", borderBottom: "1px solid rgba(255,255,255,0.05)" }}>
-            <h4 style={{ margin: "0 0 10px 0", color: "#8EA8C3", fontSize: "0.85rem", textTransform: "uppercase", letterSpacing: "1px" }}>Checklist Downloads</h4>
-            <div style={{ fontSize: "2.2rem", fontWeight: "bold", color: "#FFFFFF", fontFamily: "'Cormorant Garamond', serif" }}>
-              {submissions.filter(s => s.type && s.type.includes('Checklist')).length}
+              {Array.from(new Set(standardSubmissions.map(s => s.email).filter(e => e && e.includes('@')))).length}
             </div>
           </div>
           <div style={{ background: "#122647", padding: "20px", borderRadius: "8px", boxShadow: "0 8px 24px rgba(0,0,0,0.15)", borderLeft: "4px solid #C9A84C", borderTop: "1px solid rgba(255,255,255,0.05)", borderRight: "1px solid rgba(255,255,255,0.05)", borderBottom: "1px solid rgba(255,255,255,0.05)" }}>
             <h4 style={{ margin: "0 0 10px 0", color: "#8EA8C3", fontSize: "0.85rem", textTransform: "uppercase", letterSpacing: "1px" }}>Discovery Calls</h4>
             <div style={{ fontSize: "2.2rem", fontWeight: "bold", color: "#FFFFFF", fontFamily: "'Cormorant Garamond', serif" }}>
-              {submissions.filter(s => s.type && (s.type.includes('Call') || s.type.includes('Lead Capture'))).length}
+              {standardSubmissions.filter(s => s.type && (s.type.includes('Call') || s.type.includes('Lead Capture'))).length}
             </div>
           </div>
           <div style={{ background: "#122647", padding: "20px", borderRadius: "8px", boxShadow: "0 8px 24px rgba(0,0,0,0.15)", borderLeft: "4px solid #C9A84C", borderTop: "1px solid rgba(255,255,255,0.05)", borderRight: "1px solid rgba(255,255,255,0.05)", borderBottom: "1px solid rgba(255,255,255,0.05)" }}>
             <h4 style={{ margin: "0 0 10px 0", color: "#8EA8C3", fontSize: "0.85rem", textTransform: "uppercase", letterSpacing: "1px" }}>Total Interactions</h4>
             <div style={{ fontSize: "2.2rem", fontWeight: "bold", color: "#FFFFFF", fontFamily: "'Cormorant Garamond', serif" }}>
-              {submissions.length}
+              {standardSubmissions.length}
             </div>
           </div>
         </div>
@@ -434,7 +443,7 @@ export default function AdminDashboard() {
         {/* Registered Leads Table */}
         <div style={{ background: "#122647", borderRadius: "8px", boxShadow: "0 8px 24px rgba(0,0,0,0.15)", overflow: "hidden", border: "1px solid rgba(255,255,255,0.05)", marginBottom: "30px" }}>
           <div style={{ padding: "20px", borderBottom: "1px solid rgba(201,168,76,0.1)", background: "#0B1D35", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-            <h3 style={{ margin: 0, color: "#FFFFFF", fontFamily: "'Cormorant Garamond', serif", fontSize: "24px" }}>Registered Leads ({submissions.filter(sub => sub.email && sub.email.includes('@') && sub.name !== 'Anonymous Click').length})</h3>
+            <h3 style={{ margin: 0, color: "#FFFFFF", fontFamily: "'Cormorant Garamond', serif", fontSize: "24px" }}>Registered Contact/Audit Leads ({standardSubmissions.length})</h3>
             <button 
               onClick={async () => {
                 if (confirm("Are you sure you want to delete ALL registered leads? This cannot be undone.") && 
@@ -483,9 +492,9 @@ export default function AdminDashboard() {
                     <th style={{ padding: "15px", width: "40px" }}>
                       <input 
                         type="checkbox" 
-                        checked={selectedEmails.length > 0 && selectedEmails.length === Array.from(new Set(submissions.filter(s => s.email && s.email.includes('@') && s.name !== 'Anonymous Click').map(s => s.email))).length}
+                        checked={selectedEmails.length > 0 && selectedEmails.length === Array.from(new Set(standardSubmissions.map(s => s.email))).length}
                         onChange={(e) => {
-                          const allValid = Array.from(new Set(submissions.filter(s => s.email && s.email.includes('@') && s.name !== 'Anonymous Click').map(s => s.email))) as string[];
+                          const allValid = Array.from(new Set(standardSubmissions.map(s => s.email))) as string[];
                           setSelectedEmails(e.target.checked ? allValid : []);
                         }}
                         style={{ cursor: "pointer", accentColor: "#C9A84C" }}
@@ -501,7 +510,7 @@ export default function AdminDashboard() {
                   </tr>
                 </thead>
                 <tbody>
-                  {submissions.filter(sub => sub.email && sub.email.includes('@') && sub.name !== 'Anonymous Click').map((sub) => (
+                  {standardSubmissions.map((sub) => (
                     <tr key={sub.id} style={{ borderBottom: "1px solid rgba(255,255,255,0.05)", transition: "background 0.2s", background: selectedEmails.includes(sub.email) ? "rgba(201,168,76,0.05)" : "transparent" }} onMouseOver={(e) => e.currentTarget.style.background = selectedEmails.includes(sub.email) ? 'rgba(201,168,76,0.08)' : 'rgba(255,255,255,0.02)'} onMouseOut={(e) => e.currentTarget.style.background = selectedEmails.includes(sub.email) ? 'rgba(201,168,76,0.05)' : 'transparent'}>
                       <td style={{ padding: "15px" }}>
                         <input 
@@ -522,9 +531,9 @@ export default function AdminDashboard() {
                       </td>
                       <td className="hide-on-mobile" style={{ padding: "15px" }}>
                         <span style={{ 
-                          background: sub.type === 'Discovery Call Click' ? 'rgba(230, 81, 0, 0.1)' : (sub.type === 'Checklist Download' ? 'rgba(21, 101, 192, 0.1)' : 'rgba(46, 125, 50, 0.1)'), 
-                          color: sub.type === 'Discovery Call Click' ? '#ffb74d' : (sub.type === 'Checklist Download' ? '#64b5f6' : '#81c784'), 
-                          border: `1px solid ${sub.type === 'Discovery Call Click' ? 'rgba(230, 81, 0, 0.3)' : (sub.type === 'Checklist Download' ? 'rgba(21, 101, 192, 0.3)' : 'rgba(46, 125, 50, 0.3)')}`,
+                          background: sub.type === 'Discovery Call Click' ? 'rgba(230, 81, 0, 0.1)' : 'rgba(46, 125, 50, 0.1)', 
+                          color: sub.type === 'Discovery Call Click' ? '#ffb74d' : '#81c784', 
+                          border: `1px solid ${sub.type === 'Discovery Call Click' ? 'rgba(230, 81, 0, 0.3)' : 'rgba(46, 125, 50, 0.3)'}`,
                           padding: "4px 10px", 
                           borderRadius: "12px", 
                           fontSize: "0.75rem", 
@@ -552,79 +561,7 @@ export default function AdminDashboard() {
           )}
         </div>
 
-        {/* Anonymous Interactions Toggle */}
-        <div style={{ textAlign: "center", marginBottom: "20px" }}>
-          <button 
-            onClick={() => setShowAnonymous(!showAnonymous)}
-            style={{ 
-              padding: "10px 20px", 
-              background: "rgba(11,29,53,0.8)", 
-              color: "#C2D4E4", 
-              border: "1px solid rgba(201,168,76,0.3)", 
-              borderRadius: "50px", 
-              cursor: "pointer", 
-              fontFamily: "'DM Sans', sans-serif",
-              fontSize: "0.9rem",
-              transition: "all 0.2s ease"
-            }}
-            onMouseOver={(e) => { e.currentTarget.style.color = "#C9A84C"; e.currentTarget.style.borderColor = "#C9A84C"; }}
-            onMouseOut={(e) => { e.currentTarget.style.color = "#C2D4E4"; e.currentTarget.style.borderColor = "rgba(201,168,76,0.3)"; }}
-          >
-            {showAnonymous ? "Hide Anonymous Interactions" : `Show Anonymous Interactions (${submissions.filter(sub => !sub.email || !sub.email.includes('@') || sub.name === 'Anonymous Click').length})`}
-          </button>
-        </div>
-
-        {/* Anonymous Interactions Table */}
-        {showAnonymous && (
-          <div style={{ background: "#122647", borderRadius: "8px", boxShadow: "0 8px 24px rgba(0,0,0,0.15)", overflow: "hidden", border: "1px solid rgba(255,255,255,0.05)" }}>
-            <div style={{ padding: "20px", borderBottom: "1px solid rgba(201,168,76,0.1)", background: "rgba(11,29,53,0.5)" }}>
-              <h3 style={{ margin: 0, color: "#8EA8C3", fontFamily: "'Cormorant Garamond', serif", fontSize: "20px" }}>Anonymous Interactions</h3>
-            </div>
-            
-            <div style={{ overflowX: "auto" }}>
-              <table style={{ width: "100%", borderCollapse: "collapse", textAlign: "left", opacity: 0.8 }}>
-                <thead>
-                  <tr style={{ background: "rgba(11,29,53,0.3)", color: "#C9A84C", textTransform: "uppercase", letterSpacing: "1px" }}>
-                    <th style={{ padding: "12px 15px", fontSize: "0.8rem" }}>Date & Time</th>
-                    <th style={{ padding: "12px 15px", fontSize: "0.8rem" }}>Type</th>
-                    <th className="hide-on-mobile" style={{ padding: "12px 15px", fontSize: "0.8rem" }}>Details</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {submissions.filter(sub => !sub.email || !sub.email.includes('@') || sub.name === 'Anonymous Click').map((sub) => (
-                    <tr key={sub.id} style={{ borderBottom: "1px solid rgba(255,255,255,0.03)" }}>
-                      <td style={{ padding: "12px 15px", color: "#8EA8C3", fontSize: "0.85rem" }}>
-                        {sub.createdAt ? new Date(sub.createdAt.toDate()).toLocaleString([], { year: 'numeric', month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit' }) : 'Just now'}
-                      </td>
-                      <td style={{ padding: "12px 15px" }}>
-                        <span style={{ 
-                          background: 'rgba(255, 255, 255, 0.05)', 
-                          color: '#C2D4E4', 
-                          border: '1px solid rgba(255, 255, 255, 0.1)',
-                          padding: "3px 8px", 
-                          borderRadius: "12px", 
-                          fontSize: "0.7rem", 
-                        }}>
-                          {sub.type || 'Anonymous Click'}
-                        </span>
-                      </td>
-                      <td style={{ padding: "12px 15px", color: "#8EA8C3", fontSize: "0.85rem", fontStyle: "italic" }}>
-                        Unregistered intent
-                      </td>
-                    </tr>
-                  ))}
-                  {submissions.filter(sub => !sub.email || !sub.email.includes('@') || sub.name === 'Anonymous Click').length === 0 && (
-                    <tr>
-                      <td colSpan={3} style={{ padding: "20px", textAlign: "center", color: "#8EA8C3" }}>No anonymous interactions found.</td>
-                    </tr>
-                  )}
-                </tbody>
-              </table>
-            </div>
-          </div>
-        )}
-
-        {/* Scheduled Email History */}
+                {/* Scheduled Email History */}
         <div style={{ marginTop: "30px" }}>
           <div style={{ textAlign: "center", marginBottom: "20px" }}>
             <button

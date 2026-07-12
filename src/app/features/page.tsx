@@ -37,9 +37,12 @@ export default function FeaturesPage() {
       <nav id="main-nav" style={{ padding: navPadding, background: 'rgba(7, 20, 42, 0.95)', borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
         <div className="container">
           <div className="nav-inner">
-            <Link href="/" className="nav-logo-wrapper" style={{ textDecoration: 'none' }}>
-              <div className="nav-logo">PROCONIX</div>
-              <div className="nav-tagline">Project Management Consultancy</div>
+            <Link href="/" className="nav-logo-wrapper">
+              <img src="/logo.png" alt="Proconix Logo" className="nav-logo-img" />
+              <div className="nav-logo-text-group">
+                <div className="nav-logo">PROCONIX</div>
+                <div className="nav-tagline">Project Management Consultancy</div>
+              </div>
             </Link>
             <ul className="nav-links">
               <li><Link href="/">Home</Link></li>
@@ -145,9 +148,12 @@ export default function FeaturesPage() {
 
       <footer style={{ background: '#07142A', padding: '60px 0', borderTop: '1px solid rgba(255,255,255,0.05)', textAlign: 'center' }}>
         <div className="container">
-           <Link href="/" className="nav-logo-wrapper" style={{ textDecoration: 'none', marginBottom: '30px', display: 'inline-block' }}>
-             <div className="nav-logo" style={{ fontSize: '1.4rem' }}>PROCONIX</div>
-             <div className="nav-tagline" style={{ fontSize: '0.55rem' }}>Project Management Consultancy</div>
+           <Link href="/" className="nav-logo-wrapper" style={{ marginBottom: '30px' }}>
+             <img src="/logo.png" alt="Proconix Logo" className="nav-logo-img" />
+             <div className="nav-logo-text-group">
+               <div className="nav-logo" style={{ fontSize: '1.4rem' }}>PROCONIX</div>
+               <div className="nav-tagline" style={{ fontSize: '0.55rem' }}>Project Management Consultancy</div>
+             </div>
            </Link>
            <p style={{ fontSize: '0.85rem', color: '#455065' }}>© 2026 Proconix Project Management Consultancy. All rights reserved.</p>
         </div>

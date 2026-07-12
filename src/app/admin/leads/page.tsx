@@ -60,6 +60,10 @@ export default function LeadsDashboard() {
   const [activeTab, setActiveTab]         = useState<"analytics" | "submissions" | "drips" | "links">("analytics");
   const [copiedSlug, setCopiedSlug]       = useState<string | null>(null);
 
+  // PDF Upload states
+  const [uploadingSlug, setUploadingSlug] = useState<string | null>(null);
+  const [uploadStatus, setUploadStatus] = useState<Record<string, string>>({});
+
   // Settings state
   const [dripEnabled, setDripEnabled]     = useState(true);
   const [dripHour, setDripHour]           = useState(-1);
@@ -133,6 +137,35 @@ export default function LeadsDashboard() {
       setDripRunLog(["ERROR: " + e.message]);
     } finally {
       setIsRunningDrip(false);
+    }
+  };
+
+  // ── Upload PDF ────────────────────────────────────────────────────────────
+  const handleFileUpload = async (slug: string, file: File) => {
+    if (!file) return;
+    setUploadingSlug(slug);
+    setUploadStatus(prev => ({ ...prev, [slug]: "Uploading..." }));
+    
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("slug", slug);
+
+    try {
+      const res = await fetch("/api/admin/leads/upload", {
+        method: "POST",
+        headers: { Authorization: AUTH },
+        body: formData,
+      });
+      if (res.ok) {
+        setUploadStatus(prev => ({ ...prev, [slug]: "✓ PDF Saved!" }));
+      } else {
+        const d = await res.json();
+        setUploadStatus(prev => ({ ...prev, [slug]: `✗ Error: ${d.error}` }));
+      }
+    } catch {
+      setUploadStatus(prev => ({ ...prev, [slug]: "✗ Connection error" }));
+    } finally {
+      setUploadingSlug(null);
     }
   };
 
@@ -237,6 +270,9 @@ export default function LeadsDashboard() {
             <a href="/admin" style={{ padding: "8px 16px", background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.15)", color: "#FFFFFF", borderRadius: "4px", textDecoration: "none", fontWeight: "bold", fontSize: "0.85rem" }}>
               ← Main Admin
             </a>
+            <a href="/lead" target="_blank" rel="noopener noreferrer" style={{ padding: "8px 16px", background: "rgba(201,168,76,0.15)", border: "1px solid rgba(201,168,76,0.4)", color: "#C9A84C", borderRadius: "4px", textDecoration: "none", fontWeight: "bold", fontSize: "0.85rem" }}>
+              👁️ View Lead Page
+            </a>
             <button onClick={handleClearAll}
               style={{ padding: "8px 16px", background: "rgba(229,115,115,0.1)", border: "1px solid rgba(229,115,115,0.3)", color: "#e57373", borderRadius: "4px", cursor: "pointer", fontWeight: "bold", fontSize: "0.85rem" }}>
               Clear All Leads
@@ -303,9 +339,17 @@ export default function LeadsDashboard() {
                   <select value={dripHour} onChange={e => setDripHour(parseInt(e.target.value))}
                     style={{ width: "100%", padding: "10px", background: "#0B1D35", border: "1px solid rgba(201,168,76,0.3)", color: "#FFFFFF", borderRadius: "4px", fontSize: "0.9rem" }}>
                     <option value={-1}>Same time as capture (±1h)</option>
-                    {Array.from({ length: 24 }, (_, i) => (
-                      <option key={i} value={i}>{String(i).padStart(2, "0")}:00 UTC ({i < 12 ? `${i === 0 ? 12 : i}am` : `${i === 12 ? 12 : i - 12}pm`})</option>
-                    ))}
+                    {Array.from({ length: 24 }, (_, i) => {
+                      const localDate = new Date();
+                      localDate.setUTCHours(i, 0, 0, 0);
+                      const localStr = localDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                      const utcLabel = i < 12 ? `${i === 0 ? 12 : i}am` : `${i === 12 ? 12 : i - 12}pm`;
+                      return (
+                        <option key={i} value={i}>
+                          {String(i).padStart(2, "0")}:00 UTC ({utcLabel}) — {localStr} Local
+                        </option>
+                      );
+                    })}
                   </select>
                 </div>
 
@@ -499,6 +543,22 @@ export default function LeadsDashboard() {
                       style={{ padding: "6px 14px", background: isCopied ? "rgba(46,125,50,0.15)" : "rgba(255,255,255,0.06)", border: `1px solid ${isCopied ? "rgba(46,125,50,0.4)" : "rgba(255,255,255,0.12)"}`, color: isCopied ? "#81c784" : "#FFFFFF", borderRadius: "4px", cursor: "pointer", fontSize: "0.75rem", fontWeight: "bold", whiteSpace: "nowrap", transition: "all 0.2s" }}>
                       {isCopied ? "✓ Copied!" : "Copy"}
                     </button>
+
+                    {/* PDF Upload */}
+                    <div style={{ display: "flex", alignItems: "center", gap: "8px", borderLeft: "1px solid rgba(255,255,255,0.08)", paddingLeft: "14px" }}>
+                      <label style={{ cursor: "pointer", background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.1)", borderRadius: "4px", padding: "6px 12px", fontSize: "0.75rem", fontWeight: "bold", whiteSpace: "nowrap" }}>
+                        Upload PDF
+                        <input type="file" accept=".pdf" style={{ display: "none" }} onChange={(e) => {
+                          const file = e.target.files?.[0];
+                          if (file) handleFileUpload(f.slug, file);
+                        }} />
+                      </label>
+                      {uploadStatus[f.slug] && (
+                        <span style={{ fontSize: "0.72rem", color: uploadStatus[f.slug].includes("✓") ? "#81c784" : uploadStatus[f.slug].includes("✗") ? "#e57373" : "#C9A84C", fontWeight: "bold" }}>
+                          {uploadStatus[f.slug]}
+                        </span>
+                      )}
+                    </div>
                   </div>
                 );
               })}

@@ -39,7 +39,7 @@ async function getLeadSettings() {
 export async function POST(req: Request) {
   try {
     const body = await req.json();
-    const { email, slug, utmSource, utmMedium, utmCampaign, utmContent, utmTerm, referrer } = body;
+    const { name, email, slug, utmSource, utmMedium, utmCampaign, utmContent, utmTerm, referrer } = body;
 
     if (!email || !email.includes('@')) {
       return NextResponse.json({ error: 'Valid email is required.' }, { status: 400 });
@@ -79,6 +79,7 @@ export async function POST(req: Request) {
     let docId: string | null = null;
     try {
       const docRef = await addDoc(collection(db, 'leadSubmissions'), {
+        name: name || 'Lead Magnet User',
         email,
         slug,
         assetTitle: asset.title,
@@ -101,7 +102,7 @@ export async function POST(req: Request) {
       // Fallback: write to formSubmissions so capture is never lost
       try {
         await addDoc(collection(db, 'formSubmissions'), {
-          name: 'Lead Magnet User',
+          name: name || 'Lead Magnet User',
           email,
           country: 'Not provided',
           sector: 'Not provided',
@@ -133,7 +134,21 @@ export async function POST(req: Request) {
       auth: { user: smtpUser, pass: smtpPass },
     });
 
-    const emailHtml = `<!DOCTYPE html>
+    let bodyHtml = asset.immediateBody;
+    const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://proconixpmc.com';
+    if (docId) {
+      const downloadUrl = `${baseUrl}/api/leads/download?id=${docId}&slug=${slug}`;
+      bodyHtml = bodyHtml.replace(
+        /href="https:\/\/proconixpmc\.com\/assets\/lead-magnets\/[a-zA-Z0-9_-]+\.pdf"/g,
+        `href="${downloadUrl}"`
+      );
+      bodyHtml = bodyHtml.replace(
+        /href="\/assets\/lead-magnets\/[a-zA-Z0-9_-]+\.pdf"/g,
+        `href="${downloadUrl}"`
+      );
+    }
+
+    let emailHtml = `<!DOCTYPE html>
 <html>
 <head>
   <meta charset="utf-8">
@@ -149,7 +164,7 @@ export async function POST(req: Request) {
         <div style="color:#C9A84C;font-size:10px;font-weight:600;letter-spacing:2px;text-transform:uppercase;margin-top:4px;">Project Management Consultancy</div>
       </div>
       <div style="padding:32px 40px 40px;text-align:left;">
-        ${asset.immediateBody}
+        ${bodyHtml}
       </div>
       <div style="padding:24px 40px;text-align:center;font-size:11px;color:#8EA8C3;border-top:1px solid rgba(201,168,76,0.08);background:#07142A;letter-spacing:0.5px;">
         &copy; 2026 Proconix Project Management Consultancy &middot; Africa &middot; GCC
@@ -158,6 +173,11 @@ export async function POST(req: Request) {
   </div>
 </body>
 </html>`;
+
+    if (docId) {
+      const trackingPixel = `<img src="${baseUrl}/api/track/open?id=${docId}&day=0" width="1" height="1" alt="" style="display:none;border:0;" />`;
+      emailHtml = emailHtml.replace('</body>', `${trackingPixel}</body>`);
+    }
 
     try {
       await transporter.sendMail({
@@ -175,7 +195,7 @@ export async function POST(req: Request) {
       try {
         await sendSlackNotification({
           type: `Lead Magnet: ${slug}`,
-          name: 'Lead Magnet User',
+          name: name || 'Lead Magnet User',
           email,
           details: `Source: ${utmSource || 'N/A'} | Medium: ${utmMedium || 'N/A'} | Campaign: ${utmCampaign || 'N/A'}`,
           priority: 'low',

@@ -96,10 +96,13 @@ export default function Home() {
       <nav id="main-nav" style={{ padding: navPadding }}>
         <div className="container">
           <div className="nav-inner">
-            <div className="nav-logo-wrapper">
-              <div className="nav-logo">PROCONIX</div>
-              <div className="nav-tagline">Project Management Consultancy</div>
-            </div>
+            <Link href="/" className="nav-logo-wrapper">
+              <img src="/logo.png" alt="Proconix Logo" className="nav-logo-img" />
+              <div className="nav-logo-text-group">
+                <div className="nav-logo">PROCONIX</div>
+                <div className="nav-tagline">Project Management Consultancy</div>
+              </div>
+            </Link>
 
             <ul className="nav-links">
               <li><a href="#identity" onClick={(e) => smoothScroll(e, "#identity")}>What We Are</a></li>
@@ -820,10 +823,13 @@ export default function Home() {
     <div className="footer-grid">
 
       <div className="footer-brand">
-        <div className="nav-logo-wrapper" style={{ marginBottom: '15px' }}>
-          <div className="nav-logo" style={{ fontSize: '1.3rem' }}>PROCONIX</div>
-          <div className="nav-tagline" style={{ fontSize: '0.5rem' }}>Project Management Consultancy</div>
-        </div>
+        <Link href="/" className="nav-logo-wrapper" style={{ marginBottom: '15px' }}>
+          <img src="/logo.png" alt="Proconix Logo" className="nav-logo-img" />
+          <div className="nav-logo-text-group">
+            <div className="nav-logo" style={{ fontSize: '1.3rem' }}>PROCONIX</div>
+            <div className="nav-tagline" style={{ fontSize: '0.5rem' }}>Project Management Consultancy</div>
+          </div>
+        </Link>
         <p>We Direct, Manage, and Execute end-to-end construction project governance in Africa — across the full EPCM lifecycle, from inception through to successful handover.</p>
         <div className="footer-social-row">
           <a href="https://www.linkedin.com/in/talibkhanjipmp/" target="_blank" rel="noopener" title="LinkedIn">
