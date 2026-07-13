@@ -171,7 +171,7 @@ export default function LeadsDashboard() {
         }
       } catch {}
     }));
-    setPdfStatuses(statuses);
+    setPdfStatuses(prev => ({ ...prev, ...statuses }));
   };
 
   // ── Upload PDF ────────────────────────────────────────────────────────────
