@@ -292,6 +292,18 @@ export default function LeadsDashboard() {
   const bySlug = leads.reduce((a: any, l) => { a[l.slug] = (a[l.slug] || 0) + 1; return a; }, {});
   const bySource = leads.reduce((a: any, l) => { const s = l.utmSource || "Direct"; a[s] = (a[s] || 0) + 1; return a; }, {});
 
+  // PDF Downloads high overview calculations
+  const totalDownloads = leads.reduce((sum, l) => sum + (l.linkClicks || 0), 0);
+  const downloadedLeads = leads.filter(l => l.linkClicks > 0 && l.linkClickedAt);
+  const latestDownloadedLead = downloadedLeads.length > 0
+    ? downloadedLeads.reduce((latest, current) => {
+        return new Date(current.linkClickedAt).getTime() > new Date(latest.linkClickedAt).getTime() ? current : latest;
+      }, downloadedLeads[0])
+    : null;
+  const latestDownloadText = latestDownloadedLead
+    ? `Latest: ${(latestDownloadedLead.slug || "").replace(/-/g, " ")} (${new Date(latestDownloadedLead.linkClickedAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })})`
+    : "Latest: No downloads yet";
+
   // ── Funnels list ──────────────────────────────────────────────────────────
   const funnels = [
     { slug: "pre-construction-checklist",   title: "Pre-Construction Governance Checklist",         icon: "📋" },
@@ -362,16 +374,19 @@ export default function LeadsDashboard() {
         </div>
 
         {/* Stats bar */}
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(160px, 1fr))", gap: "16px", marginBottom: "30px" }}>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: "16px", marginBottom: "30px" }}>
           {[
-            { label: "Total Captures", value: totalLeads, color: "#FFFFFF" },
-            { label: "Drip Active", value: activeLeads, color: "#81c784" },
-            { label: "Drip Completed", value: completedLeads, color: "#64b5f6" },
-            { label: "Email Open Rate", value: `${openRate}%`, color: "#C9A84C" },
+            { label: "Total Captures", value: totalLeads, subtext: "All-time form submissions", color: "#FFFFFF" },
+            { label: "Total Downloads", value: totalDownloads, subtext: latestDownloadText, color: "#81c784" },
+            { label: "Drip Active / Done", value: `${activeLeads} / ${completedLeads}`, subtext: "Leads currently in queue", color: "#64b5f6" },
+            { label: "Email Open Rate", value: `${openRate}%`, subtext: "Drip open metrics", color: "#C9A84C" },
           ].map(s => (
-            <div key={s.label} style={{ background: "#122647", borderRadius: "8px", border: "1px solid rgba(255,255,255,0.05)", padding: "20px" }}>
-              <div style={{ fontSize: "28px", fontWeight: "bold", color: s.color, fontFamily: "'Cormorant Garamond', serif" }}>{s.value}</div>
-              <div style={{ fontSize: "0.8rem", color: "#8EA8C3", marginTop: "4px" }}>{s.label}</div>
+            <div key={s.label} style={{ background: "#122647", borderRadius: "8px", border: "1px solid rgba(255,255,255,0.05)", padding: "20px", display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
+              <div>
+                <div style={{ fontSize: "28px", fontWeight: "bold", color: s.color, fontFamily: "'Cormorant Garamond', serif" }}>{s.value}</div>
+                <div style={{ fontSize: "0.8rem", color: "#8EA8C3", marginTop: "4px" }}>{s.label}</div>
+              </div>
+              <div style={{ fontSize: "0.72rem", color: "#4a6a8a", marginTop: "8px", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }} title={s.subtext}>{s.subtext}</div>
             </div>
           ))}
         </div>
