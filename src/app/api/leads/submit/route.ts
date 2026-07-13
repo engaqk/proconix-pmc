@@ -52,17 +52,18 @@ export async function POST(req: Request) {
 
     // ── 1. Duplicate check (per email per slug) in leadSubmissions ──
     let hasActiveDrip = false;
+    let existingDocId: string | null = null;
     try {
       const existing = await getDocs(
         query(collection(db, 'leadSubmissions'),
           where('email', '==', email),
           where('slug', '==', slug),
-          limit(5))
+          limit(1))
       );
-      existing.forEach(d => {
-        const s = d.data().dripStatus;
-        if (s === 'active' || s === 'completed') hasActiveDrip = true;
-      });
+      if (!existing.empty) {
+        existingDocId = existing.docs[0].id;
+        hasActiveDrip = true;
+      }
     } catch (e: any) {
       console.warn('Lead submit: duplicate check failed (non-fatal):', e.message);
     }
@@ -77,41 +78,45 @@ export async function POST(req: Request) {
 
     // ── 3. Write to dedicated leadSubmissions collection ──
     let docId: string | null = null;
-    try {
-      const docRef = await addDoc(collection(db, 'leadSubmissions'), {
-        name: name || 'Lead Magnet User',
-        email,
-        slug,
-        assetTitle: asset.title,
-        utmSource: utmSource || null,
-        utmMedium: utmMedium || null,
-        utmCampaign: utmCampaign || null,
-        utmContent: utmContent || null,
-        utmTerm: utmTerm || null,
-        referrer: referrer || null,
-        dripStatus: hasActiveDrip ? 'duplicate' : (settings.dripEnabled ? 'active' : 'paused'),
-        dripDay: hasActiveDrip ? 0 : 1,
-        dripScheduledFor: hasActiveDrip ? null : (settings.dripEnabled ? tomorrow.toISOString() : null),
-        dripSentHistory: [],
-        emailOpens: [],
-        capturedAt: serverTimestamp(),
-      });
-      docId = docRef.id;
-    } catch (e: any) {
-      console.error('Lead submit: write to leadSubmissions failed:', e.message);
-      // Fallback: write to formSubmissions so capture is never lost
+    if (existingDocId) {
+      docId = existingDocId;
+    } else {
       try {
-        await addDoc(collection(db, 'formSubmissions'), {
+        const docRef = await addDoc(collection(db, 'leadSubmissions'), {
           name: name || 'Lead Magnet User',
           email,
-          country: 'Not provided',
-          sector: 'Not provided',
-          budget: 'Not provided',
-          details: serializeLeadDetails({ utmSource, utmMedium, utmCampaign, utmContent, utmTerm, referrer }),
-          type: `Lead Magnet: ${slug}`,
-          createdAt: serverTimestamp(),
+          slug,
+          assetTitle: asset.title,
+          utmSource: utmSource || null,
+          utmMedium: utmMedium || null,
+          utmCampaign: utmCampaign || null,
+          utmContent: utmContent || null,
+          utmTerm: utmTerm || null,
+          referrer: referrer || null,
+          dripStatus: settings.dripEnabled ? 'active' : 'paused',
+          dripDay: 1,
+          dripScheduledFor: settings.dripEnabled ? tomorrow.toISOString() : null,
+          dripSentHistory: [],
+          emailOpens: [],
+          capturedAt: serverTimestamp(),
         });
-      } catch {}
+        docId = docRef.id;
+      } catch (e: any) {
+        console.error('Lead submit: write to leadSubmissions failed:', e.message);
+        // Fallback: write to formSubmissions so capture is never lost
+        try {
+          await addDoc(collection(db, 'formSubmissions'), {
+            name: name || 'Lead Magnet User',
+            email,
+            country: 'Not provided',
+            sector: 'Not provided',
+            budget: 'Not provided',
+            details: serializeLeadDetails({ utmSource, utmMedium, utmCampaign, utmContent, utmTerm, referrer }),
+            type: `Lead Magnet: ${slug}`,
+            createdAt: serverTimestamp(),
+          });
+        } catch {}
+      }
     }
 
     // ── 4. Send Day 0 asset delivery email ──
