@@ -3,6 +3,8 @@ import PreConstructionChecklist from './PreConstructionChecklist';
 
 import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
+import { db } from '../../../lib/firebase';
+import { collection, query, where, getDocs } from 'firebase/firestore';
 
 const CONTENT: Record<string, {
   badge: string;
@@ -259,8 +261,9 @@ const CONTENT: Record<string, {
 export default function ResourcePage() {
   const params = useParams();
   const slug = (params?.slug as string || '').toLowerCase();
-  const content = CONTENT[slug];
-
+  
+  const [resolvedSlug, setResolvedSlug] = useState<string | null>(null);
+  const [loadingMapping, setLoadingMapping] = useState(true);
   const [mounted, setMounted] = useState(false);
   const [email, setEmail] = useState('');
   const [submitted, setSubmitted] = useState(false);
@@ -279,7 +282,32 @@ export default function ResourcePage() {
       utmTerm: p.get('utm_term') || '',
       referrer: document.referrer || '',
     });
-  }, []);
+
+    const resolveSlug = async () => {
+      try {
+        const q = query(collection(db, 'leadSlugs'), where('customSlug', '==', slug));
+        const snap = await getDocs(q);
+        if (!snap.empty) {
+          setResolvedSlug(snap.docs[0].id);
+        } else {
+          setResolvedSlug(slug);
+        }
+      } catch (err) {
+        console.error("Error resolving custom slug:", err);
+        setResolvedSlug(slug);
+      } finally {
+        setLoadingMapping(false);
+      }
+    };
+
+    if (slug) {
+      resolveSlug();
+    } else {
+      setLoadingMapping(false);
+    }
+  }, [slug]);
+
+  const content = resolvedSlug ? CONTENT[resolvedSlug] : null;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -289,7 +317,7 @@ export default function ResourcePage() {
       const res = await fetch('/api/leads/submit', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, slug, ...utm }),
+        body: JSON.stringify({ email, slug: resolvedSlug, ...utm }),
       });
       if (res.ok) { setSubmitted(true); }
       else { const d = await res.json(); setError(d.error || 'Something went wrong. Please try again.'); }
@@ -297,13 +325,13 @@ export default function ResourcePage() {
     finally { setLoading(false); }
   };
 
-  if (!mounted) {
+  if (!mounted || loadingMapping) {
     return (
       <div style={{ minHeight: '100vh', background: '#07142A' }} />
     );
   }
 
-  if (!content) {
+  if (!content || !resolvedSlug) {
     return (
       <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#07142A', color: '#FFFFFF', fontFamily: "'DM Sans', sans-serif" }}>
         <div style={{ textAlign: 'center' }}>
@@ -315,8 +343,8 @@ export default function ResourcePage() {
     );
   }
 
-    if (slug === 'pre-construction-checklist') {
-    return <PreConstructionChecklist slug={slug} utm={utm} />;
+  if (resolvedSlug === 'pre-construction-checklist') {
+    return <PreConstructionChecklist slug={resolvedSlug} utm={utm} />;
   }
 
   return (

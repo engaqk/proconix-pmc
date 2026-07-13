@@ -83,6 +83,12 @@ export default function LeadsDashboard() {
   const [emailTemplates, setEmailTemplates] = useState<Record<string, string>>({});
   const [templateSlug, setTemplateSlug] = useState('pre-construction-checklist');
 
+  // Custom slug states
+  const [customSlugs, setCustomSlugs]       = useState<Record<string, string>>({});
+  const [editingSlugKey, setEditingSlugKey] = useState<string | null>(null);
+  const [editingSlugVal, setEditingSlugVal] = useState("");
+  const [isSavingSlug, setIsSavingSlug]     = useState(false);
+
   // ── Auth ──────────────────────────────────────────────────────────────────
   useEffect(() => {
     if (localStorage.getItem("proconix_admin_logged_in") === "true") setIsAuthorized(true);
@@ -198,10 +204,25 @@ export default function LeadsDashboard() {
     }
   };
 
+  const loadCustomSlugs = useCallback(async () => {
+    try {
+      const { getDocs, collection } = await import('firebase/firestore');
+      const snap = await getDocs(collection(db, 'leadSlugs'));
+      const mapping: Record<string, string> = {};
+      snap.forEach(d => {
+        mapping[d.id] = d.data().customSlug || "";
+      });
+      setCustomSlugs(mapping);
+    } catch (err) {
+      console.error("Error loading custom slugs:", err);
+    }
+  }, []);
+
   // ── Firestore listener ────────────────────────────────────────────────────
   useEffect(() => {
     if (!isAuthorized) return;
     loadSettings();
+    loadCustomSlugs();
     // Load persistent PDF upload statuses
     const allSlugs = ["pre-construction-checklist","contractor-risk-audit","capex-allocation-strategy","epcm-execution-playbook","procurement-intelligence","hospitality-resort-governance","cost-control-protocol","capital-project-reporting","constructability-standards","delay-avoidance"];
     loadPdfStatuses(allSlugs);
@@ -216,7 +237,7 @@ export default function LeadsDashboard() {
       setIsLoading(false);
     });
     return () => unsub();
-  }, [isAuthorized, loadSettings]);
+  }, [isAuthorized, loadSettings, loadCustomSlugs]);
 
   // ── Load email templates from Firestore ────────────────────────────────────
   useEffect(() => {
@@ -357,7 +378,7 @@ export default function LeadsDashboard() {
 
         {/* Tabs */}
         <div style={{ display: "flex", gap: "8px", marginBottom: "24px", borderBottom: "1px solid rgba(255,255,255,0.06)", paddingBottom: "0", flexWrap: "wrap" }}>
-          {tabBtn("links",       "🔗 Share Links")}
+          {tabBtn("links",       "🔗 Share Leads Link")}
           {tabBtn("submissions", `📋 Leads Captured (${totalLeads})`)} 
           {tabBtn("analytics",   "⚙️ Cron Settings")}
           {tabBtn("drips",       `📧 Email Queue (${activeLeads} active)`)}
@@ -666,8 +687,10 @@ export default function LeadsDashboard() {
             </div>
             <div style={{ padding: "24px", display: "flex", flexDirection: "column", gap: "12px" }}>
               {funnels.map((f, i) => {
-                const url = `${BASE_URL}${FUNNEL_PATH}/${f.slug}`;
+                const customSlug = customSlugs[f.slug] || f.slug;
+                const url = `${BASE_URL}${FUNNEL_PATH}/${customSlug}`;
                 const isCopied = copiedSlug === f.slug;
+                const isEditing = editingSlugKey === f.slug;
                 return (
                   <div key={f.slug} style={{ display: "flex", alignItems: "center", gap: "14px", background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.06)", borderRadius: "6px", padding: "14px 18px" }}>
                     <span style={{ fontSize: "20px", flexShrink: 0 }}>{f.icon}</span>
@@ -675,7 +698,67 @@ export default function LeadsDashboard() {
                       <div style={{ color: "#FFFFFF", fontWeight: 600, fontSize: "0.88rem", marginBottom: "3px" }}>
                         <span style={{ color: "#C9A84C", marginRight: "8px", fontSize: "0.75rem" }}>#{i + 1}</span>{f.title}
                       </div>
-                      <div style={{ color: "#8EA8C3", fontSize: "0.75rem", fontFamily: "monospace", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{url}</div>
+                      
+                      {isEditing ? (
+                        <div style={{ display: "flex", alignItems: "center", gap: "6px", marginTop: "4px" }}>
+                          <span style={{ color: "#8EA8C3", fontSize: "0.75rem", fontFamily: "monospace" }}>{FUNNEL_PATH}/</span>
+                          <input 
+                            type="text" 
+                            value={editingSlugVal} 
+                            onChange={e => setEditingSlugVal(e.target.value)} 
+                            disabled={isSavingSlug}
+                            style={{ padding: "4px 8px", background: "#0B1D35", border: "1px solid rgba(201,168,76,0.5)", color: "#FFFFFF", borderRadius: "4px", fontSize: "0.75rem", fontFamily: "monospace", width: "160px", outline: "none" }} 
+                          />
+                          <button
+                            disabled={isSavingSlug}
+                            onClick={async () => {
+                              const cleanVal = editingSlugVal.trim().toLowerCase().replace(/[^a-z0-9-_]/g, '');
+                              if (!cleanVal) {
+                                alert("Slug cannot be empty!");
+                                return;
+                              }
+                              setIsSavingSlug(true);
+                              try {
+                                const { doc: fsDoc, setDoc } = await import('firebase/firestore');
+                                await setDoc(fsDoc(db, 'leadSlugs', f.slug), {
+                                  customSlug: cleanVal,
+                                  updatedAt: new Date().toISOString()
+                                });
+                                setCustomSlugs(prev => ({ ...prev, [f.slug]: cleanVal }));
+                                setEditingSlugKey(null);
+                              } catch (err: any) {
+                                alert("Failed to save slug: " + err.message);
+                              } finally {
+                                setIsSavingSlug(false);
+                              }
+                            }}
+                            style={{ padding: "4px 8px", background: "rgba(46,125,50,0.2)", border: "1px solid rgba(46,125,50,0.5)", color: "#81c784", borderRadius: "4px", fontSize: "0.72rem", cursor: "pointer", fontWeight: "bold" }}
+                          >
+                            {isSavingSlug ? "⏳" : "✓ Save"}
+                          </button>
+                          <button
+                            disabled={isSavingSlug}
+                            onClick={() => setEditingSlugKey(null)}
+                            style={{ padding: "4px 8px", background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.15)", color: "#FFFFFF", borderRadius: "4px", fontSize: "0.72rem", cursor: "pointer" }}
+                          >
+                            Cancel
+                          </button>
+                        </div>
+                      ) : (
+                        <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                          <div style={{ color: "#8EA8C3", fontSize: "0.75rem", fontFamily: "monospace", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{url}</div>
+                          <button 
+                            onClick={() => {
+                              setEditingSlugKey(f.slug);
+                              setEditingSlugVal(customSlugs[f.slug] || f.slug);
+                            }}
+                            style={{ background: "none", border: "none", color: "#C9A84C", cursor: "pointer", fontSize: "0.72rem", padding: "0 4px", display: "flex", alignItems: "center", textDecoration: "underline" }}
+                            title="Edit URL slug"
+                          >
+                            ✏️ Edit
+                          </button>
+                        </div>
+                      )}
                     </div>
                     <span style={{ fontSize: "0.75rem", color: "#8EA8C3", background: "rgba(255,255,255,0.05)", padding: "2px 8px", borderRadius: "12px" }}>
                       {bySlug[f.slug] || 0} leads

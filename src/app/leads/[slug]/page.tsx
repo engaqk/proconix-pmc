@@ -3,18 +3,43 @@
 import { useEffect, useState, useRef } from 'react';
 import { useParams, useSearchParams } from 'next/navigation';
 import Image from 'next/image';
+import { db } from '../../../lib/firebase';
+import { collection, query, where, getDocs } from 'firebase/firestore';
 
 export default function DownloadPage() {
   const params = useParams();
   const searchParams = useSearchParams();
-  const slug = (params?.slug as string) || 'pre-construction-checklist';
+  const rawSlug = ((params?.slug as string) || 'pre-construction-checklist').toLowerCase();
   const id = searchParams.get('id') || '';
 
+  const [resolvedSlug, setResolvedSlug] = useState<string | null>(null);
+  const [loadingMapping, setLoadingMapping] = useState(true);
   const [status, setStatus] = useState<'starting' | 'downloading' | 'done' | 'error'>('starting');
   const [progress, setProgress] = useState(0);
   const triggered = useRef(false);
 
   useEffect(() => {
+    const resolveSlug = async () => {
+      try {
+        const q = query(collection(db, 'leadSlugs'), where('customSlug', '==', rawSlug));
+        const snap = await getDocs(q);
+        if (!snap.empty) {
+          setResolvedSlug(snap.docs[0].id);
+        } else {
+          setResolvedSlug(rawSlug);
+        }
+      } catch (err) {
+        console.error("Error resolving custom slug:", err);
+        setResolvedSlug(rawSlug);
+      } finally {
+        setLoadingMapping(false);
+      }
+    };
+    resolveSlug();
+  }, [rawSlug]);
+
+  useEffect(() => {
+    if (!resolvedSlug || loadingMapping) return;
     if (triggered.current) return;
     triggered.current = true;
 
@@ -30,10 +55,10 @@ export default function DownloadPage() {
     const timer = setTimeout(() => {
       setStatus('downloading');
 
-      const url = `/api/leads/download?slug=${slug}${id ? `&id=${id}` : ''}`;
+      const url = `/api/leads/download?slug=${resolvedSlug}${id ? `&id=${id}` : ''}`;
       const link = document.createElement('a');
       link.href = url;
-      link.download = `${slug}.pdf`;
+      link.download = `${resolvedSlug}.pdf`;
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
@@ -47,7 +72,7 @@ export default function DownloadPage() {
     }, 1200);
 
     return () => { clearTimeout(timer); clearInterval(interval); };
-  }, [slug, id]);
+  }, [resolvedSlug, loadingMapping, id]);
 
   const titles: Record<string, string> = {
     'pre-construction-checklist': 'Pre-Construction Governance Checklist',
@@ -61,7 +86,7 @@ export default function DownloadPage() {
     'constructability-standards': 'Constructability Review Standards',
     'delay-avoidance': 'Construction Delay & Dispute Avoidance',
   };
-  const title = titles[slug] || 'Your Resource';
+  const title = titles[resolvedSlug || ''] || 'Your Resource';
 
   return (
     <>
@@ -309,7 +334,7 @@ export default function DownloadPage() {
               </a>
               <div className="dl-retry">
                 Didn't receive the file?{' '}
-                <a href={`/api/leads/download?slug=${slug}${id ? `&id=${id}` : ''}`} download>
+                <a href={`/api/leads/download?slug=${resolvedSlug || ''}${id ? `&id=${id}` : ''}`} download>
                   Click here to download again
                 </a>
               </div>
