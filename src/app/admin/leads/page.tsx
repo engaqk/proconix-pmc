@@ -979,9 +979,6 @@ export default function LeadsDashboard() {
                               >
                                 {isCopied ? "✓ Link Copied!" : "📋 Copy Link"}
                               </button>
-                              <a href={url} target="_blank" rel="noopener noreferrer" style={{ padding: "6px 16px", background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.12)", color: "#FFFFFF", borderRadius: "4px", textDecoration: "none", fontSize: "0.75rem", fontWeight: "bold" }}>
-                                🔗 Open Landing Page
-                              </a>
                             </div>
                           </div>
                         </div>
