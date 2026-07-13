@@ -250,7 +250,9 @@ export default function LeadsDashboard() {
         const snap = await getDoc(doc(db, 'leadEmailTemplates', templateSlug));
         if (snap.exists()) {
           const d = snap.data();
-          setEmailTemplates({
+           setEmailTemplates({
+            immediate_subject: d.immediate?.subject || '',
+            immediate_body: d.immediate?.body || '',
             day1_subject: d.day1?.subject || '',
             day1_body: d.day1?.body || '',
             day2_subject: d.day2?.subject || '',
@@ -1006,7 +1008,7 @@ export default function LeadsDashboard() {
                           <div style={{ borderTop: "1px solid rgba(255,255,255,0.04)", paddingTop: "12px", marginTop: "4px" }}>
                             <div style={{ fontSize: "0.75rem", color: "#8EA8C3", marginBottom: "6px" }}>Asset Status:</div>
                             {pdfStatuses[f.slug] ? (
-                              <div style={{ padding: "10px", background: "rgba(46,125,50,0.1)", border: "1px solid rgba(46,125,50,0.2)", borderRadius: "4px" }}>
+                              <div style={{ padding: "10px", background: "rgba(46,125,50,0.15)", border: "1px solid rgba(46,125,50,0.3)", borderRadius: "4px" }}>
                                 <div style={{ color: "#81c784", fontWeight: "bold", fontSize: "0.78rem" }}>✓ Custom PDF Active</div>
                                 <div style={{ color: "#8EA8C3", fontSize: "0.7rem", marginTop: "2px", fontFamily: "monospace" }}>
                                   {pdfStatuses[f.slug].filename} · {pdfStatuses[f.slug].sizeKb}KB<br />
@@ -1036,6 +1038,37 @@ export default function LeadsDashboard() {
                         </div>
 
                         <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
+                          
+                          {/* Immediate / Day 0 Deliverable Email */}
+                          <div style={{ borderBottom: "2px solid rgba(201,168,76,0.25)", paddingBottom: "14px", marginBottom: "10px" }}>
+                            <div style={{ fontSize: "0.78rem", fontWeight: "bold", color: "#C9A84C", marginBottom: "4px" }}>
+                              🚀 Day 0 (Immediate PDF Deliverable Email)
+                            </div>
+                            <div style={{ fontSize: "0.7rem", color: "#8EA8C3", marginBottom: "8px" }}>
+                              Sent immediately upon registration. You can include links or details about the asset.
+                            </div>
+                            <input 
+                              type="text" 
+                              placeholder="Immediate Email Subject Line"
+                              value={emailTemplates.immediate_subject || ""}
+                              onChange={e => {
+                                setTemplatesSaved(false);
+                                setEmailTemplates(prev => ({ ...prev, immediate_subject: e.target.value }));
+                              }}
+                              style={{ width: "100%", padding: "6px 8px", background: "#0B1D35", border: "1px solid rgba(255,255,255,0.15)", borderRadius: "4px", color: "#FFFFFF", fontSize: "0.78rem", marginBottom: "6px", outline: "none" }}
+                            />
+                            <textarea 
+                              placeholder="HTML or Text Body Content"
+                              rows={5}
+                              value={emailTemplates.immediate_body || ""}
+                              onChange={e => {
+                                setTemplatesSaved(false);
+                                setEmailTemplates(prev => ({ ...prev, immediate_body: e.target.value }));
+                              }}
+                              style={{ width: "100%", padding: "6px 8px", background: "#0B1D35", border: "1px solid rgba(255,255,255,0.15)", borderRadius: "4px", color: "#FFFFFF", fontSize: "0.75rem", fontFamily: "monospace", resize: "vertical", outline: "none" }}
+                            />
+                          </div>
+
                           {/* Day 1 - 4 Templates */}
                           {["day1", "day2", "day3", "day4"].map(dayKey => {
                             const labelMap: Record<string, string> = {
@@ -1078,6 +1111,7 @@ export default function LeadsDashboard() {
                               try {
                                 const { doc: fsDoc, setDoc } = await import('firebase/firestore');
                                 await setDoc(fsDoc(db, 'leadEmailTemplates', f.slug), {
+                                  immediate: { subject: emailTemplates.immediate_subject || '', body: emailTemplates.immediate_body || '' },
                                   day1: { subject: emailTemplates.day1_subject || '', body: emailTemplates.day1_body || '' },
                                   day2: { subject: emailTemplates.day2_subject || '', body: emailTemplates.day2_body || '' },
                                   day3: { subject: emailTemplates.day3_subject || '', body: emailTemplates.day3_body || '' },

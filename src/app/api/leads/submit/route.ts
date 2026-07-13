@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { db } from '../../../../lib/firebase';
-import { collection, addDoc, query, where, getDocs, limit, serverTimestamp } from 'firebase/firestore';
+import { collection, addDoc, query, where, getDocs, limit, serverTimestamp, doc, getDoc } from 'firebase/firestore';
 import nodemailer from 'nodemailer';
 import { leadRegistry } from '../../../../lib/leadConfig';
 import { sendSlackNotification } from '../../../../lib/slack';
@@ -139,7 +139,21 @@ export async function POST(req: Request) {
       auth: { user: smtpUser, pass: smtpPass },
     });
 
-    let bodyHtml = asset.immediateBody;
+    // Fetch custom templates for Day 0 if any
+    let customImmediateSubject = asset.immediateSubject;
+    let customImmediateBody = asset.immediateBody;
+    try {
+      const tempSnap = await getDoc(doc(db, 'leadEmailTemplates', slug));
+      if (tempSnap.exists()) {
+        const tempVal = tempSnap.data();
+        if (tempVal.immediate?.subject) customImmediateSubject = tempVal.immediate.subject;
+        if (tempVal.immediate?.body) customImmediateBody = tempVal.immediate.body;
+      }
+    } catch (e: any) {
+      console.warn('Failed to load custom immediate templates (non-fatal):', e.message);
+    }
+
+    let bodyHtml = customImmediateBody;
     const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://proconixpmc.com';
     if (docId) {
       // Point to branded landing page — opens page first, then auto-downloads the PDF
@@ -182,7 +196,7 @@ export async function POST(req: Request) {
       </div>
     </div>
   </div>
-</body>
+ </body>
 </html>`;
 
     if (docId) {
@@ -194,7 +208,7 @@ export async function POST(req: Request) {
       await transporter.sendMail({
         from: `"Proconix PMC" <${smtpUser}>`,
         to: email,
-        subject: asset.immediateSubject,
+        subject: customImmediateSubject,
         html: emailHtml,
       });
     } catch (mailErr: any) {
