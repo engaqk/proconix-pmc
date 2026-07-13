@@ -80,7 +80,7 @@ export default function LeadsDashboard() {
   const [showTemplates, setShowTemplates] = useState(false);
   const [isSavingTemplates, setIsSavingTemplates] = useState(false);
   const [templatesSaved, setTemplatesSaved] = useState(false);
-  const [emailTemplates, setEmailTemplates] = useState<Record<string, { subject: string; body: string }>>({});
+  const [emailTemplates, setEmailTemplates] = useState<Record<string, string>>({});
   const [templateSlug, setTemplateSlug] = useState('pre-construction-checklist');
 
   // ── Auth ──────────────────────────────────────────────────────────────────
@@ -217,6 +217,37 @@ export default function LeadsDashboard() {
     });
     return () => unsub();
   }, [isAuthorized, loadSettings]);
+
+  // ── Load email templates from Firestore ────────────────────────────────────
+  useEffect(() => {
+    if (!isAuthorized || activeTab !== "analytics" || !templateSlug) return;
+    
+    const fetchTemplate = async () => {
+      try {
+        const { doc, getDoc } = await import('firebase/firestore');
+        const snap = await getDoc(doc(db, 'leadEmailTemplates', templateSlug));
+        if (snap.exists()) {
+          const d = snap.data();
+          setEmailTemplates({
+            day1_subject: d.day1?.subject || '',
+            day1_body: d.day1?.body || '',
+            day2_subject: d.day2?.subject || '',
+            day2_body: d.day2?.body || '',
+            day3_subject: d.day3?.subject || '',
+            day3_body: d.day3?.body || '',
+            day4_subject: d.day4?.subject || '',
+            day4_body: d.day4?.body || '',
+          });
+        } else {
+          setEmailTemplates({});
+        }
+      } catch (err) {
+        console.error("Failed to load email templates:", err);
+      }
+    };
+    
+    fetchTemplate();
+  }, [isAuthorized, activeTab, templateSlug]);
 
   // ── Delete all ────────────────────────────────────────────────────────────
   const handleClearAll = async () => {

@@ -221,13 +221,9 @@ export default function AdminDashboard() {
     }
   }, [isLoggedIn]);
 
-  // Filter out any lead magnet or checklist interactions to keep it strictly for main page submissions
+  // Filter to display actual registered user signups with a valid email (e.g. Checklist downloads)
   const standardSubmissions = submissions.filter(sub => {
-    const type = sub.type || '';
-    const name = sub.name || '';
-    return !type.toLowerCase().includes('lead') && 
-           !type.toLowerCase().includes('checklist') && 
-           name !== 'Anonymous Click';
+    return sub.email && sub.email.includes('@') && sub.name !== 'Anonymous Click' && !sub.name?.includes('Anonymous');
   });
 
   if (!isLoggedIn) {
@@ -429,13 +425,13 @@ export default function AdminDashboard() {
           <div style={{ background: "#122647", padding: "20px", borderRadius: "8px", boxShadow: "0 8px 24px rgba(0,0,0,0.15)", borderLeft: "4px solid #C9A84C", borderTop: "1px solid rgba(255,255,255,0.05)", borderRight: "1px solid rgba(255,255,255,0.05)", borderBottom: "1px solid rgba(255,255,255,0.05)" }}>
             <h4 style={{ margin: "0 0 10px 0", color: "#8EA8C3", fontSize: "0.85rem", textTransform: "uppercase", letterSpacing: "1px" }}>Discovery Calls</h4>
             <div style={{ fontSize: "2.2rem", fontWeight: "bold", color: "#FFFFFF", fontFamily: "'Cormorant Garamond', serif" }}>
-              {standardSubmissions.filter(s => s.type && (s.type.includes('Call') || s.type.includes('Lead Capture'))).length}
+              {submissions.filter(s => s.type && (s.type.includes('Call') || s.type.includes('Lead Capture'))).length}
             </div>
           </div>
           <div style={{ background: "#122647", padding: "20px", borderRadius: "8px", boxShadow: "0 8px 24px rgba(0,0,0,0.15)", borderLeft: "4px solid #C9A84C", borderTop: "1px solid rgba(255,255,255,0.05)", borderRight: "1px solid rgba(255,255,255,0.05)", borderBottom: "1px solid rgba(255,255,255,0.05)" }}>
             <h4 style={{ margin: "0 0 10px 0", color: "#8EA8C3", fontSize: "0.85rem", textTransform: "uppercase", letterSpacing: "1px" }}>Total Interactions</h4>
             <div style={{ fontSize: "2.2rem", fontWeight: "bold", color: "#FFFFFF", fontFamily: "'Cormorant Garamond', serif" }}>
-              {standardSubmissions.length}
+              {submissions.length}
             </div>
           </div>
         </div>
@@ -543,7 +539,7 @@ export default function AdminDashboard() {
                           {sub.type}
                         </span>
                       </td>
-                      <td style={{ padding: "15px", color: "#FFFFFF", fontWeight: "500" }}>{sub.name ? sub.name.split(' ')[0] : ''}</td>
+                      <td style={{ padding: "15px", color: "#FFFFFF", fontWeight: "500" }}>{sub.name || ''}</td>
                       <td style={{ padding: "15px", color: "#C2D4E4" }}><a href={`mailto:${sub.email}`} style={{ color: "#C9A84C", textDecoration: "none" }}>{sub.email}</a></td>
                       <td className="hide-on-mobile" style={{ padding: "15px", color: "#C2D4E4" }}>{sub.country}</td>
                       <td className="hide-on-mobile" style={{ padding: "15px", color: "#C2D4E4" }}>
@@ -561,7 +557,88 @@ export default function AdminDashboard() {
           )}
         </div>
 
-                {/* Scheduled Email History */}
+        {/* Anonymous/Click Interactions Toggle */}
+        <div style={{ textAlign: "center", marginBottom: "30px" }}>
+          <button 
+            onClick={() => setShowAnonymous(!showAnonymous)}
+            style={{ 
+              padding: "10px 20px", 
+              background: "rgba(11,29,53,0.8)", 
+              color: "#C2D4E4", 
+              border: "1px solid rgba(201,168,76,0.3)", 
+              borderRadius: "50px", 
+              cursor: "pointer", 
+              fontFamily: "'DM Sans', sans-serif",
+              fontSize: "0.85rem",
+              transition: "all 0.2s ease"
+            }}
+            onMouseOver={(e) => { e.currentTarget.style.color = "#C9A84C"; e.currentTarget.style.borderColor = "#C9A84C"; }}
+            onMouseOut={(e) => { e.currentTarget.style.color = "#C2D4E4"; e.currentTarget.style.borderColor = "rgba(201,168,76,0.3)"; }}
+          >
+            {showAnonymous ? "Hide Anonymous & Click Interactions" : `Show Anonymous & Click Interactions (${submissions.filter(sub => !sub.email || !sub.email.includes('@') || sub.name === 'Anonymous Click' || sub.name?.includes('Anonymous')).length})`}
+          </button>
+        </div>
+
+        {/* Anonymous Interactions Table */}
+        {showAnonymous && (
+          <div style={{ background: "#122647", borderRadius: "8px", boxShadow: "0 8px 24px rgba(0,0,0,0.15)", overflow: "hidden", border: "1px solid rgba(255,255,255,0.05)", marginBottom: "30px" }}>
+            <div style={{ padding: "20px 24px", borderBottom: "1px solid rgba(201,168,76,0.1)", background: "#0B1D35" }}>
+              <h3 style={{ margin: 0, color: "#FFFFFF", fontFamily: "'Cormorant Garamond', serif", fontSize: "20px" }}>Anonymous & Click Interactions</h3>
+            </div>
+            
+            <div style={{ overflowX: "auto" }}>
+              <table style={{ width: "100%", borderCollapse: "collapse", textAlign: "left" }}>
+                <thead>
+                  <tr style={{ background: "rgba(11,29,53,0.3)", color: "#C9A84C", textTransform: "uppercase", letterSpacing: "1px" }}>
+                    <th style={{ padding: "14px 16px", fontSize: "0.8rem" }}>Date & Time</th>
+                    <th style={{ padding: "14px 16px", fontSize: "0.8rem" }}>Type/Interaction</th>
+                    <th style={{ padding: "14px 16px", fontSize: "0.8rem" }}>First Name/Source</th>
+                    <th style={{ padding: "14px 16px", fontSize: "0.8rem" }}>Email/Status</th>
+                    <th className="hide-on-mobile" style={{ padding: "14px 16px", fontSize: "0.8rem" }}>Details</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {submissions.filter(sub => !sub.email || !sub.email.includes('@') || sub.name === 'Anonymous Click' || sub.name?.includes('Anonymous')).map((sub) => (
+                    <tr key={sub.id} style={{ borderBottom: "1px solid rgba(255,255,255,0.03)", fontSize: "0.85rem" }}>
+                      <td style={{ padding: "13px 16px", color: "#8EA8C3", whiteSpace: "nowrap" }}>
+                        {sub.createdAt ? new Date(sub.createdAt.toDate()).toLocaleString([], { year: 'numeric', month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit' }) : 'Just now'}
+                      </td>
+                      <td style={{ padding: "13px 16px" }}>
+                        <span style={{ 
+                          background: sub.type === 'WhatsApp Click' ? 'rgba(37, 211, 102, 0.1)' : 'rgba(255, 255, 255, 0.05)', 
+                          color: sub.type === 'WhatsApp Click' ? '#25D366' : '#C2D4E4', 
+                          border: `1px solid ${sub.type === 'WhatsApp Click' ? 'rgba(37, 211, 102, 0.3)' : 'rgba(255, 255, 255, 0.1)'}`,
+                          padding: "4px 10px", 
+                          borderRadius: "12px", 
+                          fontSize: "0.72rem",
+                          fontWeight: "bold"
+                        }}>
+                          {sub.type || 'Anonymous Click'}
+                        </span>
+                      </td>
+                      <td style={{ padding: "13px 16px", color: "#FFFFFF", fontWeight: "600" }}>
+                        {sub.name || 'Anonymous'}
+                      </td>
+                      <td style={{ padding: "13px 16px", color: "#8EA8C3" }}>
+                        {sub.email || 'N/A'}
+                      </td>
+                      <td className="hide-on-mobile" style={{ padding: "13px 16px", color: "#C2D4E4", fontStyle: "italic" }}>
+                        {sub.details || 'Unregistered intent'}
+                      </td>
+                    </tr>
+                  ))}
+                  {submissions.filter(sub => !sub.email || !sub.email.includes('@') || sub.name === 'Anonymous Click' || sub.name?.includes('Anonymous')).length === 0 && (
+                    <tr>
+                      <td colSpan={5} style={{ padding: "20px", textAlign: "center", color: "#8EA8C3" }}>No anonymous/click interactions found.</td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        )}
+
+        {/* Scheduled Email History */}
         <div style={{ marginTop: "30px" }}>
           <div style={{ textAlign: "center", marginBottom: "20px" }}>
             <button

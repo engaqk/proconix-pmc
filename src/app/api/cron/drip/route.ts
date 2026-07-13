@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { db } from '../../../../lib/firebase';
-import { collection, query, where, getDocs, doc, updateDoc, limit } from 'firebase/firestore';
+import { collection, query, where, getDocs, doc, updateDoc, limit, getDoc } from 'firebase/firestore';
 import nodemailer from 'nodemailer';
 import { leadRegistry } from '../../../../lib/leadConfig';
 
@@ -77,7 +77,25 @@ async function runDrip(authHeader: string | null) {
       }
 
       const dayKey = `day${dripDay}` as 'day1' | 'day2' | 'day3' | 'day4';
-      const template = asset.dripTemplates[dayKey];
+      let template = asset.dripTemplates[dayKey];
+
+      // Load custom template from Firestore if it exists
+      try {
+        const customSnap = await getDoc(doc(db, 'leadEmailTemplates', slug));
+        if (customSnap.exists()) {
+          const customData = customSnap.data();
+          const customDay = customData[dayKey];
+          if (customDay && (customDay.subject || customDay.body)) {
+            template = {
+              subject: customDay.subject || template.subject,
+              body: customDay.body || template.body
+            };
+          }
+        }
+      } catch (fsErr: any) {
+        logs.push(`INFO: Failed to check custom templates for ${slug} Day ${dripDay} — ${fsErr.message}`);
+      }
+
       if (!template) {
         logs.push(`${dDoc.id}: FAILED — no template for Day ${dripDay}`);
         continue;
