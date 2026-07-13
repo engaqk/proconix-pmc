@@ -24,6 +24,48 @@ export function serializeLeadDetails(data: {
   return lines.join('\n') || 'Direct';
 }
 
+export function formatEmailBody(body: string, downloadUrl?: string) {
+  if (!body) return '';
+
+  let htmlContent = body;
+
+  // If it does not contain HTML tags, format it as HTML paragraphs
+  if (!/<[a-z][\s\S]*>/i.test(body)) {
+    const paragraphs = body.split(/\n\n+/);
+    htmlContent = paragraphs
+      .map(p => `<p style="margin-top:0;margin-bottom:16px;font-family:'DM Sans',Arial,sans-serif;font-size:15px;line-height:1.7;color:#FFFFFF;">${p.replace(/\n/g, '<br/>')}</p>`)
+      .join('');
+  }
+
+  // If a download URL is provided, handle the button placeholder or placement
+  if (downloadUrl) {
+    const buttonHtml = `
+<div style="text-align:center;margin:30px 0;">
+  <a href="${downloadUrl}" style="background-color:#C9A84C;color:#0B1D35;padding:12px 30px;text-decoration:none;font-weight:bold;border-radius:4px;display:inline-block;font-family:'DM Sans',sans-serif;text-transform:uppercase;letter-spacing:1px;font-size:13px;font-weight:bold;">VIEW YOUR DOWNLOAD</a>
+</div>
+`;
+    // Placeholders regex
+    const placeholderRegex = /\{\{button\}\}|\{\{link\}\}|\[button\]|\[download_button\]|\[download_link\]/gi;
+    if (placeholderRegex.test(htmlContent)) {
+      htmlContent = htmlContent.replace(placeholderRegex, buttonHtml);
+    } else {
+      // Check if it already has a download link built in
+      const hasDownloadLink = htmlContent.includes('/leads/') || htmlContent.includes('/assets/lead-magnets/') || htmlContent.includes('/api/leads/download');
+      if (!hasDownloadLink) {
+        // Append button before signature if possible
+        const sigIndex = htmlContent.search(/regards|sincerely|thanks/i);
+        if (sigIndex !== -1) {
+          htmlContent = htmlContent.substring(0, sigIndex) + buttonHtml + htmlContent.substring(sigIndex);
+        } else {
+          htmlContent = htmlContent + buttonHtml;
+        }
+      }
+    }
+  }
+
+  return htmlContent;
+}
+
 async function getLeadSettings() {
   try {
     const snap = await getDocs(
@@ -153,11 +195,11 @@ export async function POST(req: Request) {
       console.warn('Failed to load custom immediate templates (non-fatal):', e.message);
     }
 
-    let bodyHtml = customImmediateBody;
     const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://proconixpmc.com';
+    const downloadUrl = docId ? `${baseUrl}/leads/${slug}?id=${docId}` : '';
+    let bodyHtml = formatEmailBody(customImmediateBody, downloadUrl);
+
     if (docId) {
-      // Point to branded landing page — opens page first, then auto-downloads the PDF
-      const downloadUrl = `${baseUrl}/leads/${slug}?id=${docId}`;
       bodyHtml = bodyHtml.replace(
         /href="https:\/\/proconixpmc\.com\/assets\/lead-magnets\/[a-zA-Z0-9_-]+\.pdf"/g,
         `href="${downloadUrl}"`

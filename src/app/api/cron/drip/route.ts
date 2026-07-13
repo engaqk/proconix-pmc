@@ -4,7 +4,17 @@ import { collection, query, where, getDocs, doc, updateDoc, limit, getDoc } from
 import nodemailer from 'nodemailer';
 import { leadRegistry } from '../../../../lib/leadConfig';
 
-// ── Helpers ─────────────────────────────────────────────────────────────────
+export function formatEmailBody(body: string) {
+  if (!body) return '';
+  if (!/<[a-z][\s\S]*>/i.test(body)) {
+    const paragraphs = body.split(/\n\n+/);
+    return paragraphs
+      .map(p => `<p style="margin-top:0;margin-bottom:16px;font-family:'DM Sans',Arial,sans-serif;font-size:15px;line-height:1.7;color:#FFFFFF;">${p.replace(/\n/g, '<br/>')}</p>`)
+      .join('');
+  }
+  return body;
+}
+
 async function getSettings() {
   try {
     const snap = await getDocs(
@@ -121,7 +131,7 @@ async function runDrip(authHeader: string | null) {
         <div style="margin-top:10px;display:inline-block;padding:3px 12px;border:1px solid rgba(201,168,76,0.3);border-radius:12px;font-size:11px;color:#C9A84C;letter-spacing:1px;">Day ${dripDay} of 4 — ${asset.title}</div>
       </div>
       <div style="padding:32px 40px 40px;text-align:left;">
-        ${template.body}
+        ${formatEmailBody(template.body)}
       </div>
       <div style="padding:24px 40px;text-align:center;font-size:11px;color:#8EA8C3;border-top:1px solid rgba(201,168,76,0.08);background:#07142A;letter-spacing:0.5px;">
         &copy; 2026 Proconix Project Management Consultancy &middot; Africa &middot; GCC<br>
