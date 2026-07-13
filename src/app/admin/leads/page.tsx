@@ -88,6 +88,7 @@ export default function LeadsDashboard() {
   const [editingSlugKey, setEditingSlugKey] = useState<string | null>(null);
   const [editingSlugVal, setEditingSlugVal] = useState("");
   const [isSavingSlug, setIsSavingSlug]     = useState(false);
+  const [selectedFunnelSlug, setSelectedFunnelSlug] = useState<string | null>(null);
 
   // ── Auth ──────────────────────────────────────────────────────────────────
   useEffect(() => {
@@ -241,7 +242,7 @@ export default function LeadsDashboard() {
 
   // ── Load email templates from Firestore ────────────────────────────────────
   useEffect(() => {
-    if (!isAuthorized || activeTab !== "analytics" || !templateSlug) return;
+    if (!isAuthorized || (activeTab !== "links" && activeTab !== "analytics") || !templateSlug) return;
     
     const fetchTemplate = async () => {
       try {
@@ -809,134 +810,356 @@ export default function LeadsDashboard() {
           </div>
         )}
 
-        {/* ── TAB: Share Links ── */}
+        {/* ── TAB: Funnel Hub ── */}
         {activeTab === "links" && (
           <div style={{ background: "#122647", borderRadius: "8px", border: "1px solid rgba(255,255,255,0.05)", overflow: "hidden" }}>
             <div style={{ padding: "20px 24px", background: "#0B1D35", borderBottom: "1px solid rgba(201,168,76,0.08)" }}>
-              <h3 style={{ margin: 0, color: "#FFFFFF", fontFamily: "'Cormorant Garamond', serif", fontSize: "20px" }}>Lead Magnet Funnel Share Links</h3>
-              <p style={{ margin: "4px 0 0", color: "#8EA8C3", fontSize: "0.82rem" }}>Share these in email campaigns, LinkedIn, WhatsApp, or any marketing channel.</p>
+              <h3 style={{ margin: 0, color: "#FFFFFF", fontFamily: "'Cormorant Garamond', serif", fontSize: "20px" }}>🎯 Lead Funnel Hub</h3>
+              <p style={{ margin: "4px 0 0", color: "#8EA8C3", fontSize: "0.82rem" }}>Select a lead magnet page below to manage its custom slug, PDF asset, email sequences, and specific capture logs.</p>
             </div>
-            <div style={{ padding: "24px", display: "flex", flexDirection: "column", gap: "12px" }}>
-              {funnels.map((f, i) => {
-                const customSlug = customSlugs[f.slug] || f.slug;
-                const url = `${BASE_URL}${FUNNEL_PATH}/${customSlug}`;
-                const isCopied = copiedSlug === f.slug;
-                const isEditing = editingSlugKey === f.slug;
-                return (
-                  <div key={f.slug} style={{ display: "flex", alignItems: "center", gap: "14px", background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.06)", borderRadius: "6px", padding: "14px 18px" }}>
-                    <span style={{ fontSize: "20px", flexShrink: 0 }}>{f.icon}</span>
-                    <div style={{ flex: 1, minWidth: 0 }}>
-                      <div style={{ color: "#FFFFFF", fontWeight: 600, fontSize: "0.88rem", marginBottom: "3px" }}>
-                        <span style={{ color: "#C9A84C", marginRight: "8px", fontSize: "0.75rem" }}>#{i + 1}</span>{f.title}
-                      </div>
-                      
-                      {isEditing ? (
-                        <div style={{ display: "flex", alignItems: "center", gap: "6px", marginTop: "4px" }}>
-                          <span style={{ color: "#8EA8C3", fontSize: "0.75rem", fontFamily: "monospace" }}>{FUNNEL_PATH}/</span>
-                          <input 
-                            type="text" 
-                            value={editingSlugVal} 
-                            onChange={e => setEditingSlugVal(e.target.value)} 
-                            disabled={isSavingSlug}
-                            style={{ padding: "4px 8px", background: "#0B1D35", border: "1px solid rgba(201,168,76,0.5)", color: "#FFFFFF", borderRadius: "4px", fontSize: "0.75rem", fontFamily: "monospace", width: "160px", outline: "none" }} 
-                          />
-                          <button
-                            disabled={isSavingSlug}
-                            onClick={async () => {
-                              const cleanVal = editingSlugVal.trim().toLowerCase().replace(/[^a-z0-9-_]/g, '');
-                              if (!cleanVal) {
-                                alert("Slug cannot be empty!");
-                                return;
-                              }
-                              setIsSavingSlug(true);
-                              try {
-                                const { doc: fsDoc, setDoc } = await import('firebase/firestore');
-                                await setDoc(fsDoc(db, 'leadSlugs', f.slug), {
-                                  customSlug: cleanVal,
-                                  updatedAt: new Date().toISOString()
-                                });
-                                setCustomSlugs(prev => ({ ...prev, [f.slug]: cleanVal }));
-                                setEditingSlugKey(null);
-                              } catch (err: any) {
-                                alert("Failed to save slug: " + err.message);
-                              } finally {
-                                setIsSavingSlug(false);
-                              }
-                            }}
-                            style={{ padding: "4px 8px", background: "rgba(46,125,50,0.2)", border: "1px solid rgba(46,125,50,0.5)", color: "#81c784", borderRadius: "4px", fontSize: "0.72rem", cursor: "pointer", fontWeight: "bold" }}
-                          >
-                            {isSavingSlug ? "⏳" : "✓ Save"}
-                          </button>
-                          <button
-                            disabled={isSavingSlug}
-                            onClick={() => setEditingSlugKey(null)}
-                            style={{ padding: "4px 8px", background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.15)", color: "#FFFFFF", borderRadius: "4px", fontSize: "0.72rem", cursor: "pointer" }}
-                          >
-                            Cancel
-                          </button>
-                        </div>
-                      ) : (
-                        <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-                          <div style={{ color: "#8EA8C3", fontSize: "0.75rem", fontFamily: "monospace", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{url}</div>
-                          <button 
-                            onClick={() => {
-                              setEditingSlugKey(f.slug);
-                              setEditingSlugVal(customSlugs[f.slug] || f.slug);
-                            }}
-                            style={{ background: "none", border: "none", color: "#C9A84C", cursor: "pointer", fontSize: "0.72rem", padding: "0 4px", display: "flex", alignItems: "center", textDecoration: "underline" }}
-                            title="Edit URL slug"
-                          >
-                            ✏️ Edit
-                          </button>
-                        </div>
-                      )}
-                    </div>
-                    <span style={{ fontSize: "0.75rem", color: "#8EA8C3", background: "rgba(255,255,255,0.05)", padding: "2px 8px", borderRadius: "12px" }}>
-                      {bySlug[f.slug] || 0} leads
-                    </span>
-                    <a href={url} target="_blank" rel="noopener noreferrer"
-                      style={{ padding: "6px 12px", background: "rgba(201,168,76,0.1)", border: "1px solid rgba(201,168,76,0.3)", color: "#C9A84C", borderRadius: "4px", textDecoration: "none", fontSize: "0.75rem", fontWeight: "bold", whiteSpace: "nowrap" }}>
-                      Preview
-                    </a>
-                    <button onClick={() => navigator.clipboard.writeText(url).then(() => { setCopiedSlug(f.slug); setTimeout(() => setCopiedSlug(null), 2000); })}
-                      style={{ padding: "6px 14px", background: isCopied ? "rgba(46,125,50,0.15)" : "rgba(255,255,255,0.06)", border: `1px solid ${isCopied ? "rgba(46,125,50,0.4)" : "rgba(255,255,255,0.12)"}`, color: isCopied ? "#81c784" : "#FFFFFF", borderRadius: "4px", cursor: "pointer", fontSize: "0.75rem", fontWeight: "bold", whiteSpace: "nowrap", transition: "all 0.2s" }}>
-                      {isCopied ? "✓ Copied!" : "Copy"}
-                    </button>
 
-                    {/* PDF Upload */}
-                    <div style={{ display: "flex", flexDirection: "column", gap: "6px", borderLeft: "1px solid rgba(255,255,255,0.08)", paddingLeft: "14px" }}>
-                      <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-                        <label style={{ cursor: uploadingSlug === f.slug ? "wait" : "pointer", background: uploadingSlug === f.slug ? "rgba(255,255,255,0.03)" : "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.1)", borderRadius: "4px", padding: "6px 12px", fontSize: "0.75rem", fontWeight: "bold", whiteSpace: "nowrap", color: uploadingSlug === f.slug ? "#8EA8C3" : "#FFFFFF" }}>
-                          {uploadingSlug === f.slug ? "⏳ Uploading..." : "📤 Upload PDF"}
-                          <input type="file" accept=".pdf" disabled={uploadingSlug === f.slug} style={{ display: "none" }} onChange={(e) => {
-                            const file = e.target.files?.[0];
-                            if (file) handleFileUpload(f.slug, file);
-                          }} />
-                        </label>
-                        {uploadStatus[f.slug] && (
-                          <span style={{ fontSize: "0.72rem", color: uploadStatus[f.slug].includes("✓") ? "#81c784" : uploadStatus[f.slug].includes("✗") ? "#e57373" : "#C9A84C", fontWeight: "bold", whiteSpace: "nowrap" }}>
-                            {uploadStatus[f.slug]}
-                          </span>
-                        )}
+            {/* Grid of Funnels */}
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: "16px", padding: "24px", background: "rgba(255,255,255,0.01)" }}>
+              {funnels.map((f, i) => {
+                const isSelected = selectedFunnelSlug === f.slug;
+                const funnelLeads = leads.filter(l => l.slug === f.slug);
+                const capturesCount = funnelLeads.length;
+                const downloadsCount = funnelLeads.reduce((sum, l) => sum + (l.linkClicks || 0), 0);
+                
+                return (
+                  <div 
+                    key={f.slug} 
+                    onClick={() => {
+                      setSelectedFunnelSlug(f.slug);
+                      setTemplateSlug(f.slug);
+                    }}
+                    style={{ 
+                      background: isSelected ? "rgba(201,168,76,0.06)" : "rgba(255,255,255,0.02)", 
+                      borderRadius: "8px", 
+                      border: isSelected ? "2px solid #C9A84C" : "1px solid rgba(255,255,255,0.06)", 
+                      padding: "20px", 
+                      cursor: "pointer",
+                      transition: "all 0.2s ease",
+                      position: "relative"
+                    }}
+                  >
+                    <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+                      <span style={{ fontSize: "28px" }}>{f.icon}</span>
+                      <div style={{ minWidth: 0, flex: 1 }}>
+                        <div style={{ color: "#FFFFFF", fontWeight: 600, fontSize: "0.92rem", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                          {f.title}
+                        </div>
+                        <div style={{ color: "#8EA8C3", fontSize: "0.75rem", marginTop: "2px" }}>
+                          {customSlugs[f.slug] ? `/r/${customSlugs[f.slug]}` : `/r/${f.slug}`}
+                        </div>
                       </div>
-                      {/* Persistent status from Firestore */}
-                      {pdfStatuses[f.slug] ? (
-                        <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
-                          <span style={{ background: "rgba(46,125,50,0.15)", color: "#81c784", border: "1px solid rgba(46,125,50,0.3)", padding: "2px 8px", borderRadius: "10px", fontSize: "0.68rem", fontWeight: "bold" }}>
-                            ✓ PDF Ready
-                          </span>
-                          <span style={{ color: "#4a6a8a", fontSize: "0.68rem" }}>
-                            {pdfStatuses[f.slug].filename} · {pdfStatuses[f.slug].sizeKb}KB · {pdfStatuses[f.slug].uploadedAt}
+                    </div>
+                    
+                    <div style={{ display: "flex", gap: "16px", marginTop: "16px", borderTop: "1px solid rgba(255,255,255,0.04)", paddingTop: "12px" }}>
+                      <div>
+                        <div style={{ fontSize: "0.68rem", color: "#8EA8C3", textTransform: "uppercase" }}>Captures</div>
+                        <div style={{ fontSize: "1.1rem", fontWeight: "bold", color: "#FFFFFF", fontFamily: "'Cormorant Garamond', serif" }}>{capturesCount}</div>
+                      </div>
+                      <div>
+                        <div style={{ fontSize: "0.68rem", color: "#8EA8C3", textTransform: "uppercase" }}>Downloads</div>
+                        <div style={{ fontSize: "1.1rem", fontWeight: "bold", color: "#81c784", fontFamily: "'Cormorant Garamond', serif" }}>{downloadsCount}</div>
+                      </div>
+                      {pdfStatuses[f.slug] && (
+                        <div style={{ marginLeft: "auto", display: "flex", alignItems: "center" }}>
+                          <span style={{ background: "rgba(46,125,50,0.15)", color: "#81c784", border: "1px solid rgba(46,125,50,0.3)", padding: "2px 8px", borderRadius: "10px", fontSize: "0.65rem", fontWeight: "bold" }}>
+                            ✓ PDF Uploaded
                           </span>
                         </div>
-                      ) : (
-                        <span style={{ color: "#4a6a8a", fontSize: "0.68rem" }}>No PDF uploaded yet — using default file</span>
                       )}
                     </div>
                   </div>
                 );
               })}
             </div>
+
+            {/* Centralized Funnel Control Center */}
+            {selectedFunnelSlug && (() => {
+              const f = funnels.find(fun => fun.slug === selectedFunnelSlug)!;
+              const customSlug = customSlugs[f.slug] || f.slug;
+              const url = `${BASE_URL}${FUNNEL_PATH}/${customSlug}`;
+              const isCopied = copiedSlug === f.slug;
+              const funnelLeads = leads.filter(l => l.slug === f.slug);
+              
+              return (
+                <div style={{ margin: "24px", background: "#0B1D35", borderRadius: "8px", border: "1px solid rgba(201,168,76,0.3)", overflow: "hidden" }}>
+                  
+                  {/* Control Center Header */}
+                  <div style={{ padding: "20px 24px", background: "rgba(201,168,76,0.06)", borderBottom: "1px solid rgba(201,168,76,0.2)", display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "12px" }}>
+                    <div>
+                      <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                        <span style={{ fontSize: "24px" }}>{f.icon}</span>
+                        <h3 style={{ margin: 0, color: "#FFFFFF", fontFamily: "'Cormorant Garamond', serif", fontSize: "22px" }}>
+                          {f.title} Control Center
+                        </h3>
+                      </div>
+                      <p style={{ margin: "4px 0 0", color: "#8EA8C3", fontSize: "0.8rem" }}>Configure links, custom PDF files, templates, and view captured leads for this funnel.</p>
+                    </div>
+                    <button 
+                      onClick={() => setSelectedFunnelSlug(null)}
+                      style={{ padding: "6px 14px", background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.15)", color: "#FFFFFF", borderRadius: "4px", cursor: "pointer", fontSize: "0.78rem" }}
+                    >
+                      Close Control Center ✕
+                    </button>
+                  </div>
+
+                  <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: "24px", padding: "24px" }}>
+                    
+                    {/* Column 1: Links, URL Settings, PDF Upload */}
+                    <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
+                      
+                      {/* URL Settings & Copy Link */}
+                      <div style={{ background: "rgba(255,255,255,0.02)", border: "1px solid rgba(255,255,255,0.05)", borderRadius: "6px", padding: "20px" }}>
+                        <h4 style={{ margin: "0 0 14px", color: "#C9A84C", fontSize: "0.95rem" }}>🔗 URL & Slug Settings</h4>
+                        
+                        <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+                          <div>
+                            <div style={{ fontSize: "0.75rem", color: "#8EA8C3", marginBottom: "4px" }}>Target URL Slug:</div>
+                            {editingSlugKey === f.slug ? (
+                              <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+                                <span style={{ color: "#8EA8C3", fontSize: "0.75rem", fontFamily: "monospace" }}>{FUNNEL_PATH}/</span>
+                                <input 
+                                  type="text" 
+                                  value={editingSlugVal} 
+                                  onChange={e => setEditingSlugVal(e.target.value)} 
+                                  disabled={isSavingSlug}
+                                  style={{ padding: "6px 10px", background: "#0B1D35", border: "1px solid rgba(201,168,76,0.5)", color: "#FFFFFF", borderRadius: "4px", fontSize: "0.78rem", fontFamily: "monospace", flex: 1, outline: "none" }} 
+                                />
+                                <button
+                                  disabled={isSavingSlug}
+                                  onClick={async () => {
+                                    const cleanVal = editingSlugVal.trim().toLowerCase().replace(/[^a-z0-9-_]/g, '');
+                                    if (!cleanVal) { alert("Slug cannot be empty!"); return; }
+                                    setIsSavingSlug(true);
+                                    try {
+                                      const { doc: fsDoc, setDoc } = await import('firebase/firestore');
+                                      await setDoc(fsDoc(db, 'leadSlugs', f.slug), { customSlug: cleanVal, updatedAt: new Date().toISOString() });
+                                      setCustomSlugs(prev => ({ ...prev, [f.slug]: cleanVal }));
+                                      setEditingSlugKey(null);
+                                    } catch (err: any) {
+                                      alert("Failed to save slug: " + err.message);
+                                    } finally {
+                                      setIsSavingSlug(false);
+                                    }
+                                  }}
+                                  style={{ padding: "6px 12px", background: "rgba(46,125,50,0.2)", border: "1px solid rgba(46,125,50,0.5)", color: "#81c784", borderRadius: "4px", fontSize: "0.72rem", cursor: "pointer", fontWeight: "bold" }}
+                                >
+                                  Save
+                                </button>
+                                <button onClick={() => setEditingSlugKey(null)} style={{ padding: "6px 10px", background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.15)", color: "#FFFFFF", borderRadius: "4px", fontSize: "0.72rem" }}>Cancel</button>
+                              </div>
+                            ) : (
+                              <div style={{ display: "flex", alignItems: "center", justifyItems: "center", gap: "8px" }}>
+                                <span style={{ color: "#FFFFFF", fontFamily: "monospace", fontSize: "0.85rem" }}>{customSlug}</span>
+                                <button 
+                                  onClick={() => { setEditingSlugKey(f.slug); setEditingSlugVal(customSlug); }}
+                                  style={{ background: "none", border: "none", color: "#C9A84C", cursor: "pointer", fontSize: "0.72rem", textDecoration: "underline", padding: 0 }}
+                                >
+                                  ✏️ Edit Slug
+                                </button>
+                              </div>
+                            )}
+                          </div>
+
+                          <div style={{ borderTop: "1px solid rgba(255,255,255,0.04)", paddingTop: "12px", marginTop: "4px" }}>
+                            <div style={{ fontSize: "0.75rem", color: "#8EA8C3", marginBottom: "6px" }}>Full Campaign Share Link:</div>
+                            <div style={{ background: "rgba(0,0,0,0.2)", padding: "8px 12px", borderRadius: "4px", fontSize: "0.78rem", fontFamily: "monospace", color: "#C2D4E4", wordBreak: "break-all", border: "1px solid rgba(255,255,255,0.04)" }}>
+                              {url}
+                            </div>
+                            <div style={{ display: "flex", gap: "10px", marginTop: "10px" }}>
+                              <button 
+                                onClick={() => navigator.clipboard.writeText(url).then(() => { setCopiedSlug(f.slug); setTimeout(() => setCopiedSlug(null), 2000); })}
+                                style={{ padding: "6px 16px", background: isCopied ? "rgba(46,125,50,0.15)" : "rgba(201,168,76,0.15)", border: `1px solid ${isCopied ? "rgba(46,125,50,0.4)" : "rgba(201,168,76,0.4)"}`, color: isCopied ? "#81c784" : "#C9A84C", borderRadius: "4px", cursor: "pointer", fontSize: "0.75rem", fontWeight: "bold" }}
+                              >
+                                {isCopied ? "✓ Link Copied!" : "📋 Copy Link"}
+                              </button>
+                              <a href={url} target="_blank" rel="noopener noreferrer" style={{ padding: "6px 16px", background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.12)", color: "#FFFFFF", borderRadius: "4px", textDecoration: "none", fontSize: "0.75rem", fontWeight: "bold" }}>
+                                🔗 Open Landing Page
+                              </a>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* PDF File Uploader */}
+                      <div style={{ background: "rgba(255,255,255,0.02)", border: "1px solid rgba(255,255,255,0.05)", borderRadius: "6px", padding: "20px" }}>
+                        <h4 style={{ margin: "0 0 14px", color: "#C9A84C", fontSize: "0.95rem" }}>📤 Custom PDF Asset File</h4>
+                        
+                        <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
+                          <label style={{ display: "block", cursor: uploadingSlug === f.slug ? "wait" : "pointer", background: uploadingSlug === f.slug ? "rgba(255,255,255,0.03)" : "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.1)", borderRadius: "4px", padding: "12px", textAlign: "center", fontSize: "0.8rem", fontWeight: "bold", color: uploadingSlug === f.slug ? "#8EA8C3" : "#FFFFFF" }}>
+                            {uploadingSlug === f.slug ? "⏳ Uploading to Firestore..." : "📤 Select & Upload PDF File"}
+                            <input type="file" accept=".pdf" disabled={uploadingSlug === f.slug} style={{ display: "none" }} onChange={(e) => {
+                              const file = e.target.files?.[0];
+                              if (file) handleFileUpload(f.slug, file);
+                            }} />
+                          </label>
+                          {uploadStatus[f.slug] && (
+                            <div style={{ fontSize: "0.75rem", color: uploadStatus[f.slug].includes("✓") ? "#81c784" : uploadStatus[f.slug].includes("✗") ? "#e57373" : "#C9A84C", fontWeight: "bold", textAlign: "center" }}>
+                              {uploadStatus[f.slug]}
+                            </div>
+                          )}
+
+                          <div style={{ borderTop: "1px solid rgba(255,255,255,0.04)", paddingTop: "12px", marginTop: "4px" }}>
+                            <div style={{ fontSize: "0.75rem", color: "#8EA8C3", marginBottom: "6px" }}>Asset Status:</div>
+                            {pdfStatuses[f.slug] ? (
+                              <div style={{ padding: "10px", background: "rgba(46,125,50,0.1)", border: "1px solid rgba(46,125,50,0.2)", borderRadius: "4px" }}>
+                                <div style={{ color: "#81c784", fontWeight: "bold", fontSize: "0.78rem" }}>✓ Custom PDF Active</div>
+                                <div style={{ color: "#8EA8C3", fontSize: "0.7rem", marginTop: "2px", fontFamily: "monospace" }}>
+                                  {pdfStatuses[f.slug].filename} · {pdfStatuses[f.slug].sizeKb}KB<br />
+                                  Uploaded: {pdfStatuses[f.slug].uploadedAt}
+                                </div>
+                              </div>
+                            ) : (
+                              <div style={{ padding: "10px", background: "rgba(255,255,255,0.02)", border: "1px solid rgba(255,255,255,0.05)", borderRadius: "4px" }}>
+                                <div style={{ color: "#8EA8C3", fontSize: "0.75rem" }}>Using code default static PDF:</div>
+                                <div style={{ color: "#C2D4E4", fontSize: "0.7rem", fontFamily: "monospace", marginTop: "2px" }}>
+                                  /public/assets/lead-magnets/{f.slug}.pdf
+                                </div>
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+
+                    </div>
+
+                    {/* Column 2: Drip Email Templates Editor */}
+                    <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
+                      <div style={{ background: "rgba(255,255,255,0.02)", border: "1px solid rgba(255,255,255,0.05)", borderRadius: "6px", padding: "20px" }}>
+                        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "14px" }}>
+                          <h4 style={{ margin: 0, color: "#C9A84C", fontSize: "0.95rem" }}>📧 Drip Campaign Email Templates</h4>
+                          {templatesSaved && <span style={{ color: "#81c784", fontSize: "0.72rem", fontWeight: "bold" }}>✓ Saved to DB</span>}
+                        </div>
+
+                        <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
+                          {/* Day 1 - 4 Templates */}
+                          {["day1", "day2", "day3", "day4"].map(dayKey => {
+                            const labelMap: Record<string, string> = {
+                              day1: "Day 1 (Immediate Deliverable Followup)",
+                              day2: "Day 2 (Educational Case Study)",
+                              day3: "Day 3 (Framework & Strategy)",
+                              day4: "Day 4 (Discovery Invitation CTA)"
+                            };
+                            return (
+                              <div key={dayKey} style={{ borderBottom: "1px solid rgba(255,255,255,0.04)", paddingBottom: "10px", marginBottom: "6px" }}>
+                                <div style={{ fontSize: "0.75rem", fontWeight: "bold", color: "#FFFFFF", marginBottom: "4px" }}>{labelMap[dayKey]}</div>
+                                <input 
+                                  type="text" 
+                                  placeholder="Email Subject Line"
+                                  value={emailTemplates[`${dayKey}_subject`] || ""}
+                                  onChange={e => {
+                                    setTemplatesSaved(false);
+                                    setEmailTemplates(prev => ({ ...prev, [`${dayKey}_subject`]: e.target.value }));
+                                  }}
+                                  style={{ width: "100%", padding: "6px 8px", background: "#0B1D35", border: "1px solid rgba(255,255,255,0.1)", borderRadius: "4px", color: "#FFFFFF", fontSize: "0.78rem", marginBottom: "4px", outline: "none" }}
+                                />
+                                <textarea 
+                                  placeholder="HTML or Text Body Content"
+                                  rows={4}
+                                  value={emailTemplates[`${dayKey}_body`] || ""}
+                                  onChange={e => {
+                                    setTemplatesSaved(false);
+                                    setEmailTemplates(prev => ({ ...prev, [`${dayKey}_body`]: e.target.value }));
+                                  }}
+                                  style={{ width: "100%", padding: "6px 8px", background: "#0B1D35", border: "1px solid rgba(255,255,255,0.1)", borderRadius: "4px", color: "#FFFFFF", fontSize: "0.75rem", fontFamily: "monospace", resize: "vertical", outline: "none" }}
+                                />
+                              </div>
+                            );
+                          })}
+
+                          <button 
+                            disabled={isSavingTemplates}
+                            onClick={async () => {
+                              setIsSavingTemplates(true);
+                              try {
+                                const { doc: fsDoc, setDoc } = await import('firebase/firestore');
+                                await setDoc(fsDoc(db, 'leadEmailTemplates', f.slug), {
+                                  day1: { subject: emailTemplates.day1_subject || '', body: emailTemplates.day1_body || '' },
+                                  day2: { subject: emailTemplates.day2_subject || '', body: emailTemplates.day2_body || '' },
+                                  day3: { subject: emailTemplates.day3_subject || '', body: emailTemplates.day3_body || '' },
+                                  day4: { subject: emailTemplates.day4_subject || '', body: emailTemplates.day4_body || '' },
+                                  updatedAt: new Date().toISOString()
+                                });
+                                setTemplatesSaved(true);
+                                setTimeout(() => setTemplatesSaved(false), 3000);
+                              } catch (err: any) {
+                                alert("Failed to save templates: " + err.message);
+                              } finally {
+                                setIsSavingTemplates(false);
+                              }
+                            }}
+                            style={{ width: "100%", padding: "10px", background: "#C9A84C", color: "#0B1D35", border: "none", borderRadius: "4px", fontWeight: "bold", cursor: isSavingTemplates ? "wait" : "pointer" }}
+                          >
+                            {isSavingTemplates ? "⏳ Saving Templates..." : "💾 Save Email Templates"}
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+
+                  </div>
+
+                  {/* Funnel-Specific Leads Table */}
+                  <div style={{ borderTop: "1px solid rgba(201,168,76,0.2)", background: "rgba(0,0,0,0.1)" }}>
+                    <div style={{ padding: "16px 24px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                      <h4 style={{ margin: 0, color: "#C9A84C", fontSize: "0.95rem" }}>👥 Leads Captured for this Funnel ({funnelLeads.length})</h4>
+                    </div>
+                    {funnelLeads.length === 0 ? (
+                      <div style={{ padding: "24px", textAlign: "center", color: "#8EA8C3", fontSize: "0.8rem" }}>No captures for this lead page yet.</div>
+                    ) : (
+                      <div style={{ overflowX: "auto" }}>
+                        <table style={{ width: "100%", borderCollapse: "collapse" }}>
+                          <thead>
+                            <tr style={{ background: "rgba(0,0,0,0.2)", color: "#C9A84C", textTransform: "uppercase", fontSize: "0.7rem", letterSpacing: "1px" }}>
+                              <th style={{ padding: "10px 16px", textAlign: "left" }}>Date</th>
+                              <th style={{ padding: "10px 16px", textAlign: "left" }}>Name</th>
+                              <th style={{ padding: "10px 16px", textAlign: "left" }}>Email</th>
+                              <th style={{ padding: "10px 16px", textAlign: "left" }}>Source</th>
+                              <th style={{ padding: "10px 16px", textAlign: "left" }}>Downloads</th>
+                              <th style={{ padding: "10px 16px", textAlign: "left" }}>Drip Status</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {funnelLeads.map(lead => (
+                              <tr key={lead.id} style={{ borderBottom: "1px solid rgba(255,255,255,0.03)", fontSize: "0.78rem" }}>
+                                <td style={{ padding: "10px 16px", color: "#8EA8C3" }}>
+                                  {lead.capturedAt?.toDate ? new Date(lead.capturedAt.toDate()).toLocaleDateString() : "—"}
+                                </td>
+                                <td style={{ padding: "10px 16px", color: "#FFFFFF", fontWeight: "bold" }}>{lead.name}</td>
+                                <td style={{ padding: "10px 16px", color: "#C9A84C" }}>
+                                  <a href={`mailto:${lead.email}`} style={{ color: "#C9A84C", textDecoration: "none" }}>{lead.email}</a>
+                                </td>
+                                <td style={{ padding: "10px 16px", color: "#8EA8C3" }}>{lead.utmSource || "Direct"}</td>
+                                <td style={{ padding: "10px 16px" }}>
+                                  {lead.linkClicks > 0 ? (
+                                    <span 
+                                      title={lead.linkClickHistory && lead.linkClickHistory.length > 0 ? lead.linkClickHistory.map((t: string, idx: number) => `Click ${idx+1}: ${new Date(t).toLocaleString()}`).join('\n') : `Clicked: ${lead.linkClickedAt ? new Date(lead.linkClickedAt).toLocaleString() : ''}`}
+                                      style={{ background: "rgba(46,125,50,0.15)", color: "#81c784", border: "1px solid rgba(46,125,50,0.3)", padding: "2px 8px", borderRadius: "10px", fontSize: "0.68rem", fontWeight: "bold", cursor: "help" }}
+                                    >
+                                      ✓ {lead.linkClicks}x · {lead.linkClickedAt ? new Date(lead.linkClickedAt).toLocaleString([], { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }) : ""}
+                                    </span>
+                                  ) : (
+                                    <span style={{ color: "#4a6a8a" }}>Not yet</span>
+                                  )}
+                                </td>
+                                <td style={{ padding: "10px 16px" }}>
+                                  <StatusBadge status={lead.dripStatus || "unknown"} />
+                                </td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      </div>
+                    )}
+                  </div>
+
+                </div>
+              );
+            })()}
+
           </div>
         )}
 
