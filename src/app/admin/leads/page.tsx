@@ -578,52 +578,165 @@ export default function LeadsDashboard() {
         )}
 
         {/* ── TAB: Submissions ── */}
-        {activeTab === "submissions" && (
-          <div style={{ background: "#122647", borderRadius: "8px", border: "1px solid rgba(255,255,255,0.05)", overflow: "hidden" }}>
-            <div style={{ padding: "20px 24px", background: "#0B1D35", borderBottom: "1px solid rgba(201,168,76,0.08)" }}>
-              <h3 style={{ margin: 0, color: "#FFFFFF", fontFamily: "'Cormorant Garamond', serif", fontSize: "20px" }}>All Lead Captures</h3>
-            </div>
-            {isLoading ? <div style={{ padding: "40px", textAlign: "center", color: "#8EA8C3" }}>Loading...</div> :
-              leads.length === 0 ? <div style={{ padding: "40px", textAlign: "center", color: "#8EA8C3" }}>No leads captured yet.</div> : (
-                <div style={{ overflowX: "auto" }}>
-                  <table style={{ width: "100%", borderCollapse: "collapse" }}>
-                    <thead>
-                      <tr style={{ background: "rgba(11,29,53,0.5)", color: "#C9A84C", textTransform: "uppercase", fontSize: "0.75rem", letterSpacing: "1px" }}>
-                        <th style={{ padding: "14px 16px", textAlign: "left" }}>Date</th>
-                        <th style={{ padding: "14px 16px", textAlign: "left" }}>Name</th>
-                        <th style={{ padding: "14px 16px", textAlign: "left" }}>Email</th>
-                        <th style={{ padding: "14px 16px", textAlign: "left" }}>Funnel</th>
-                        <th style={{ padding: "14px 16px", textAlign: "left" }}>PDF Clicked</th>
-                        <th style={{ padding: "14px 16px", textAlign: "left" }}>Drip</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {leads.map(lead => (
-                        <tr key={lead.id} style={{ borderBottom: "1px solid rgba(255,255,255,0.04)", fontSize: "0.85rem" }}>
-                          <td style={{ padding: "13px 16px", color: "#8EA8C3", whiteSpace: "nowrap" }}>
-                            {lead.capturedAt?.toDate ? new Date(lead.capturedAt.toDate()).toLocaleDateString() : "—"}
-                          </td>
-                          <td style={{ padding: "13px 16px", color: "#FFFFFF", fontWeight: 600 }}>{lead.name || "—"}</td>
-                          <td style={{ padding: "13px 16px", color: "#C9A84C" }}><a href={`mailto:${lead.email}`} style={{ color: "#C9A84C", textDecoration: "none" }}>{lead.email}</a></td>
-                          <td style={{ padding: "13px 16px", color: "#C2D4E4", fontSize: "0.78rem" }}>{(lead.slug || "").replace(/-/g, " ")}</td>
-                          <td style={{ padding: "13px 16px" }}>
-                            {lead.linkClicks > 0 ? (
-                              <span style={{ background: "rgba(46,125,50,0.15)", color: "#81c784", border: "1px solid rgba(46,125,50,0.3)", padding: "3px 10px", borderRadius: "12px", fontSize: "0.72rem", fontWeight: "bold" }}>
-                                ✓ {lead.linkClicks}x clicked
-                              </span>
-                            ) : (
-                              <span style={{ color: "#4a6a8a", fontSize: "0.78rem" }}>Not yet</span>
-                            )}
-                          </td>
-                          <td style={{ padding: "13px 16px" }}><StatusBadge status={lead.dripStatus || "unknown"} /></td>
-                        </tr>
+        {activeTab === "submissions" && (() => {
+          const downloadTimeline = leads
+            .filter(l => l.linkClicks > 0 && l.linkClickedAt)
+            .flatMap(l => {
+              if (l.linkClickHistory && l.linkClickHistory.length > 0) {
+                return l.linkClickHistory.map((t: string) => ({
+                  id: `${l.id}-${t}`,
+                  name: l.name || "Lead Magnet User",
+                  email: l.email,
+                  slug: l.slug,
+                  timestamp: t
+                }));
+              }
+              return [{
+                id: l.id,
+                name: l.name || "Lead Magnet User",
+                email: l.email,
+                slug: l.slug,
+                timestamp: l.linkClickedAt
+              }];
+            })
+            .sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime())
+            .slice(0, 5);
+
+          const slugStats = funnels.map(f => {
+            const matchingLeads = leads.filter(l => l.slug === f.slug && l.linkClicks > 0);
+            const totalDownloads = matchingLeads.reduce((sum, l) => sum + (l.linkClicks || 0), 0);
+            const clickTimes = matchingLeads
+              .map(l => l.linkClickedAt)
+              .filter(Boolean)
+              .map(t => new Date(t).getTime());
+            const lastDownloadedAt = clickTimes.length > 0 
+              ? new Date(Math.max(...clickTimes)).toLocaleString([], { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }) 
+              : "Never";
+
+            return {
+              ...f,
+              totalDownloads,
+              lastDownloadedAt
+            };
+          });
+
+          const maxDownloads = Math.max(...slugStats.map(s => s.totalDownloads), 1);
+
+          return (
+            <div style={{ background: "#122647", borderRadius: "8px", border: "1px solid rgba(255,255,255,0.05)", overflow: "hidden" }}>
+              <div style={{ padding: "20px 24px", background: "#0B1D35", borderBottom: "1px solid rgba(201,168,76,0.08)" }}>
+                <h3 style={{ margin: 0, color: "#FFFFFF", fontFamily: "'Cormorant Garamond', serif", fontSize: "20px" }}>All Lead Captures</h3>
+              </div>
+
+              {/* Interactive Feed & Performance Panel */}
+              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))", gap: "20px", padding: "24px", borderBottom: "1px solid rgba(255,255,255,0.06)", background: "rgba(255,255,255,0.01)" }}>
+                
+                {/* Recent Downloads Feed */}
+                <div style={{ background: "rgba(255,255,255,0.02)", borderRadius: "8px", border: "1px solid rgba(255,255,255,0.04)", padding: "20px" }}>
+                  <h4 style={{ margin: "0 0 16px", color: "#C9A84C", fontFamily: "'Cormorant Garamond', serif", fontSize: "18px", display: "flex", alignItems: "center", gap: "8px" }}>
+                    🔥 Recent PDF Downloads Feed
+                  </h4>
+                  {downloadTimeline.length === 0 ? (
+                    <p style={{ color: "#8EA8C3", fontSize: "0.82rem", margin: 0 }}>No downloads recorded yet.</p>
+                  ) : (
+                    <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+                      {downloadTimeline.map(item => (
+                        <div key={item.id} style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", padding: "10px", background: "rgba(11,29,53,0.4)", borderRadius: "6px", border: "1px solid rgba(255,255,255,0.03)" }}>
+                          <div style={{ minWidth: 0, flex: 1 }}>
+                            <div style={{ fontSize: "0.82rem", fontWeight: "bold", color: "#FFFFFF", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                              {item.name}
+                            </div>
+                            <div style={{ fontSize: "0.75rem", color: "#8EA8C3", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", marginTop: "2px" }}>
+                              {item.email}
+                            </div>
+                            <div style={{ fontSize: "0.7rem", color: "#C9A84C", marginTop: "4px", textTransform: "uppercase", letterSpacing: "0.5px" }}>
+                              📁 {item.slug.replace(/-/g, " ")}
+                            </div>
+                          </div>
+                          <div style={{ fontSize: "0.72rem", color: "#81c784", background: "rgba(46,125,50,0.12)", border: "1px solid rgba(46,125,50,0.25)", padding: "2px 8px", borderRadius: "10px", fontWeight: "bold", whiteSpace: "nowrap", marginLeft: "10px" }}>
+                            {new Date(item.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} ({new Date(item.timestamp).toLocaleDateString([], { month: 'short', day: 'numeric' })})
+                          </div>
+                        </div>
                       ))}
-                    </tbody>
-                  </table>
+                    </div>
+                  )}
                 </div>
-              )}
-          </div>
-        )}
+
+                {/* PDF Performance */}
+                <div style={{ background: "rgba(255,255,255,0.02)", borderRadius: "8px", border: "1px solid rgba(255,255,255,0.04)", padding: "20px" }}>
+                  <h4 style={{ margin: "0 0 16px", color: "#C9A84C", fontFamily: "'Cormorant Garamond', serif", fontSize: "18px" }}>
+                    📊 PDF Download Performance
+                  </h4>
+                  <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
+                    {slugStats.sort((a,b) => b.totalDownloads - a.totalDownloads).slice(0, 4).map(stat => {
+                      const percentage = Math.round((stat.totalDownloads / maxDownloads) * 100);
+                      return (
+                        <div key={stat.slug} style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
+                          <div style={{ display: "flex", justifyContent: "space-between", fontSize: "0.78rem" }}>
+                            <span style={{ color: "#C2D4E4", fontWeight: 600, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", maxWidth: "200px" }}>{stat.icon} {stat.title}</span>
+                            <span style={{ color: "#81c784", fontWeight: "bold" }}>{stat.totalDownloads} downloads</span>
+                          </div>
+                          <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                            <div style={{ flex: 1, height: "6px", background: "rgba(255,255,255,0.05)", borderRadius: "3px", overflow: "hidden" }}>
+                              <div style={{ width: `${percentage}%`, height: "100%", background: "#C9A84C", borderRadius: "3px", transition: "width 0.5s ease" }} />
+                            </div>
+                            <span style={{ fontSize: "0.7rem", color: "#8EA8C3", minWidth: "90px", textAlign: "right" }}>
+                              Last: {stat.lastDownloadedAt}
+                            </span>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+
+              </div>
+
+              {isLoading ? <div style={{ padding: "40px", textAlign: "center", color: "#8EA8C3" }}>Loading...</div> :
+                leads.length === 0 ? <div style={{ padding: "40px", textAlign: "center", color: "#8EA8C3" }}>No leads captured yet.</div> : (
+                  <div style={{ overflowX: "auto" }}>
+                    <table style={{ width: "100%", borderCollapse: "collapse" }}>
+                      <thead>
+                        <tr style={{ background: "rgba(11,29,53,0.5)", color: "#C9A84C", textTransform: "uppercase", fontSize: "0.75rem", letterSpacing: "1px" }}>
+                          <th style={{ padding: "14px 16px", textAlign: "left" }}>Date</th>
+                          <th style={{ padding: "14px 16px", textAlign: "left" }}>Name</th>
+                          <th style={{ padding: "14px 16px", textAlign: "left" }}>Email</th>
+                          <th style={{ padding: "14px 16px", textAlign: "left" }}>Funnel</th>
+                          <th style={{ padding: "14px 16px", textAlign: "left" }}>PDF Clicked</th>
+                          <th style={{ padding: "14px 16px", textAlign: "left" }}>Drip</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {leads.map(lead => (
+                          <tr key={lead.id} style={{ borderBottom: "1px solid rgba(255,255,255,0.04)", fontSize: "0.85rem" }}>
+                            <td style={{ padding: "13px 16px", color: "#8EA8C3", whiteSpace: "nowrap" }}>
+                              {lead.capturedAt?.toDate ? new Date(lead.capturedAt.toDate()).toLocaleDateString() : "—"}
+                            </td>
+                            <td style={{ padding: "13px 16px", color: "#FFFFFF", fontWeight: 600 }}>{lead.name || "—"}</td>
+                            <td style={{ padding: "13px 16px", color: "#C9A84C" }}><a href={`mailto:${lead.email}`} style={{ color: "#C9A84C", textDecoration: "none" }}>{lead.email}</a></td>
+                            <td style={{ padding: "13px 16px", color: "#C2D4E4", fontSize: "0.78rem" }}>{(lead.slug || "").replace(/-/g, " ")}</td>
+                            <td style={{ padding: "13px 16px" }}>
+                              {lead.linkClicks > 0 ? (
+                                <span 
+                                  title={lead.linkClickHistory && lead.linkClickHistory.length > 0 ? lead.linkClickHistory.map((t: string, idx: number) => `Click ${idx+1}: ${new Date(t).toLocaleString()}`).join('\n') : `Clicked: ${lead.linkClickedAt ? new Date(lead.linkClickedAt).toLocaleString() : ''}`}
+                                  style={{ background: "rgba(46,125,50,0.15)", color: "#81c784", border: "1px solid rgba(46,125,50,0.3)", padding: "4px 10px", borderRadius: "12px", fontSize: "0.72rem", fontWeight: "bold", cursor: "help" }}
+                                >
+                                  ✓ {lead.linkClicks}x · {lead.linkClickedAt ? new Date(lead.linkClickedAt).toLocaleString([], { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }) : ""}
+                                </span>
+                              ) : (
+                                <span style={{ color: "#4a6a8a", fontSize: "0.78rem" }}>Not yet</span>
+                              )}
+                            </td>
+                            <td style={{ padding: "13px 16px" }}><StatusBadge status={lead.dripStatus || "unknown"} /></td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                )}
+            </div>
+          );
+        })()}
 
         {/* ── TAB: Drip Queue ── */}
         {activeTab === "drips" && (
@@ -655,8 +768,11 @@ export default function LeadsDashboard() {
                           <td style={{ padding: "14px 16px", color: "#C9A84C" }}><a href={`mailto:${lead.email}`} style={{ color: "#C9A84C", textDecoration: "none" }}>{lead.email}</a></td>
                           <td style={{ padding: "14px 16px" }}>
                             {lead.linkClicks > 0 ? (
-                              <span style={{ background: "rgba(46,125,50,0.15)", color: "#81c784", border: "1px solid rgba(46,125,50,0.3)", padding: "3px 10px", borderRadius: "12px", fontSize: "0.72rem", fontWeight: "bold" }}>
-                                ✓ {lead.linkClicks}x · {lead.linkClickedAt ? new Date(lead.linkClickedAt).toLocaleDateString() : ""}
+                              <span 
+                                title={lead.linkClickHistory && lead.linkClickHistory.length > 0 ? lead.linkClickHistory.map((t: string, idx: number) => `Click ${idx+1}: ${new Date(t).toLocaleString()}`).join('\n') : `Clicked: ${lead.linkClickedAt ? new Date(lead.linkClickedAt).toLocaleString() : ''}`}
+                                style={{ background: "rgba(46,125,50,0.15)", color: "#81c784", border: "1px solid rgba(46,125,50,0.3)", padding: "3px 10px", borderRadius: "12px", fontSize: "0.72rem", fontWeight: "bold", cursor: "help" }}
+                              >
+                                ✓ {lead.linkClicks}x · {lead.linkClickedAt ? new Date(lead.linkClickedAt).toLocaleString([], { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }) : ""}
                               </span>
                             ) : (
                               <span style={{ color: "#4a6a8a", fontSize: "0.78rem" }}>Not yet</span>

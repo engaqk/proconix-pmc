@@ -16,9 +16,12 @@ export async function GET(req: Request) {
       const snap = await getDoc(docRef);
       if (snap.exists()) {
         const currentClicks = snap.data().linkClicks || 0;
+        const currentHistory = snap.data().linkClickHistory || [];
+        const nowISO = new Date().toISOString();
         await updateDoc(docRef, {
-          linkClickedAt: new Date().toISOString(),
+          linkClickedAt: nowISO,
           linkClicks: currentClicks + 1,
+          linkClickHistory: [...currentHistory, nowISO]
         });
       }
     } catch (e: any) {
