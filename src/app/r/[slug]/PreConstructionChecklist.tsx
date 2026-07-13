@@ -199,10 +199,10 @@ export default function PreConstructionChecklist({ slug, utm }: PreConstructionC
 
 <div className="wrap">
 
-  <div className="logo-row">
+  <a href="https://proconixpmc.com" target="_blank" rel="noopener noreferrer" className="logo-row" style={{ textDecoration: 'none', cursor: 'pointer' }}>
     <img src="/logo.png" alt="Proconix Logo" />
     <span className="word">PROCONIX<span>Project Management Consultancy</span></span>
-  </div>
+  </a>
 
   <span className="eyebrow">FREE PROJECT DIAGNOSTIC CHEATSHEET FOR CONSTRUCTION SPONSORS</span>
 

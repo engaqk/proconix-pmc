@@ -288,11 +288,11 @@ export default function DownloadPage() {
         <div className="dl-card">
 
           {/* Logo */}
-          <div className="dl-logo">
+          <a href="https://proconixpmc.com" target="_blank" rel="noopener noreferrer" className="dl-logo" style={{ textDecoration: 'none', cursor: 'pointer' }}>
             <Image src="/logo.png" alt="Proconix" width={48} height={48} style={{ objectFit: 'contain' }} />
             <div className="dl-logo-text">Proconix</div>
             <div className="dl-logo-sub">Project Management Consultancy</div>
-          </div>
+          </a>
 
           {/* Icon */}
           <div className={`dl-icon-wrap${status === 'done' ? ' done' : ''}`}>
