@@ -96,7 +96,7 @@ export default function LeadPage() {
         <div className="container">
           <div className="nav-inner">
             <Link href="/" className="nav-logo-wrapper">
-              <img src="/logo.png" alt="Proconix Logo" className="nav-logo-img" />
+              <img src="/logo.png" alt="Proconix PMC — construction project governance in Africa" className="nav-logo-img" />
               <div className="nav-logo-text-group">
                 <div className="nav-logo">PROCONIX</div>
                 <div className="nav-tagline">Project Management Consultancy</div>
@@ -105,10 +105,9 @@ export default function LeadPage() {
 
             <ul className="nav-links">
               <li><Link href="/">Home</Link></li>
-              <li><Link href="/features">Features</Link></li>
-              <li><a href="#hero-card" onClick={(e) => smoothScroll(e, "#hero-card")}>Checklist</a></li>
-              <li><Link href="/admin">Admin Login</Link></li>
-            </ul>
+              <li><Link href="/governance-diagnostic-tools">Features</Link></li>
+              <li><a href="/resources/pre-construction-governance-checklist" >Checklist</a></li>
+              </ul>
 
             <div className="nav-right">
               <div className="nav-social">
@@ -131,8 +130,7 @@ export default function LeadPage() {
         {/* Mobile Dropdown Menu */}
         <div className={`mobile-menu ${isMobileMenuOpen ? 'open' : ''}`}>
           <Link href="/">Home</Link>
-          <Link href="/features">Features</Link>
-          <Link href="/admin">Admin Login</Link>
+          <Link href="/governance-diagnostic-tools">Features</Link>
           <button onClick={handleDiscoveryClick} className="btn-gold" style={{ marginTop: '10px' }}>Book Strategic Audit</button>
         </div>
 
@@ -168,7 +166,7 @@ export default function LeadPage() {
 
               <div className="hero-ctas">
                 <button onClick={handleDiscoveryClick} className="btn-gold">Book Strategic Audit</button>
-                <a href="#hero-card" onClick={(e) => smoothScroll(e, "#hero-card")} className="btn-outline">Free Checklist ↓</a>
+                <a href="/resources/pre-construction-governance-checklist"  className="btn-outline">Free Checklist ↓</a>
               </div>
               <p className="hero-qualify">Note: Exclusive to $5M—$100M+ Project Sponsors in Africa.</p>
 
@@ -202,7 +200,7 @@ export default function LeadPage() {
               </div>
 
               <form className="capture-form" onSubmit={handleFormSubmit}>
-                <p style={{ fontSize: '0.75rem', color: '#C9A84C', marginBottom: '10px', fontStyle: 'italic' }}>* Please enter your correct email address below to receive the checklist.</p>
+                <p style={{ fontSize: '0.75rem', color: '#C9A84C', marginBottom: '10px', fontStyle: 'italic' }}>Enter your email address below to receive the checklist.</p>
                 <input type="text" placeholder="Your Full Name" name="name" required/>
                 <input type="email" placeholder="Your Email Address" name="email" required />
                 <select name="budget" required className="form-select">

@@ -97,7 +97,7 @@ export default function Home() {
         <div className="container">
           <div className="nav-inner">
             <Link href="/" className="nav-logo-wrapper">
-              <img src="/logo.png" alt="Proconix Logo" className="nav-logo-img" />
+              <img src="/logo.png" alt="Proconix PMC — construction project governance in Africa" className="nav-logo-img" />
               <div className="nav-logo-text-group">
                 <div className="nav-logo">PROCONIX</div>
                 <div className="nav-tagline">Project Management Consultancy</div>
@@ -105,14 +105,13 @@ export default function Home() {
             </Link>
 
             <ul className="nav-links">
-              <li><a href="#identity" onClick={(e) => smoothScroll(e, "#identity")}>What We Are</a></li>
-              <li><Link href="/features">Features</Link></li>
-              <li><a href="#problem" onClick={(e) => smoothScroll(e, "#problem")}>The Problem</a></li>
-              <li><a href="#advantage" onClick={(e) => smoothScroll(e, "#advantage")}>Our Advantage</a></li>
-              <li><a href="#about" onClick={(e) => smoothScroll(e, "#about")}>About</a></li>
-              <li><a href="#cases" onClick={(e) => smoothScroll(e, "#cases")}>Case Evidence</a></li>
-              <li><Link href="/admin">Admin Login</Link></li>
-            </ul>
+              <li><a href="/construction-project-governance" >What We Are</a></li>
+              <li><Link href="/governance-diagnostic-tools">Features</Link></li>
+              <li><a href="/construction-project-governance#problem" >The Problem</a></li>
+              <li><a href="/construction-project-governance#advantage" >Our Advantage</a></li>
+              <li><a href="/about-talibbhai-khanji" >About</a></li>
+              <li><a href="/case-evidence/case-1" >Case Evidence</a></li>
+              </ul>
 
             <div className="nav-right">
               <div className="nav-social">
@@ -129,7 +128,7 @@ export default function Home() {
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
                 </a>
               </div>
-              <button onClick={handleDiscoveryClick} className="btn-gold">Book Discovery Call</button>
+              <button onClick={handleDiscoveryClick} className="btn-gold">Executive Governance Briefing Call</button>
             </div>
 
             <button className="menu-toggle" onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)} aria-label="Toggle Menu">
@@ -140,14 +139,13 @@ export default function Home() {
 
         {/* Mobile Dropdown Menu */}
         <div className={`mobile-menu ${isMobileMenuOpen ? 'open' : ''}`}>
-          <a href="#identity" onClick={(e) => smoothScroll(e, "#identity")}>What We Are</a>
-          <Link href="/features">Features</Link>
-          <a href="#problem" onClick={(e) => smoothScroll(e, "#problem")}>The Problem</a>
-          <a href="#advantage" onClick={(e) => smoothScroll(e, "#advantage")}>Our Advantage</a>
-          <a href="#about" onClick={(e) => smoothScroll(e, "#about")}>About</a>
-          <a href="#cases" onClick={(e) => smoothScroll(e, "#cases")}>Case Evidence</a>
-          <Link href="/admin">Admin Login</Link>
-          <button onClick={handleDiscoveryClick} className="btn-gold" style={{ marginTop: '10px' }}>Book Discovery Call</button>
+          <a href="/construction-project-governance" >What We Are</a>
+          <Link href="/governance-diagnostic-tools">Features</Link>
+          <a href="/construction-project-governance#problem" >The Problem</a>
+          <a href="/construction-project-governance#advantage" >Our Advantage</a>
+          <a href="/about-talibbhai-khanji" >About</a>
+          <a href="/case-evidence/case-1" >Case Evidence</a>
+          <button onClick={handleDiscoveryClick} className="btn-gold" style={{ marginTop: '10px' }}>Executive Governance Briefing Call</button>
         </div>
       </nav>
       {/* Hero Section */}
@@ -198,12 +196,12 @@ export default function Home() {
         <p className="hero-sub">
           African construction projects lose 20–40% of planned project value to overruns, unchecked variations,
           and procurement failures — silently, before sponsors see it on paper. Proconix installs the
-          governance architecture that protects your capital from day one.
+          governance architecture that protects your capital (CAPEX) from day one.
         </p>
 
         <div className="hero-ctas">
-        <button onClick={handleDiscoveryClick} className="btn-gold">Book a Discovery Call</button>
-          <a href="#hero-card" onClick={(e) => smoothScroll(e, "#hero-card")} className="btn-outline">Free Pre-Construction Checklist ↓</a>
+        <button onClick={handleDiscoveryClick} className="btn-gold">Executive Governance Briefing Call</button>
+          <a href="/resources/pre-construction-governance-checklist"  className="btn-outline">Free Pre-Construction Checklist ↓</a>
         </div>
 
         <div className="hero-metrics">
@@ -217,7 +215,7 @@ export default function Home() {
             <strong>Up to 20%</strong><span>Cost Savings</span>
           </div>
           <div className="hero-metric">
-            <strong>15+ yrs</strong><span>Africa On-Ground</span>
+            <strong>19+ / 15+ yrs</strong><span>Multinational / Africa On-Ground</span>
           </div>
         </div>
       </div>
@@ -238,7 +236,7 @@ export default function Home() {
           </div>
         </div>
         <form className="capture-form" onSubmit={handleFormSubmit}>
-          <p style={{ fontSize: '0.75rem', color: '#C9A84C', marginBottom: '10px', fontStyle: 'italic' }}>* Please enter your correct email address below to receive the checklist.</p>
+          <p style={{ fontSize: '0.75rem', color: '#C9A84C', marginBottom: '10px', fontStyle: 'italic' }}>Enter your email address below to receive the checklist.</p>
           <input type="text" placeholder="Your Full Name" name="name" required/>
           <input type="email" placeholder="Your Email Address" name="email" required />
           <button type="submit" className="btn-gold">Download Free Checklist →</button>
@@ -419,7 +417,7 @@ export default function Home() {
     <div className="section-eyebrow">Proven Outcomes</div>
     <h2 className="section-title">What Changes When<br/><em>Governance Is In Place</em></h2>
     <div className="metrics-grid">
-      <div className="m-tile"><div className="mnum">$250M+</div><div className="mdesc">Portfolio Governed Across Africa, GCC &amp; India</div></div>
+      <div className="m-tile"><div className="mnum">$250M+</div><div className="mdesc">Portfolio Governed — Africa, GCC &amp; International</div></div>
       <div className="m-tile"><div className="mnum">Up to 97%</div><div className="mdesc">On-Time Delivery Rate — Structured Programme Management</div></div>
       <div className="m-tile"><div className="mnum">Up to 20%</div><div className="mdesc">Total Cost Savings — Direct + Indirect Through Governance</div></div>
       <div className="m-tile"><div className="mnum">8–16 hrs</div><div className="mdesc">Executive Hours Reclaimed Per Week — Returned to Strategy</div></div>
@@ -473,7 +471,7 @@ export default function Home() {
         <h3>Before You Break Ground:<br/>Pre-Construction Governance Checklist — Africa</h3>
         <p>Built for $5M–$100M+ CAPEX project sponsors in Africa. 13 diagnostic areas. Readiness score output. No theory. No filler.</p>
         <form className="lead-form" onSubmit={handleFormSubmit}>
-          <p style={{ fontSize: '0.75rem', color: '#C9A84C', marginBottom: '10px', fontStyle: 'italic' }}>* Please enter your correct email address below to receive the checklist.</p>
+          <p style={{ fontSize: '0.75rem', color: '#C9A84C', marginBottom: '10px', fontStyle: 'italic' }}>Enter your email address below to receive the checklist.</p>
           <input type="text" placeholder="Your Full Name" name="name" required/>
           <input type="email" placeholder="Your Email Address" name="email" required />
           <input type="text" placeholder="Project Country (Where in Africa?)" name="country" required/>
@@ -754,7 +752,7 @@ export default function Home() {
             <div className="faq-chevron">+</div>
           </div>
           <div className="faq-a">
-            Proconix fees are structured on a project-by-project basis. <strong>— depending on the mandate scope, deployment model, and project complexity. Pricing is discussed in the discovery consultation after understanding your specific project. </strong> What is consistent: the governance mandate protects far more capital than it costs. The discovery call is where that conversation begins.
+            Proconix fees are structured on a project-by-project basis. <strong>— depending on the mandate scope, deployment model, and project complexity. Pricing is discussed in the governance briefing after understanding your specific project. </strong> What is consistent: the governance mandate protects far more capital than it costs. The executive briefing is where that conversation begins.
           </div>
         </div>
 
@@ -801,9 +799,9 @@ export default function Home() {
     <div>
       <p>Every day a construction project runs without a structured governance architecture is a day of compounding exposure. The discovery call is where we determine whether Proconix is the right governance partner for your project — and whether your project falls within our current mandate window.</p>
       <div className="cta-pair">
-        <button onClick={handleDiscoveryClick} className="btn-gold">Book a Discovery Call</button>
+        <button onClick={handleDiscoveryClick} className="btn-gold">Executive Governance Briefing Call</button>
         <form className="capture-form" onSubmit={handleFormSubmit} style={{ margin: 0, padding: 0, background: 'transparent', boxShadow: 'none', display: 'flex', flexDirection: 'column', gap: '8px', alignItems: 'center' }}>
-          <p style={{ fontSize: '0.75rem', color: '#C9A84C', marginBottom: '4px', fontStyle: 'italic' }}>* Please enter your correct email address below to receive the checklist.</p>
+          <p style={{ fontSize: '0.75rem', color: '#C9A84C', marginBottom: '4px', fontStyle: 'italic' }}>Enter your email address below to receive the checklist.</p>
           <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', justifyContent: 'center' }}>
             <input type="text" placeholder="Your Full Name" name="name" required style={{ padding: '12px', borderRadius: '4px', border: '1px solid rgba(255,255,255,0.2)', background: 'rgba(0,0,0,0.2)', color: '#fff', minWidth: '180px' }} />
             <input type="email" placeholder="Your Email Address" name="email" required style={{ padding: '12px', borderRadius: '4px', border: '1px solid rgba(255,255,255,0.2)', background: 'rgba(0,0,0,0.2)', color: '#fff', minWidth: '180px' }} />
@@ -824,7 +822,7 @@ export default function Home() {
 
       <div className="footer-brand">
         <Link href="/" className="nav-logo-wrapper" style={{ marginBottom: '15px' }}>
-          <img src="/logo.png" alt="Proconix Logo" className="nav-logo-img" />
+          <img src="/logo.png" alt="Proconix PMC — construction project governance in Africa" className="nav-logo-img" />
           <div className="nav-logo-text-group">
             <div className="nav-logo" style={{ fontSize: '1.3rem' }}>PROCONIX</div>
             <div className="nav-tagline" style={{ fontSize: '0.5rem' }}>Project Management Consultancy</div>
@@ -850,13 +848,13 @@ export default function Home() {
       <div className="footer-col">
         <h4>Navigate</h4>
         <ul>
-          <li><a href="#identity" onClick={(e) => smoothScroll(e, "#identity")}>What We Are</a></li>
-          <li><Link href="/features">Advanced Features</Link></li>
-          <li><a href="#problem" onClick={(e) => smoothScroll(e, "#problem")}>The Governance Vacuum</a></li>
-          <li><a href="#advantage" onClick={(e) => smoothScroll(e, "#advantage")}>Quad-Domain Advantage</a></li>
-          <li><a href="#about" onClick={(e) => smoothScroll(e, "#about")}>About Talibbhai</a></li>
-          <li><a href="#cases" onClick={(e) => smoothScroll(e, "#cases")}>Case Evidence</a></li>
-          <li><a href="#lead-magnet" onClick={(e) => smoothScroll(e, "#lead-magnet")}>Free Checklist</a></li>
+          <li><a href="/construction-project-governance" >What We Are</a></li>
+          <li><Link href="/governance-diagnostic-tools">Advanced Features</Link></li>
+          <li><a href="/construction-project-governance#problem" >The Governance Vacuum</a></li>
+          <li><a href="/construction-project-governance#advantage" >Quad-Domain Advantage</a></li>
+          <li><a href="/about-talibbhai-khanji" >About Talibbhai</a></li>
+          <li><a href="/case-evidence/case-1" >Case Evidence</a></li>
+          <li><a href="/resources/pre-construction-governance-checklist" >Free Checklist</a></li>
         </ul>
       </div>
 
@@ -887,7 +885,7 @@ export default function Home() {
           <li><a href="https://www.instagram.com/talibkhanji_pmp/" target="_blank" rel="noopener">Instagram — @talibkhanji_pmp</a></li>
           <li><a href="https://wa.me/918530781153" target="_blank" rel="noopener">WhatsApp — Direct Message</a></li>
           <li><a href="mailto:info@proconixpmc.com">Email — info@proconixpmc.com</a></li>
-          <li><a href="#hero-card">Free Pre-Construction Checklist</a></li>
+          <li><a href="/resources/pre-construction-governance-checklist">Free Pre-Construction Checklist</a></li>
         </ul>
       </div>
 

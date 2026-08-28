@@ -200,7 +200,7 @@ export default function PreConstructionChecklist({ slug, utm }: PreConstructionC
 <div className="wrap">
 
   <a href="https://proconixpmc.com" target="_blank" rel="noopener noreferrer" className="logo-row" style={{ textDecoration: 'none', cursor: 'pointer' }}>
-    <img src="/logo.png" alt="Proconix Logo" />
+    <img src="/logo.png" alt="Proconix PMC — construction project governance in Africa" />
     <span className="word">PROCONIX<span>Project Management Consultancy</span></span>
   </a>
 
@@ -312,7 +312,7 @@ export default function PreConstructionChecklist({ slug, utm }: PreConstructionC
     <p><b>Talibbhai Khanji</b> is a P.Eng-registered civil engineer, PMP® (PMI USA), and MBA in Project Management — Founder of <b>Proconix Project Management Consultancy</b>, a construction governance firm working across Africa since 2010.</p>
     <div className="credentials">
       <span className="tag">19+ yrs multinational</span>
-      <span className="tag">15+ yrs Africa execution</span>
+      <span className="tag">19+ / 15+ yrs Multinational / Africa On-Ground</span>
       <span className="tag">$250M+ governed</span>
       <span className="tag">Up to 97% on-time delivery</span>
       <span className="tag">Up to 20% cost savings</span>

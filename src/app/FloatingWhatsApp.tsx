@@ -18,7 +18,7 @@ export default function FloatingWhatsApp() {
 
   return (
     <a
-      href="https://wa.me/918530781153"
+      href="https://wa.me/255"
       target="_blank"
       rel="noopener noreferrer"
       onClick={async () => {

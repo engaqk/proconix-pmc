@@ -38,7 +38,7 @@ export default function FeaturesPage() {
         <div className="container">
           <div className="nav-inner">
             <Link href="/" className="nav-logo-wrapper">
-              <img src="/logo.png" alt="Proconix Logo" className="nav-logo-img" />
+              <img src="/logo.png" alt="Proconix PMC — construction project governance in Africa" className="nav-logo-img" />
               <div className="nav-logo-text-group">
                 <div className="nav-logo">PROCONIX</div>
                 <div className="nav-tagline">Project Management Consultancy</div>
@@ -46,15 +46,14 @@ export default function FeaturesPage() {
             </Link>
             <ul className="nav-links">
               <li><Link href="/">Home</Link></li>
-              <li><Link href="/features" className="active-link" style={{ color: 'var(--gold)' }}>Features</Link></li>
-              <li><Link href="/#problem">The Problem</Link></li>
-              <li><Link href="/#advantage">Our Advantage</Link></li>
-              <li><Link href="/#about">About</Link></li>
-              <li><Link href="/#cases">Case Evidence</Link></li>
-              <li><Link href="/admin">Admin Login</Link></li>
-            </ul>
+              <li><Link href="/governance-diagnostic-tools" className="active-link" style={{ color: 'var(--gold)' }}>Features</Link></li>
+              <li><Link href="/construction-project-governance#problem">The Problem</Link></li>
+              <li><Link href="/construction-project-governance#advantage">Our Advantage</Link></li>
+              <li><Link href="/about-talibbhai-khanji">About</Link></li>
+              <li><Link href="/case-evidence/case-1">Case Evidence</Link></li>
+              </ul>
             <div className="nav-right">
-              <button onClick={handleDiscoveryClick} className="btn-gold">Book Discovery Call</button>
+              <button onClick={handleDiscoveryClick} className="btn-gold">Executive Governance Briefing Call</button>
             </div>
             <button className="menu-toggle" onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}>
               {isMobileMenuOpen ? '✕' : '☰'}
@@ -65,10 +64,9 @@ export default function FeaturesPage() {
         {/* Mobile Dropdown Menu */}
         <div className={`mobile-menu ${isMobileMenuOpen ? 'open' : ''}`}>
           <Link href="/">Home</Link>
-          <Link href="/features">Features</Link>
-          <Link href="/#problem">The Problem</Link>
-          <Link href="/admin">Admin Login</Link>
-          <button onClick={handleDiscoveryClick} className="btn-gold" style={{ marginTop: '10px' }}>Book Discovery Call</button>
+          <Link href="/governance-diagnostic-tools">Features</Link>
+          <Link href="/construction-project-governance#problem">The Problem</Link>
+          <button onClick={handleDiscoveryClick} className="btn-gold" style={{ marginTop: '10px' }}>Executive Governance Briefing Call</button>
         </div>
       </nav>
 
@@ -138,10 +136,10 @@ export default function FeaturesPage() {
         <div className="container">
           <h2 style={{ marginBottom: '20px' }}>Ready to Secure Your Governance?</h2>
           <p style={{ maxWidth: '600px', margin: '0 auto 40px', color: '#8EA8C3' }}>
-            Book a non-obligatory diagnostic call to audit your current project architecture and identify critical exposure points.
+            Book the Executive Governance Briefing Call — a structured conversation about your project's governance position.
           </p>
           <div>
-            <button onClick={handleDiscoveryClick} className="btn-gold" style={{ padding: '18px 40px', fontSize: '1rem' }}>Book Strategic Audit Call</button>
+            <button onClick={handleDiscoveryClick} className="btn-gold" style={{ padding: '18px 40px', fontSize: '1rem' }}>Book Executive Governance Briefing Call</button>
           </div>
         </div>
       </section>
@@ -149,7 +147,7 @@ export default function FeaturesPage() {
       <footer style={{ background: '#07142A', padding: '60px 0', borderTop: '1px solid rgba(255,255,255,0.05)', textAlign: 'center' }}>
         <div className="container">
            <Link href="/" className="nav-logo-wrapper" style={{ marginBottom: '30px' }}>
-             <img src="/logo.png" alt="Proconix Logo" className="nav-logo-img" />
+             <img src="/logo.png" alt="Proconix PMC — construction project governance in Africa" className="nav-logo-img" />
              <div className="nav-logo-text-group">
                <div className="nav-logo" style={{ fontSize: '1.4rem' }}>PROCONIX</div>
                <div className="nav-tagline" style={{ fontSize: '0.55rem' }}>Project Management Consultancy</div>

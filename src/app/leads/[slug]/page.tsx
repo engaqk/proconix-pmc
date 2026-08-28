@@ -330,7 +330,7 @@ export default function DownloadPage() {
             <>
               <div className="dl-cta-label">Ready to protect your project?</div>
               <a href="https://proconixpmc.com/#contact" className="dl-cta-btn">
-                Book a Discovery Call →
+                Executive Governance Briefing Call →
               </a>
               <div className="dl-retry">
                 Didn't receive the file?{' '}

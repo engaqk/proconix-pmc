@@ -354,7 +354,7 @@ export default function ResourcePage() {
       {/* Nav */}
       <nav style={{ background: '#0B1D35', borderBottom: '1px solid rgba(201,168,76,0.2)', padding: '16px 24px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', position: 'sticky', top: 0, zIndex: 50 }}>
         <a href="https://proconixpmc.com" className="nav-logo-wrapper">
-          <img src="/logo.png" alt="Proconix Logo" className="nav-logo-img" />
+          <img src="/logo.png" alt="Proconix PMC — construction project governance in Africa" className="nav-logo-img" />
           <div className="nav-logo-text-group">
             <div className="nav-logo" style={{ fontSize: '22px' }}>PROCONIX</div>
             <div className="nav-tagline" style={{ fontSize: '9px', color: '#C9A84C' }}>Project Management Consultancy</div>
@@ -478,7 +478,7 @@ export default function ResourcePage() {
       {/* Footer */}
       <footer style={{ background: '#07142A', borderTop: '1px solid rgba(201,168,76,0.1)', padding: '32px 24px', textAlign: 'center' }}>
         <a href="https://proconixpmc.com" className="nav-logo-wrapper" style={{ justifyContent: 'center', marginBottom: '15px', textDecoration: 'none', cursor: 'pointer' }}>
-          <img src="/logo.png" alt="Proconix Logo" className="nav-logo-img" />
+          <img src="/logo.png" alt="Proconix PMC — construction project governance in Africa" className="nav-logo-img" />
           <div className="nav-logo-text-group" style={{ textAlign: 'left' }}>
             <div className="nav-logo" style={{ fontSize: '18px' }}>PROCONIX</div>
             <div className="nav-tagline" style={{ fontSize: '9px', color: '#C9A84C' }}>Project Management Consultancy</div>

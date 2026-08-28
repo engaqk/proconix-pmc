@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&display=swap');
+
 
 /* ─────────────────────────────────────────────────
    CSS VARIABLES
@@ -1029,3 +1029,4 @@ footer{background:var(--navy-deep);border-top:1px solid var(--border);padding:56
 .form-select:focus { border-color: var(--gold); }
 
 .hero-qualify { font-size: 0.72rem; color: var(--text-muted); font-style: italic; margin-top: 10px; margin-bottom: 40px; opacity: 0.8; }
+
