@@ -96,9 +96,10 @@ export default function CapexCalculator() {
         </div>
         
         <p style={{ color: '#C9A84C', fontSize: '0.85rem', margin: '0 0', fontStyle: 'italic' }}>
-          * We engineer out this leakage from day 1. Book a discovery call to audit your project governance.
+          * We engineer out this leakage from day 1. Book a briefing call to audit your project governance.
         </p>
       </div>
     </div>
   );
 }
+

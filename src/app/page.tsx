@@ -84,7 +84,7 @@ export default function Home() {
         body: JSON.stringify({ 
           name: 'Anonymous Click', 
           email: 'Pending registration', 
-          type: 'Discovery Call Click' 
+          type: 'briefing call Click' 
         }),
       });
     } catch {}
@@ -107,7 +107,7 @@ export default function Home() {
 
             <ul className="nav-links">
               <li><a href="/construction-project-governance" >What We Are</a></li>
-              <li><Link href="/governance-diagnostic-tools">Features</Link></li>
+              <li><Link href="/construction-project-risk-calculator">Features</Link></li>
               <li><a href="/construction-project-governance#problem" >The Problem</a></li>
               <li><a href="/construction-project-governance#advantage" >Our Advantage</a></li>
               <li><a href="/about-talibbhai-khanji" >About</a></li>
@@ -122,7 +122,7 @@ export default function Home() {
                 <a href="https://www.instagram.com/talibkhanji_pmp/" target="_blank" rel="noopener" title="Instagram">
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg>
                 </a>
-                <a href="https://wa.me/918530781153" target="_blank" rel="noopener" title="WhatsApp">
+                <a href="https://wa.me/255695964527" target="_blank" rel="noopener" title="WhatsApp">
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
                 </a>
                 <a href="mailto:info@proconixpmc.com" title="Email">
@@ -141,7 +141,7 @@ export default function Home() {
         {/* Mobile Dropdown Menu */}
         <div className={`mobile-menu ${isMobileMenuOpen ? 'open' : ''}`}>
           <a href="/construction-project-governance" >What We Are</a>
-          <Link href="/governance-diagnostic-tools">Features</Link>
+          <Link href="/construction-project-risk-calculator">Features</Link>
           <a href="/construction-project-governance#problem" >The Problem</a>
           <a href="/construction-project-governance#advantage" >Our Advantage</a>
           <a href="/about-talibbhai-khanji" >About</a>
@@ -169,7 +169,7 @@ export default function Home() {
           <a href="https://www.instagram.com/talibkhanji_pmp/" target="_blank" rel="noopener" title="Instagram">
             <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg>
           </a>
-          <a href="https://wa.me/918530781153" target="_blank" rel="noopener" title="WhatsApp">
+          <a href="https://wa.me/255695964527" target="_blank" rel="noopener" title="WhatsApp">
             <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
           </a>
           <a href="mailto:info@proconixpmc.com" title="Email">
@@ -225,7 +225,7 @@ export default function Home() {
       <div className="hero-card" id="hero-card">
         <div className="card-tag">Free Resource — Download Instantly</div>
         <h3>Before You Break Ground:<br/>Pre-Construction Governance Checklist — Africa</h3>
-        <p>13 diagnostic areas. Know exactly where you stand before your contractor mobilises.</p>
+        <p>13 governance readiness areas. Know exactly where you stand before your contractor mobilises.</p>
         <div className="stat-rows">
           <div className="stat-row">
             <span className="val">70%</span>
@@ -258,7 +258,7 @@ export default function Home() {
 
       <div className="identity-left">
         <div className="section-eyebrow">What Proconix Is — And Is Not</div>
-        <h2 className="section-title">A <em>Techno-Governance Firm.</em><br/>Not a conventional consultant. Not a supervisory firm. A sponsor-aligned strategic project leader focused on delivery outcomes.</h2>
+        <h2 className="section-title">About Talibbhai Khanji — Strategic Project Leader</h2>
 
         <p style={{"fontSize":".92rem","color":"var(--text-light)","lineHeight":"1.8","fontWeight":"300","marginBottom":"8px"}}>
           Most project sponsors who engage construction advisors get observation — reports written after the damage is done.
@@ -288,21 +288,21 @@ export default function Home() {
             <div className="deploy-mini-item">
               <span className="dmi-icon">🏗️</span>
               <div className="dmi-content">
-                <h5>Full On-Site Governance Command™</h5>
+                <h3>Full On-Site Governance Command™</h3>
                 <p>Directing, managing, and executing governance on the sponsor's behalf — a dedicated senior presence embedded within the project environment in Africa.</p>
               </div>
             </div>
             <div className="deploy-mini-item">
               <span className="dmi-icon">🔄</span>
               <div className="dmi-content">
-                <h5>Hybrid Governance Model™</h5>
+                <h3>Hybrid Governance Model™</h3>
                 <p>Continuously directing governance remotely, managing the project throughout, and executing direct oversight on-ground at the milestones that matter most.</p>
               </div>
             </div>
             <div className="deploy-mini-item">
               <span className="dmi-icon">🖥️</span>
               <div className="dmi-content">
-                <h5>Virtual Governance Control Room™</h5>
+                <h3>Virtual Governance Control Room™</h3>
                 <p>Remotely directing project governance and managing executive-level oversight — delivering full visibility and structured advisory support from anywhere in the world.</p>
               </div>
             </div>
@@ -349,7 +349,7 @@ export default function Home() {
         <p>The answer is a governance system built around the <strong>sponsor&apos;s interests — from day one.</strong> Not from the moment the first crisis surfaces.</p>
 
         <div className="trap-box">
-          <h4>The 30% Hidden Cost Trap™</h4>
+          <h4>The 30% Hidden Cost Trap</h4>
           <ul className="trap-rows">
             <li><strong>Direct Losses —</strong> time delays, cost overruns, late-stage quality defects and rework</li>
             <li><strong>Indirect Losses —</strong> lost revenue windows, extended financing costs, operator penalties</li>
@@ -365,7 +365,7 @@ export default function Home() {
         <div className="pain-card">
           <div className="pc-icon">📉</div>
           <div className="pc-text">
-            <h5>Cost Overruns You Didn&apos;t See Coming</h5>
+            <h3>Cost Overruns You Didn&apos;t See Coming</h3>
             <p>The first integrated cost report reveals $3–5M in growth. The board calls. You realise the governance wasn&apos;t there. Variations that should have been blocked are already approved.</p>
             <span className="pc-signal">→ 20–40% overrun typical without structured governance</span>
           </div>
@@ -374,7 +374,7 @@ export default function Home() {
         <div className="pain-card">
           <div className="pc-icon">🗓️</div>
           <div className="pc-text">
-            <h5>Schedule Slippage With No Recovery Path</h5>
+            <h3>Schedule Slippage With No Recovery Path</h3>
             <p>The critical path slips 4–8 weeks. Contractors blame design. Engineers blame contractors. You spend 12–14 hours weekly in conflict resolution that no one is equipped to resolve.</p>
             <span className="pc-signal">→ 30–50% slippage typical by construction midpoint</span>
           </div>
@@ -383,7 +383,7 @@ export default function Home() {
         <div className="pain-card">
           <div className="pc-icon">📦</div>
           <div className="pc-text">
-            <h5>Procurement Exploited Without Your Knowledge</h5>
+            <h3>Procurement Exploited Without Your Knowledge</h3>
             <p>A major shipment is stuck in customs. Currency fluctuation adds 8–10% cost. The supplier exploits the knowledge gap and overcharges by 15%. No one flagged it before it happened.</p>
             <span className="pc-signal">→ 8–15% silent budget inflation from unstructured procurement</span>
           </div>
@@ -392,7 +392,7 @@ export default function Home() {
         <div className="pain-card">
           <div className="pc-icon">😓</div>
           <div className="pc-text">
-            <h5>Sleepless Nights. Your Capital. Their Chaos.</h5>
+            <h3>Sleepless Nights. Your Capital. Their Chaos.</h3>
             <p>The underlying fear that the project will "blow up" unexpectedly. A reputation built over years is sitting on a project with no governance architecture holding it together.</p>
             <span className="pc-signal">→ Peace of mind is a governance outcome, not a feeling</span>
           </div>
@@ -401,7 +401,7 @@ export default function Home() {
         <div className="pain-card">
           <div className="pc-icon">🏗️</div>
           <div className="pc-text">
-            <h5>Quality Defects Discovered at Handover</h5>
+            <h3>Quality Defects Discovered at Handover</h3>
             <p>The hotel operator rejects the finish standards. Rework is apparent. The contractor disputes liability. Your opening date — and your reputation — are now both at risk.</p>
             <span className="pc-signal">→ Quality governed from inception, not inspected at the end</span>
           </div>
@@ -470,7 +470,7 @@ export default function Home() {
       <div className="lead-form-box">
         <div className="lfb-tag">Free Download · 3-Page PDF · No Obligation</div>
         <h3>Before You Break Ground:<br/>Pre-Construction Governance Checklist — Africa</h3>
-        <p>Built for $5M–$100M+ CAPEX project sponsors in Africa. 13 diagnostic areas. Readiness score output. No theory. No filler.</p>
+        <p>Built for $5M–$100M+ CAPEX project sponsors in Africa. 13 governance readiness areas. Readiness score output. No theory. No filler.</p>
         <form className="lead-form" onSubmit={handleFormSubmit}>
           <p style={{ fontSize: '0.75rem', color: '#C9A84C', marginBottom: '10px', fontStyle: 'italic' }}>Enter your email address below to receive the checklist.</p>
           <input type="text" placeholder="Your Full Name" name="name" required/>
@@ -585,7 +585,7 @@ export default function Home() {
         <div className="about-card">
           <div className="about-photo">
             <img 
-              src="/talibbhai.jpg" 
+              src="/_next/image?url=%2Ftalibbhai.jpg&w=828&q=75" 
               alt="Talibbhai Khanji" 
               style={{ width: '100%', height: '100%', objectFit: 'cover' }} 
             loading="lazy" decoding="async" />
@@ -611,7 +611,7 @@ export default function Home() {
             <a href="https://www.instagram.com/talibkhanji_pmp/" target="_blank" rel="noopener" title="Instagram">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg>
             </a>
-            <a href="https://wa.me/918530781153" target="_blank" rel="noopener" title="WhatsApp">
+            <a href="https://wa.me/255695964527" target="_blank" rel="noopener" title="WhatsApp">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
             </a>
             <a href="mailto:info@proconixpmc.com" title="Email">
@@ -630,7 +630,7 @@ export default function Home() {
 
         <p>The governance gap in African construction is not a theory. I have seen its consequences: cost overruns that were avoidable, handover failures that were preventable, and executive reputations damaged by decisions made in the absence of structured governance authority.</p>
 
-        <p>Proconix was built to close that gap. <strong>Not as a monitoring layer.</strong> As a Sponsor-Aligned Strategic Project Leader who carries governance authority — embedded inside your project&apos;s decision structure from inception through to handover.</p>
+        <p>Proconix was built to close that gap. <strong>Not as a monitoring layer.</strong> As a Strategic Project Leader who carries governance authority — embedded inside your project&apos;s decision structure from inception through to handover.</p>
 
         <div className="about-quote">
           <p>"When I take on a mandate, I am in the decision room — not the observation room. That is a structural difference, and you will feel it immediately."</p>
@@ -640,7 +640,7 @@ export default function Home() {
 
         <div className="about-scarcity">
           <span className="scarcity-icon">⚠</span>
-          <p><strong>Mandate Availability:</strong> Proconix runs a maximum of 4 active mandates at any time — by design. New engagements open one per quarter. If your project window aligns, begin the discovery conversation now.</p>
+          <p><strong>Mandate Availability:</strong> Proconix runs a maximum of 4 active mandates at any time — by design. New engagements open one per quarter. If your project window aligns, begin the briefing conversation now.</p>
         </div>
       </div>
 
@@ -720,9 +720,9 @@ export default function Home() {
       <div className="faq-intro">
         <p>The most common questions project sponsors ask before engaging Proconix — answered directly, without consulting jargon.</p>
         <br/>
-        <p>If you have a question not addressed here, the discovery call is the right place to ask it. There is no obligation and no pitch — only a structured conversation about whether Proconix is the right governance partner for your specific project.</p>
+        <p>If you have a question not addressed here, the briefing call is the right place to ask it. There is no obligation and no pitch — only a structured conversation about whether Proconix is the right governance partner for your specific project.</p>
         <br/>
-        <button onClick={handleDiscoveryClick} className="btn-outline" style={{"marginTop":"8px"}}>Book the Discovery Call</button>
+        <button onClick={handleDiscoveryClick} className="btn-outline" style={{"marginTop":"8px"}}>Book the Executive Governance Briefing Call</button>
       </div>
 
       <div className="faq-list">
@@ -733,7 +733,7 @@ export default function Home() {
             <div className="faq-chevron">+</div>
           </div>
           <div className="faq-a">
-            <strong>No.</strong> The consulting industry in construction has earned its reputation for generating reports and avoiding accountability. Proconix is not that model. When we take on a mandate, we are the Sponsor-Aligned Strategic Project Leader — with governance authority inside the project&apos;s decision structure. We are in the decision room, not the observation room. That is a structural difference. A monitoring consultant tells you what went wrong last month. A Proconix mandate prevents it from happening in the first place — and when the unexpected occurs, resolves it with the full authority of a structured governance mandate behind the decision.
+            <strong>No.</strong> The consulting industry in construction has earned its reputation for generating reports and avoiding accountability. Proconix is not that model. When we take on a mandate, we are the Strategic Project Leader — with governance authority inside the project&apos;s decision structure. We are in the decision room, not the observation room. That is a structural difference. A monitoring consultant tells you what went wrong last month. A Proconix mandate prevents it from happening in the first place — and when the unexpected occurs, resolves it with the full authority of a structured governance mandate behind the decision.
           </div>
         </div>
 
@@ -763,7 +763,7 @@ export default function Home() {
             <div className="faq-chevron">+</div>
           </div>
           <div className="faq-a">
-            <strong>No — but every week without governance is compounding exposure.</strong> Governance installed mid-construction is more expensive to implement and less complete than governance installed at inception. However, the case studies above include projects rescued at crisis point. The earlier governance is installed, the greater the protection. If your project is already in execution and you are experiencing cost drift, schedule slippage, or procurement pressure — the discovery call is the first step to understanding what is recoverable.
+            <strong>No — but every week without governance is compounding exposure.</strong> Governance installed mid-construction is more expensive to implement and less complete than governance installed at inception. However, the case studies above include projects rescued at crisis point. The earlier governance is installed, the greater the protection. If your project is already in execution and you are experiencing cost drift, schedule slippage, or procurement pressure — the briefing call is the first step to understanding what is recoverable.
           </div>
         </div>
 
@@ -783,7 +783,7 @@ export default function Home() {
             <div className="faq-chevron">+</div>
           </div>
           <div className="faq-a">
-            Mobilisation timeline depends on the project stage and current mandate portfolio. <strong>Proconix accepts a maximum of four active Tier-1 mandates concurrently — one new engagement per quarter.</strong> This is a deliberate portfolio control decision that ensures every mandate receives undivided senior governance attention. The discovery call will confirm whether your project timeline aligns with current availability. If it does, governance architecture begins within the agreed mobilisation window.
+            Mobilisation timeline depends on the project stage and current mandate portfolio. <strong>Proconix accepts a maximum of four active Tier-1 mandates concurrently — one new engagement per quarter.</strong> This is a deliberate portfolio control decision that ensures every mandate receives undivided senior governance attention. The briefing call will confirm whether your project timeline aligns with current availability. If it does, governance architecture begins within the agreed mobilisation window.
           </div>
         </div>
 
@@ -798,7 +798,7 @@ export default function Home() {
     <div className="section-eyebrow" style={{"justifyContent":"center"}}>Start the Conversation</div>
     <h2>Your Project Has a Window.<br/><em>Governance Has a Starting Point.</em></h2>
     <div>
-      <p>Every day a construction project runs without a structured governance architecture is a day of compounding exposure. The discovery call is where we determine whether Proconix is the right governance partner for your project — and whether your project falls within our current mandate window.</p>
+      <p>Every day a construction project runs without a structured governance architecture is a day of compounding exposure. The briefing call is where we determine whether Proconix is the right governance partner for your project — and whether your project falls within our current mandate window.</p>
       <div className="cta-pair">
         <button onClick={handleDiscoveryClick} className="btn-gold">Executive Governance Briefing Call</button>
         <form className="capture-form" onSubmit={handleFormSubmit} style={{ margin: 0, padding: 0, background: 'transparent', boxShadow: 'none', display: 'flex', flexDirection: 'column', gap: '8px', alignItems: 'center' }}>
@@ -837,7 +837,7 @@ export default function Home() {
           <a href="https://www.instagram.com/talibkhanji_pmp/" target="_blank" rel="noopener" title="Instagram">
             <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.333 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg>
           </a>
-          <a href="https://wa.me/918530781153" target="_blank" rel="noopener" title="WhatsApp">
+          <a href="https://wa.me/255695964527" target="_blank" rel="noopener" title="WhatsApp">
             <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
           </a>
           <a href="mailto:info@proconixpmc.com" title="Email">
@@ -850,8 +850,11 @@ export default function Home() {
         <h4>Navigate</h4>
         <ul>
           <li><a href="/construction-project-governance" >What We Are</a></li>
-          <li><Link href="/governance-diagnostic-tools">Advanced Features</Link></li>
+          <li><Link href="/construction-project-risk-calculator">Advanced Features</Link></li>
           <li><a href="/construction-project-governance#problem" >The Governance Vacuum</a></li>
+            <li><a href="/faq">FAQ</a></li>
+            <li><a href="/insights">Insights</a></li>
+            <li><a href="/executive-governance-briefing-call">Briefing Call</a></li>
           <li><a href="/construction-project-governance#advantage" >Quad-Domain Advantage</a></li>
           <li><a href="/about-talibbhai-khanji" >About Talibbhai</a></li>
           <li><a href="/case-evidence/case-1" >Case Evidence</a></li>
@@ -862,19 +865,7 @@ export default function Home() {
       <div className="footer-col">
         <h4>Contact</h4>
         <div className="footer-contact-item">
-          <span className="fc-icon">📧</span>
-          <span>info@proconixpmc.com</span>
-        </div>
-        <div className="footer-contact-item">
-          <span className="fc-icon">📞</span>
-          <span>+255 695964527 / WhatsApp +91 8530781153</span>
-        </div>
-        <div className="footer-contact-item">
-          <span className="fc-icon">🌐</span>
-          <span>www.proconixpmc.com</span>
-        </div>
-        <div className="footer-contact-item">
-          <span className="fc-icon">📍</span>
+          <span className="fc-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg></span>
           <span>East Africa — Active Across Africa</span>
         </div>
       </div>
@@ -884,7 +875,7 @@ export default function Home() {
         <ul>
           <li><a href="https://www.linkedin.com/in/talibkhanjipmp/" target="_blank" rel="noopener">LinkedIn — Talibbhai Khanji</a></li>
           <li><a href="https://www.instagram.com/talibkhanji_pmp/" target="_blank" rel="noopener">Instagram — @talibkhanji_pmp</a></li>
-          <li><a href="https://wa.me/918530781153" target="_blank" rel="noopener">WhatsApp — Direct Message</a></li>
+          <li><a href="https://wa.me/255695964527" target="_blank" rel="noopener">WhatsApp — Direct Message</a></li>
           <li><a href="mailto:info@proconixpmc.com">Email — info@proconixpmc.com</a></li>
           <li><a href="/resources/pre-construction-governance-checklist">Free Pre-Construction Checklist</a></li>
         </ul>
@@ -933,3 +924,6 @@ export default function Home() {
     </>
   );
 }
+
+
+

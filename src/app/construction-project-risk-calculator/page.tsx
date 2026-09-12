@@ -25,7 +25,7 @@ export default function FeaturesPage() {
         body: JSON.stringify({ 
           name: 'Anonymous Click (Features Page)', 
           email: 'Pending registration', 
-          type: 'Discovery Call Click' 
+          type: 'briefing call Click' 
         }),
       });
     } catch {}
@@ -47,7 +47,7 @@ export default function FeaturesPage() {
             </Link>
             <ul className="nav-links">
               <li><Link href="/">Home</Link></li>
-              <li><Link href="/governance-diagnostic-tools" className="active-link" style={{ color: 'var(--gold)' }}>Features</Link></li>
+              <li><Link href="/construction-project-risk-calculator" className="active-link" style={{ color: 'var(--gold)' }}>Features</Link></li>
               <li><Link href="/construction-project-governance#problem">The Problem</Link></li>
               <li><Link href="/construction-project-governance#advantage">Our Advantage</Link></li>
               <li><Link href="/about-talibbhai-khanji">About</Link></li>
@@ -65,7 +65,7 @@ export default function FeaturesPage() {
         {/* Mobile Dropdown Menu */}
         <div className={`mobile-menu ${isMobileMenuOpen ? 'open' : ''}`}>
           <Link href="/">Home</Link>
-          <Link href="/governance-diagnostic-tools">Features</Link>
+          <Link href="/construction-project-risk-calculator">Features</Link>
           <Link href="/construction-project-governance#problem">The Problem</Link>
           <button onClick={handleDiscoveryClick} className="btn-gold" style={{ marginTop: '10px' }}>Executive Governance Briefing Call</button>
         </div>
@@ -78,9 +78,10 @@ export default function FeaturesPage() {
             <span className="hero-badge-dot"></span> 
             Project Governance Lab
           </div>
-          <h1 style={{ marginBottom: '20px', fontSize: '2.8rem' }}>The Sponsor&apos;s <em>Command Center</em></h1>
+          <h1 style={{ marginBottom: '20px', fontSize: '2.8rem' }}>Construction Project Risk Exposure Calculator for Sponsors in Africa</h1>
+<h2 style={{ fontSize: '1.4rem', color: '#8EA8C3', marginTop: '10px' }}>The Sponsor&apos;s <em>Command Center</em></h2>
           <p className="hero-sub" style={{ margin: '0 auto 60px', maxWidth: '750px', fontSize: '1.1rem', opacity: 0.8 }}>
-            Advanced diagnostic tools and authority-based frameworks designed to provide 
+            Advanced governance readiness tools and authority-based frameworks designed to provide 
             total visibility and protection to high-stakes project sponsors in Africa.
           </p>
           
@@ -111,7 +112,7 @@ export default function FeaturesPage() {
             <div className="f-card">
               <div className="f-icon">🌡️</div>
               <h4>Real-Time Risk Heatmapping</h4>
-              <p>Continuous diagnostic oversight across cost, schedule, and quality — identifying budget drift before it manifests on your balance sheet.</p>
+              <p>Continuous governance oversight across cost, schedule, and quality — identifying budget drift before it manifests on your balance sheet.</p>
             </div>
             <div className="f-card">
               <div className="f-icon">🛡️</div>
@@ -190,3 +191,6 @@ export default function FeaturesPage() {
     </div>
   );
 }
+
+
+

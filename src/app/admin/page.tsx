@@ -423,7 +423,7 @@ export default function AdminDashboard() {
             </div>
           </div>
           <div style={{ background: "#122647", padding: "20px", borderRadius: "8px", boxShadow: "0 8px 24px rgba(0,0,0,0.15)", borderLeft: "4px solid #C9A84C", borderTop: "1px solid rgba(255,255,255,0.05)", borderRight: "1px solid rgba(255,255,255,0.05)", borderBottom: "1px solid rgba(255,255,255,0.05)" }}>
-            <h4 style={{ margin: "0 0 10px 0", color: "#8EA8C3", fontSize: "0.85rem", textTransform: "uppercase", letterSpacing: "1px" }}>Discovery Calls</h4>
+            <h4 style={{ margin: "0 0 10px 0", color: "#8EA8C3", fontSize: "0.85rem", textTransform: "uppercase", letterSpacing: "1px" }}>briefing calls</h4>
             <div style={{ fontSize: "2.2rem", fontWeight: "bold", color: "#FFFFFF", fontFamily: "'Cormorant Garamond', serif" }}>
               {submissions.filter(s => s.type && (s.type.includes('Call') || s.type.includes('Lead Capture'))).length}
             </div>
@@ -466,7 +466,7 @@ export default function AdminDashboard() {
               <strong>Firebase Error:</strong> {firebaseError}
               <br/>
               <span style={{ fontSize: "0.85rem" }}>
-                Ensure your <a href="https://console.firebase.google.com/u/0/project/proconix-pmc/firestore/rules" target="_blank" style={{ color: "#ef9a9a", textDecoration: "underline" }}>Firestore Rules</a> allow read/write and that indices are created.
+                Ensure your <a href="https://console.firebase.google.com/u/0/project/proconix-pmc/firestore/rules" target="_blank" rel="noopener noreferrer" style={{ color: "#ef9a9a", textDecoration: "underline" }}>Firestore Rules</a> allow read/write and that indices are created.
               </span>
             </div>
           )}
@@ -478,7 +478,7 @@ export default function AdminDashboard() {
               No submissions found yet in <strong>formSubmissions</strong> collection.
               <br/>
               <br/>
-              <a href="https://console.firebase.google.com/u/0/project/proconix-pmc/firestore/databases/-default-/data" target="_blank" style={{ color: "#C9A84C", textDecoration: "underline" }}>Check Firestore Console</a>
+              <a href="https://console.firebase.google.com/u/0/project/proconix-pmc/firestore/databases/-default-/data" target="_blank" rel="noopener noreferrer" style={{ color: "#C9A84C", textDecoration: "underline" }}>Check Firestore Console</a>
             </div>
           ) : (
             <div style={{ overflowX: "auto" }}>
@@ -527,9 +527,9 @@ export default function AdminDashboard() {
                       </td>
                       <td className="hide-on-mobile" style={{ padding: "15px" }}>
                         <span style={{ 
-                          background: sub.type === 'Discovery Call Click' ? 'rgba(230, 81, 0, 0.1)' : 'rgba(46, 125, 50, 0.1)', 
-                          color: sub.type === 'Discovery Call Click' ? '#ffb74d' : '#81c784', 
-                          border: `1px solid ${sub.type === 'Discovery Call Click' ? 'rgba(230, 81, 0, 0.3)' : 'rgba(46, 125, 50, 0.3)'}`,
+                          background: sub.type === 'briefing call Click' ? 'rgba(230, 81, 0, 0.1)' : 'rgba(46, 125, 50, 0.1)', 
+                          color: sub.type === 'briefing call Click' ? '#ffb74d' : '#81c784', 
+                          border: `1px solid ${sub.type === 'briefing call Click' ? 'rgba(230, 81, 0, 0.3)' : 'rgba(46, 125, 50, 0.3)'}`,
                           padding: "4px 10px", 
                           borderRadius: "12px", 
                           fontSize: "0.75rem", 
@@ -741,3 +741,4 @@ export default function AdminDashboard() {
     </>
   );
 }
+

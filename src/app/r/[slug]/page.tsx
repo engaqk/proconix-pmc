@@ -32,7 +32,7 @@ const CONTENT: Record<string, {
       { icon: '💸', title: 'Uncontrolled Budget Exposure', desc: 'Without a variation control protocol in place before breaking ground, contractors routinely issue retrospective claims with no sponsor leverage.' },
     ],
     benefits: [
-      'A 13-point pre-construction governance diagnostic tailored for African capital projects',
+      'A 13-point pre-construction Governance Risk Calculator tailored for African capital projects',
       'Identify which governance gaps will cause cost overruns before your first payment certificate',
       'Design freeze milestone checklist to prevent premature contractor mobilisation',
       'Variation control protocol template to block unbudgeted retrospective claims',
