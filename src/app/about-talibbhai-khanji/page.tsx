@@ -2,7 +2,8 @@
 
 import { useEffect, useState, FormEvent } from 'react';
 import Link from 'next/link';
-import CapexCalculator from '../CapexCalculator';
+import dynamic from 'next/dynamic';
+const CapexCalculator = dynamic(() => import('../CapexCalculator'), { ssr: false });
 
 export default function PageComponent() {
   const [navPadding, setNavPadding] = useState('18px 0');
@@ -168,7 +169,7 @@ export default function PageComponent() {
               src="/talibbhai.jpg" 
               alt="Talibbhai Khanji" 
               style={{ width: '100%', height: '100%', objectFit: 'cover' }} 
-            />
+            loading="lazy" decoding="async" />
           </div>
 
           <div className="aname">Talibbhai Khanji</div>

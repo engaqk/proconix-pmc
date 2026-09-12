@@ -2,7 +2,8 @@
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import GovernanceSimulator from '../GovernanceSimulator';
+import dynamic from 'next/dynamic';
+const GovernanceSimulator = dynamic(() => import('../GovernanceSimulator'), { ssr: false });
 
 export default function FeaturesPage() {
   const [navPadding, setNavPadding] = useState('18px 0');

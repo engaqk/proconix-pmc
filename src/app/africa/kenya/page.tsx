@@ -2,7 +2,8 @@
 
 import { useEffect, useState, FormEvent } from 'react';
 import Link from 'next/link';
-import CapexCalculator from '../../CapexCalculator';
+import dynamic from 'next/dynamic';
+const CapexCalculator = dynamic(() => import('../../CapexCalculator'), { ssr: false });
 
 export default function PageComponent() {
   const [navPadding, setNavPadding] = useState('18px 0');

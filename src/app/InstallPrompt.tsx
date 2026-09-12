@@ -125,7 +125,7 @@ export default function InstallPrompt() {
           src="/icon.jpg" 
           alt="App Icon" 
           style={{ width: '56px', height: '56px', borderRadius: '12px', boxShadow: '0 8px 16px rgba(0,0,0,0.4)', border: '1px solid rgba(255,255,255,0.05)' }} 
-        />
+        loading="lazy" decoding="async" />
         <div style={{ display: 'flex', flexDirection: 'column', color: '#fff', flex: 1 }}>
           <strong style={{ fontSize: '1.1rem', color: '#C9A84C', fontWeight: 700, letterSpacing: '-0.5px' }}>Proconix App</strong>
           <span style={{ fontSize: '0.85rem', color: '#DCE4EF', opacity: 0.8 }}>
