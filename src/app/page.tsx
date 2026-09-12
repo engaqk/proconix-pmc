@@ -188,11 +188,8 @@ export default function Home() {
           across the full EPCM lifecycle — from inception through to successful handover.
         </div>
 
-        <h1>
-          Your Project Deserves<br/>
-          a Governance Command —<br/>
-          Not a <em>Supervision Service.</em>
-        </h1>
+        <h1>Construction Project Governance in Africa � Built Around the Sponsor&apos;s Interests</h1>
+          <h2 style={{fontSize: "1.2rem", fontWeight: 500, color: "#C2D4E4", marginTop: "10px"}}>Your Project Deserves a Governance Command � Not a Supervision Service.</h2>
 
         <p className="hero-sub">
           African construction projects lose 20–40% of planned project value to overruns, unchecked variations,
@@ -924,6 +921,8 @@ export default function Home() {
     </>
   );
 }
+
+
 
 
 
