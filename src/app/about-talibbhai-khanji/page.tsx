@@ -2,7 +2,7 @@
 
 import { useEffect, useState, FormEvent } from 'react';
 import Link from 'next/link';
-import CapexCalculator from './CapexCalculator';
+import CapexCalculator from '../CapexCalculator';
 
 export default function PageComponent() {
   const [navPadding, setNavPadding] = useState('18px 0');
