@@ -169,7 +169,7 @@ export default function PageComponent() {
 
       <div className="identity-left">
         <div className="section-eyebrow">What Proconix Is — And Is Not</div>
-        <h2 className="section-title">About Talibbhai Khanji — Strategic Project Leader</h2>
+        <h1 className="section-title">What Is Construction Project Governance?</h1>
 
         <p style={{"fontSize":".92rem","color":"var(--text-light)","lineHeight":"1.8","fontWeight":"300","marginBottom":"8px"}}>
           Most project sponsors who engage construction advisors get observation — reports written after the damage is done.
@@ -280,7 +280,7 @@ export default function PageComponent() {
           <div className="pc-icon">📦</div>
           <div className="pc-text">
             <h3>Procurement Exploited Without Your Knowledge</h3>
-            <p>A major shipment is stuck in customs. Currency fluctuation adds 8–10% cost. The supplier exploits the knowledge gap and overcharges by 15%. No one flagged it before it happened.</p>
+            <p>A major shipment is stuck in customs. Currency fluctuation adds 8–10% cost. Without structured procurement governance, the knowledge gap goes unchallenged — and 15% sits unquestioned on the invoice. No one flagged it before it happened.</p>
             <span className="pc-signal">→ 8–15% silent budget inflation from unstructured procurement</span>
           </div>
         </div>

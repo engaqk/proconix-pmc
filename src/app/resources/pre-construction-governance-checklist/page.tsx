@@ -169,7 +169,7 @@ export default function PageComponent() {
 
       <div className="lead-left">
         <div className="section-eyebrow">Free Resource</div>
-        <h2 className="section-title">Know Where You Stand<br/><em>Before It Costs You On Site</em></h2>
+        <h1 className="section-title">Pre-Construction Governance Checklist for Project Sponsors in Africa</h1>
         <p className="section-intro">70% of construction project problems are created before ground is broken. This checklist ensures you have a structured governance command in place before your contractor mobilises.</p>
       </div>
 

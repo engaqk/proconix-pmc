@@ -255,7 +255,7 @@ export default function Home() {
 
       <div className="identity-left">
         <div className="section-eyebrow">What Proconix Is — And Is Not</div>
-        <h2 className="section-title">About Talibbhai Khanji — Strategic Project Leader</h2>
+        <h2 className="section-title">A <em>Techno-Governance Firm.</em><br/>Not a conventional consultant. Not a supervisory firm. A Strategic Project Leader focused on delivery outcomes.</h2>
 
         <p style={{"fontSize":".92rem","color":"var(--text-light)","lineHeight":"1.8","fontWeight":"300","marginBottom":"8px"}}>
           Most project sponsors who engage construction advisors get observation — reports written after the damage is done.
@@ -381,7 +381,7 @@ export default function Home() {
           <div className="pc-icon">📦</div>
           <div className="pc-text">
             <h3>Procurement Exploited Without Your Knowledge</h3>
-            <p>A major shipment is stuck in customs. Currency fluctuation adds 8–10% cost. The supplier exploits the knowledge gap and overcharges by 15%. No one flagged it before it happened.</p>
+            <p>A major shipment is stuck in customs. Currency fluctuation adds 8–10% cost. Without structured procurement governance, the knowledge gap goes unchallenged — and 15% sits unquestioned on the invoice. No one flagged it before it happened.</p>
             <span className="pc-signal">→ 8–15% silent budget inflation from unstructured procurement</span>
           </div>
         </div>
@@ -435,13 +435,13 @@ export default function Home() {
         <div className="who-icon">🏨</div>
         <h4>Hospitality &amp; Resort Developers</h4>
         <p>Hotel, resort, and serviced apartment developers across East Africa and the continent. High-specification builds with operator opening commitments and brand reputation on the line at handover.</p>
-        <span className="who-tag">Real Estate · $5M–$100M+ CAPEX</span>
+        <span className="who-tag">Hospitality · $5M–$100M+ CAPEX</span>
       </div>
       <div className="who-card">
         <div className="who-icon">🏢</div>
         <h4>Real Estate Investors &amp; Sponsors</h4>
         <p>Residential, mixed-use, and commercial developers deploying capital in Africa — whether Africa-domiciled, diaspora investors in the GCC, or cross-border family offices entering the market.</p>
-        <span className="who-tag">Hospitality · $5M–$100M+ CAPEX</span>
+        <span className="who-tag">Real Estate · $5M–$100M+ CAPEX</span>
       </div>
       <div className="who-card">
         <div className="who-icon">🏭</div>
@@ -503,7 +503,7 @@ export default function Home() {
         <h4>Constructability-Driven Governance</h4>
         <p>Design reviewed for African on-ground realities before a brick is laid — local material availability, contractor capability, and site-specific conditions that international firms routinely miss.</p>
         <div className="qt-cred">P.Eng (Civil) — ERB Tanzania &amp; Zambia</div>
-        <div className="qt-missing">✗ Overpriced multinationals lack this</div>
+        <div className="qt-missing">✗ International firms without Africa on-ground depth</div>
       </div>
       <div className="quad-tile">
         <div className="qt-num">02</div>
@@ -621,7 +621,7 @@ export default function Home() {
       
       <div className="about-content">
         <div className="section-eyebrow">About Talibbhai Khanji</div>
-        <h2 className="section-title">Africa&apos;s <em>Sponsor-Aligned<br/>Strategic Project Leader</em></h2>
+        <h2 className="section-title">About Talibbhai Khanji &mdash; Strategic Project Leader</h2>
 
         <p>With <strong>19+ years of total multinational experience — including 15+ years of on-ground execution in Africa since 2010</strong> — I have governed, rescued, and delivered construction projects across real estate, hospitality, and industrial sectors on the continent.</p>
 

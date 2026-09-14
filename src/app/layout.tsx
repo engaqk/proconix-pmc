@@ -6,8 +6,23 @@ import ScrollToTop from './ScrollToTop';
 
 export const metadata: Metadata = {
   title: 'Construction Project Governance in Africa | Proconix PMC',
-  description: 'Sponsor-aligned construction project governance for $5M–$100M+ CAPEX projects in Africa. We direct, manage and execute across the full EPCM lifecycle.',
+  description: 'Sponsor-aligned construction project governance for $5M-$100M+ CAPEX projects in Africa. We direct, manage and execute across the full EPCM lifecycle.',
   manifest: '/manifest.json',
+  alternates: {
+    canonical: 'https://www.proconixpmc.com/',
+  },
+  openGraph: {
+    title: 'Construction Project Governance in Africa | Proconix PMC',
+    description: 'Sponsor-aligned construction project governance for $5M-$100M+ CAPEX projects in Africa. We direct, manage and execute across the full EPCM lifecycle.',
+    url: 'https://www.proconixpmc.com/',
+    images: [{ url: 'https://www.proconixpmc.com/icon.jpg' }],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Construction Project Governance in Africa | Proconix PMC',
+    description: 'Sponsor-aligned construction project governance for $5M-$100M+ CAPEX projects in Africa. We direct, manage and execute across the full EPCM lifecycle.',
+    images: ['https://www.proconixpmc.com/icon.jpg'],
+  },
 };
 
 export const viewport = {
@@ -103,7 +118,7 @@ export default function RootLayout({
         "name": "What does a Proconix mandate actually cost?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "Proconix fees are structured on a project-by-project basis depending on mandate scope, deployment model, and complexity. The governance mandate protects far more capital than it costs."
+          "text": "Mandate structure is discussed in the Executive Governance Briefing Call, after understanding the specific project."
         }
       },
       {
@@ -164,6 +179,7 @@ export default function RootLayout({
     </html>
   );
 }
+
 
 
 

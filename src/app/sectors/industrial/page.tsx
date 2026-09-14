@@ -173,13 +173,13 @@ export default function PageComponent() {
         <div className="who-icon">🏨</div>
         <h4>Hospitality &amp; Resort Developers</h4>
         <p>Hotel, resort, and serviced apartment developers across East Africa and the continent. High-specification builds with operator opening commitments and brand reputation on the line at handover.</p>
-        <span className="who-tag">Real Estate · $5M–$100M+ CAPEX</span>
+        <span className="who-tag">Hospitality · $5M–$100M+ CAPEX</span>
       </div>
       <div className="who-card">
         <div className="who-icon">🏢</div>
         <h4>Real Estate Investors &amp; Sponsors</h4>
         <p>Residential, mixed-use, and commercial developers deploying capital in Africa — whether Africa-domiciled, diaspora investors in the GCC, or cross-border family offices entering the market.</p>
-        <span className="who-tag">Hospitality · $5M–$100M+ CAPEX</span>
+        <span className="who-tag">Real Estate · $5M–$100M+ CAPEX</span>
       </div>
       <div className="who-card">
         <div className="who-icon">🏭</div>
