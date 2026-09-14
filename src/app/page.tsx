@@ -183,7 +183,7 @@ export default function Home() {
 
         <div className="hero-badge">
           <span className="hero-badge-dot"></span>
-          Proconix PMC · Construction Project Governance · Africa
+          Proconix PMC &middot; Sponsor-Aligned Construction Project Governance in Africa
         </div>
 
         
