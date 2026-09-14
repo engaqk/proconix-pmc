@@ -30,6 +30,10 @@ export default function PreConstructionChecklist({ slug, utm }: PreConstructionC
         body: JSON.stringify({ name, email, slug, ...utm }),
       });
       if (res.ok) {
+        if (typeof window !== 'undefined' && (window as any).gtag) {
+          (window as any).gtag('event', 'conversion');
+        }
+        
         setSubmitted(true);
       } else {
         const d = await res.json();

@@ -319,7 +319,11 @@ export default function ResourcePage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, slug: resolvedSlug, ...utm }),
       });
-      if (res.ok) { setSubmitted(true); }
+      if (res.ok) {
+        if (typeof window !== 'undefined' && (window as any).gtag) {
+          (window as any).gtag('event', 'conversion');
+        }
+         setSubmitted(true); }
       else { const d = await res.json(); setError(d.error || 'Something went wrong. Please try again.'); }
     } catch { setError('Network error. Please check your connection.'); }
     finally { setLoading(false); }

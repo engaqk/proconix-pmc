@@ -64,6 +64,10 @@ export default function LeadPage() {
         body: JSON.stringify({ ...data, type: 'Checklist Download (Lead Page)' }),
       });
       if (res.ok) {
+        if (typeof window !== 'undefined' && (window as any).gtag) {
+          (window as any).gtag('event', 'conversion');
+        }
+        
         setFormStatus({ type: 'success', message: 'Success! You will shortly receive your downloadable checklist copy via your registered email. Please check your inbox (or spam folder) to get the checklist.' });
         setTimeout(() => setFormStatus(null), 6000);
         (e.target as HTMLFormElement).reset();

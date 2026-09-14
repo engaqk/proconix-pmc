@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import './globals.css';
+import Script from 'next/script';
 import InstallPrompt from './InstallPrompt';
 import FloatingWhatsApp from './FloatingWhatsApp';
 import ScrollToTop from './ScrollToTop';
@@ -37,6 +38,14 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
+        <Script strategy="afterInteractive" src="https://www.googletagmanager.com/gtag/js?id=G-5PXL0HYWJK" />
+        <Script id="google-analytics" strategy="afterInteractive" dangerouslySetInnerHTML={{ __html: `
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', 'G-5PXL0HYWJK');
+        `}} />
+
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet" />

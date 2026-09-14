@@ -66,6 +66,10 @@ export default function Home() {
         body: JSON.stringify({ ...data, type: 'Checklist Download (Home)' }),
       });
       if (res.ok) {
+        if (typeof window !== 'undefined' && (window as any).gtag) {
+          (window as any).gtag('event', 'conversion');
+        }
+        
         setFormStatus({ type: 'success', message: 'Success! You will shortly receive your downloadable checklist copy via your registered email. Please check your inbox (or spam folder) to get the checklist.' });
         setTimeout(() => setFormStatus(null), 6000);
         (e.target as HTMLFormElement).reset();
