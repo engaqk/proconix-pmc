@@ -4,6 +4,7 @@ import Script from 'next/script';
 import InstallPrompt from './InstallPrompt';
 import FloatingWhatsApp from './FloatingWhatsApp';
 import ScrollToTop from './ScrollToTop';
+import AutoUpdater from './AutoUpdater';
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://www.proconixpmc.com'),
@@ -201,6 +202,7 @@ export default function RootLayout({
         <InstallPrompt />
         <FloatingWhatsApp />
         <ScrollToTop />
+        <AutoUpdater />
         <script
           dangerouslySetInnerHTML={{
             __html: `
