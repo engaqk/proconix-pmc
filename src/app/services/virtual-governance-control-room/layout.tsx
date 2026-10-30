@@ -8,9 +8,9 @@ export const metadata: Metadata = {
     title: 'Virtual Governance Control Room™ | Proconix PMC Africa',
     description: 'Remote construction project governance for GCC, diaspora and cross-border sponsors with construction projects in Africa.',
     url: 'https://www.proconixpmc.com/services/virtual-governance-control-room',
-    images: [{ url: 'https://www.proconixpmc.com/icon.jpg' }],
+    images: [{ url: 'https://www.proconixpmc.com/icon.jpg', width: 800, height: 800, alt: 'Proconix PMC', type: 'image/jpeg' }],
   },
-  twitter: { card: 'summary_large_image' }
+  twitter: { card: 'summary_large_image', images: ['https://www.proconixpmc.com/icon.jpg'] }
 };
 
 export default function Layout({ children }: { children: React.ReactNode }) {

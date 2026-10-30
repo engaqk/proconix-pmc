@@ -6,9 +6,24 @@ import FloatingWhatsApp from './FloatingWhatsApp';
 import ScrollToTop from './ScrollToTop';
 
 export const metadata: Metadata = {
+  metadataBase: new URL('https://www.proconixpmc.com'),
   title: 'Construction Project Governance in Africa | Proconix PMC',
   description: 'Sponsor-aligned construction project governance for $5M-$100M+ CAPEX projects in Africa. We direct, manage and execute across the full EPCM lifecycle.',
   manifest: '/manifest.json',
+  icons: {
+    icon: [
+      { url: '/favicon.ico', sizes: 'any' },
+      { url: '/favicon-16x16.png', type: 'image/png', sizes: '16x16' },
+      { url: '/favicon-32x32.png', type: 'image/png', sizes: '32x32' },
+      { url: '/favicon-48x48.png', type: 'image/png', sizes: '48x48' },
+      { url: '/icon-192.png', type: 'image/png', sizes: '192x192' },
+      { url: '/icon-512.png', type: 'image/png', sizes: '512x512' },
+    ],
+    apple: [
+      { url: '/apple-touch-icon.png', sizes: '180x180', type: 'image/png' },
+    ],
+    shortcut: '/favicon.ico',
+  },
   alternates: {
     canonical: 'https://www.proconixpmc.com/',
   },
@@ -16,7 +31,18 @@ export const metadata: Metadata = {
     title: 'Construction Project Governance in Africa | Proconix PMC',
     description: 'Sponsor-aligned construction project governance for $5M-$100M+ CAPEX projects in Africa. We direct, manage and execute across the full EPCM lifecycle.',
     url: 'https://www.proconixpmc.com/',
-    images: [{ url: 'https://www.proconixpmc.com/icon.jpg' }],
+    siteName: 'Proconix PMC',
+    locale: 'en_US',
+    type: 'website',
+    images: [
+      {
+        url: 'https://www.proconixpmc.com/icon.jpg',
+        width: 800,
+        height: 800,
+        alt: 'Proconix PMC - Sponsor-Aligned Construction Project Governance in Africa',
+        type: 'image/jpeg',
+      },
+    ],
   },
   twitter: {
     card: 'summary_large_image',
@@ -49,8 +75,19 @@ export default function RootLayout({
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet" />
-        <link rel="icon" href="/icon.jpg" sizes="any" />
-        <link rel="apple-touch-icon" href="/icon.jpg" />
+        <link rel="icon" href="/favicon.ico" sizes="any" />
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+        <link rel="icon" type="image/png" sizes="48x48" href="/favicon-48x48.png" />
+        <link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png" />
+        <link rel="icon" type="image/png" sizes="512x512" href="/icon-512.png" />
+        <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+        <meta property="og:image" content="https://www.proconixpmc.com/icon.jpg" />
+        <meta property="og:image:secure_url" content="https://www.proconixpmc.com/icon.jpg" />
+        <meta property="og:image:type" content="image/jpeg" />
+        <meta property="og:image:width" content="800" />
+        <meta property="og:image:height" content="800" />
+        <meta property="og:image:alt" content="Proconix PMC Logo" />
       
         <script
           type="application/ld+json"
