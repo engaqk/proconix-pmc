@@ -164,7 +164,7 @@ export default function LeadPage() {
               </h1>
 
               <p className="hero-sub" style={{ maxWidth: '650px' }}>
-                African construction projects lose 20–40% of planned project value to overruns and unchecked variations. 
+                Without structured construction project governance, sponsors typically lose 30% or more of planned project value to overruns, unchecked variations and procurement leakage — The 30% Hidden Cost Trap. 
                 Our governance architecture installs the structural authority required to protect $5M–$100M+ mandates.
               </p>
 
@@ -176,7 +176,7 @@ export default function LeadPage() {
 
               <div className="hero-metrics">
                 <div className="hero-metric">
-                  <strong>$250M+</strong><span>Portfolio Governed</span>
+                  <strong>$250M+</strong><span>Construction Projects Delivered</span>
                 </div>
                 <div className="hero-metric">
                   <strong>Up to 20%</strong><span>Cost Savings</span>
@@ -228,7 +228,7 @@ export default function LeadPage() {
           <div className="section-eyebrow" style={{ justifyContent: 'center' }}>Why Governance?</div>
           <h2 className="section-title">The Hidden 30% Cost Trap™</h2>
           <p className="section-intro" style={{ margin: '0 auto 60px' }}>
-            Without structured governance, 20-40% of project value is lost before the first brick is laid. 
+            Without structured construction project governance, sponsors typically lose 30% or more of planned project value to overruns, unchecked variations and procurement leakage — The 30% Hidden Cost Trap. 
             Reports from consultants only tell you what went wrong last month. Governance prevents it today.
           </p>
           

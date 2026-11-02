@@ -3,6 +3,7 @@ import type { Metadata } from 'next';
 export const metadata: Metadata = {
   title: 'Construction Project Governance Insights | Proconix PMC',
   description: 'Field notes on cost overruns, variation claims and procurement risk on African construction projects — written for project sponsors.',
+  robots: { index: false, follow: true },
   alternates: { canonical: 'https://www.proconixpmc.com/insights' },
   openGraph: {
     title: 'Construction Project Governance Insights | Proconix PMC',

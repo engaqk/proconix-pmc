@@ -170,28 +170,11 @@ export default function PageComponent() {
 <section className="cases-section" id="cases">
   <div className="container">
     <div className="section-eyebrow">Anonymised Case Evidence</div>
-    <h1 className="section-title">Governance That Changed<br/><em>the Project Outcome</em></h1>
+    <h1 className="section-title" style={{ fontSize: '2rem', lineHeight: '1.25' }}>Case Evidence 02 — Residential Development, Tanzania (Governance Installed Mid-Construction)</h1>
     <p className="section-intro">These are not case studies built around a single metric. They are governance situations — real African construction environments — where the absence of a structured authority layer was creating compounding capital exposure.</p>
 
     <div className="cases-grid">
-
-      <div className="case-card">
-        <div className="case-number">01</div>
-        <div className="case-tag">Hospitality · Zanzibar · $50M+</div>
-        <h4>High-Specification Resort — Multi-Stakeholder, International Operator Commitment</h4>
-        <p className="case-situation">
-          A hospitality development with an international operator opening commitment, multiple specialist subcontractors, and a design team operating across jurisdictions. Pre-construction governance architecture absent at inception. Design-constructability gaps were creating variation exposure before mobilisation was complete.
-        </p>
-        <ul className="case-results">
-          <li>Pre-construction governance architecture installed before contractor full mobilisation</li>
-          <li>Variation control protocol implemented — reducing variation claim frequency significantly</li>
-          <li>Procurement governance established for imported FF&amp;E and long-lead MEP equipment</li>
-          <li>Schedule recovered to operator opening commitment date</li>
-          <li>Zero major quality issues raised at operator handover inspection</li>
-        </ul>
-      </div>
-
-      <div className="case-card">
+      <div className="case-card" style={{ maxWidth: '800px', margin: '0 auto' }}>
         <div className="case-number">02</div>
         <div className="case-tag">Real Estate · Tanzania · $15M</div>
         <h4>Residential Development — Governance Rescue at Crisis Point</h4>
@@ -206,23 +189,24 @@ export default function PageComponent() {
           <li>Project used as flagship portfolio piece to secure subsequent high-value contracts</li>
         </ul>
       </div>
+    </div>
 
-      <div className="case-card">
-        <div className="case-number">03</div>
-        <div className="case-tag">Industrial · Zambia · $100M+</div>
-        <h4>Large-Scale Industrial Build — Multi-EPC Complexity</h4>
-        <p className="case-situation">
-          A $100M+ industrial construction project involving multiple EPC packages across civil, structural, MEP, and infrastructure disciplines simultaneously. Design information evolving across packages, reactive procurement, and no consolidated financial reporting. The sponsor was the only entity absorbing the full weight of cross-package coordination — at the direct cost of strategic business attention.
-        </p>
-        <ul className="case-results">
-          <li>End-to-end governance architecture integrated all project dimensions into a single sponsor-facing control environment</li>
-          <li>Consolidated cost visibility framework established — early warning of budget drift across packages</li>
-          <li>Escalation structure removed ownership from project coordination role entirely</li>
-          <li>Procurement governed by structured supply chain timeline — not reactive to site demand</li>
-          <li>Quality accountability unified across all specialist packages with single non-conformance framework</li>
-        </ul>
+    <div style={{ marginTop: '48px', paddingTop: '32px', borderTop: '1px solid var(--border)' }}>
+      <h3 style={{ fontSize: '1.2rem', color: 'var(--amber-bright)', marginBottom: '20px', textAlign: 'center' }}>
+        Other Case Evidence
+      </h3>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '20px', maxWidth: '800px', margin: '0 auto' }}>
+        
+        <a href="/case-evidence/case-1" style={{ display: 'block', padding: '20px', background: 'var(--bg-card)', border: '1px solid var(--border)', borderRadius: '8px', textDecoration: 'none' }}>
+          <div style={{ fontSize: '0.75rem', color: '#8EA8C3', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '8px' }}>Hospitality · Zanzibar · $50M+</div>
+          <div style={{ fontSize: '1rem', color: '#FFFFFF', fontWeight: 600 }}>Case Evidence 01 — High-Specification Resort, Zanzibar (Hospitality, USD 50M+) &rarr;</div>
+        </a>
+
+        <a href="/case-evidence/case-3" style={{ display: 'block', padding: '20px', background: 'var(--bg-card)', border: '1px solid var(--border)', borderRadius: '8px', textDecoration: 'none' }}>
+          <div style={{ fontSize: '0.75rem', color: '#8EA8C3', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '8px' }}>Industrial · Zambia · $100M+</div>
+          <div style={{ fontSize: '1rem', color: '#FFFFFF', fontWeight: 600 }}>Case Evidence 03 — Multi-EPC Industrial Build, Zambia &rarr;</div>
+        </a>
       </div>
-
     </div>
   </div>
 </section>

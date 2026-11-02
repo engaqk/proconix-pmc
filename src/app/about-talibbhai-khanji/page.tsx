@@ -177,7 +177,7 @@ export default function PageComponent() {
           <div className="about-photo">
             <img 
               src="/_next/image?url=%2Ftalibbhai.jpg&w=828&q=75" 
-              alt="Talibbhai Khanji" 
+              alt="Talibbhai Khanji — Strategic Project Leader, founder of Proconix PMC" 
               style={{ width: '100%', height: '100%', objectFit: 'cover' }} 
             loading="lazy" decoding="async" />
           </div>
@@ -215,23 +215,44 @@ export default function PageComponent() {
       
       <div className="about-content">
         <div className="section-eyebrow">About Talibbhai Khanji</div>
-        <h1 className="section-title">About Talibbhai Khanji  Strategic Project Leader</h1>
+        <h1 className="section-title">About Talibbhai Khanji &mdash; Strategic Project Leader</h1>
 
-        <p>With <strong>19+ years of total multinational experience — including 15+ years of on-ground execution in Africa since 2010</strong> — I have governed, rescued, and delivered construction projects across real estate, hospitality, and industrial sectors on the continent.</p>
+        <h2 style={{ fontSize: '1.3rem', color: 'var(--amber-bright)', margin: '24px 0 12px' }}>
+          Credentials &mdash; P.Eng (Civil) &middot; MBA (PM) &middot; PMP&reg;
+        </h2>
+        <p>
+          The credentials I hold &mdash; the <strong>P.Eng Civil from the Engineers Registration Board (ERB) Tanzania and Zambia, the MBA in Project Management, and the PMP&reg; credential from the Project Management Institute (PMI), USA</strong> &mdash; represent the rare combination of certified engineering rigour and strategic commercial oversight that makes Proconix structurally distinct.
+        </p>
 
-        <p>The governance gap in African construction is not a theory. I have seen its consequences: cost overruns that were avoidable, handover failures that were preventable, and executive reputations damaged by decisions made in the absence of structured governance authority.</p>
-
-        <p>Proconix was built to close that gap. <strong>Not as a monitoring layer.</strong> As a Strategic Project Leader who carries governance authority — embedded inside your project&apos;s decision structure from inception through to handover.</p>
-
+        <h2 style={{ fontSize: '1.3rem', color: 'var(--amber-bright)', margin: '24px 0 12px' }}>
+          19+ Years Multinational, 15+ Years on the Ground in Africa
+        </h2>
+        <p>
+          With <strong>19+ years of total multinational experience &mdash; including 15+ years of continuous on-ground execution in Africa since 2010</strong> &mdash; I have directed, managed, rescued, and delivered construction projects across the continent.
+        </p>
+        <p>
+          The governance gap in African construction is not a theory. I have seen its consequences: cost overruns that were avoidable, handover failures that were preventable, and executive reputations damaged by decisions made in the absence of structured governance authority. Proconix was built to close that gap &mdash; working inside the sponsor&apos;s decision structure from inception through to handover.
+        </p>
         <div className="about-quote">
-          <p>"When I take on a mandate, I am in the decision room — not the observation room. That is a structural difference, and you will feel it immediately."</p>
+          <p>&ldquo;When I take on a mandate, I am in the decision room &mdash; not the observation room. That is a structural difference, and you will feel it immediately.&rdquo;</p>
         </div>
 
-        <p>The credentials I hold — the <strong>P.Eng Civil from ERB Tanzania and Zambia, the MBA in Project Management, and the PMP® from PMI USA</strong> — represent the Quad-Domain combination that makes Proconix structurally different from every other governance option available to a project sponsor in Africa.</p>
+        <h2 style={{ fontSize: '1.3rem', color: 'var(--amber-bright)', margin: '24px 0 12px' }}>
+          Project Types Led
+        </h2>
+        <p>
+          Experience directing and governing complex capital developments across Africa: <strong>residential townships, mixed-use developments, commercial towers, industrial facilities, luxury hospitality resorts, healthcare developments, and institutional masterplans</strong>, including extensive external development and infrastructure works. Most recently, I led the Meli&aacute; Zanzibar and Four Seasons builds.
+        </p>
 
+        <h2 style={{ fontSize: '1.3rem', color: 'var(--amber-bright)', margin: '24px 0 12px' }}>
+          Talk to Talibbhai &mdash; Executive Governance Briefing Call
+        </h2>
+        <p>
+          If you are preparing or currently executing a USD 5M to USD 100M+ construction project in Africa, the Executive Governance Briefing Call is where we evaluate your project&apos;s governance position and confirm mandate alignment.
+        </p>
         <div className="about-scarcity">
           <span className="scarcity-icon">⚠</span>
-          <p><strong>Mandate Availability:</strong> Proconix runs a maximum of 4 active mandates at any time — by design. New engagements open one per quarter. If your project window aligns, begin the briefing conversation now.</p>
+          <p><strong>Mandate Availability:</strong> Proconix runs a maximum of 4 active Tier-1 mandates at any time &mdash; by design. New engagements open one per quarter. If your project window aligns, begin the briefing conversation now.</p>
         </div>
       </div>
 

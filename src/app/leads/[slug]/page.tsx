@@ -112,7 +112,7 @@ export default function DownloadPage() {
           position: absolute;
           top: -200px; left: 50%; transform: translateX(-50%);
           width: 800px; height: 800px;
-          background: radial-gradient(circle, rgba(201,168,76,0.06) 0%, transparent 70%);
+          background: radial-gradient(circle, rgba(201,168,76,0.06) 0%, transparent 68%);
           pointer-events: none;
         }
 

@@ -1,3 +1,43 @@
+
+const DISPOSABLE_DOMAINS = new Set([
+  'mailinator.com', 'guerrillamail.com', 'tempmail.com', '10minutemail.com',
+  'trashmail.com', 'yopmail.com', 'sharklasers.com', 'dispostable.com',
+  'getairmail.com', 'fakemailgenerator.com', 'throwawaymail.com'
+]);
+
+function validateLead(data: { email?: string; name?: string; _hp?: string; honeypot?: string; website?: string }): { valid: boolean; error?: string } {
+  if (data._hp || data.honeypot || data.website) {
+    return { valid: false, error: 'Spam detected' };
+  }
+
+  const email = (data.email || '').trim().toLowerCase();
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+  if (!email || !emailRegex.test(email)) {
+    return { valid: false, error: 'Please enter a valid email address.' };
+  }
+
+  const junkPatterns = [
+    /^user\d*@/i,
+    /^test\d*@/i,
+    /^asdf/i,
+    /^qwerty/i,
+    /^admin@admin/i,
+    /^demo@/i
+  ];
+  for (const pattern of junkPatterns) {
+    if (pattern.test(email)) {
+      return { valid: false, error: 'Please provide a valid business or personal email address.' };
+    }
+  }
+
+  const domain = email.split('@')[1];
+  if (DISPOSABLE_DOMAINS.has(domain)) {
+    return { valid: false, error: 'Disposable email addresses are not accepted.' };
+  }
+
+  return { valid: true };
+}
+
 import { NextResponse } from 'next/server';
 import nodemailer from 'nodemailer';
 import { collection, addDoc, query, where, getDocs, limit, serverTimestamp } from 'firebase/firestore';
@@ -133,7 +173,7 @@ function getUserEmailTemplate(name: string) {
             <h2 style="font-family: 'Cormorant Garamond', serif; margin: 0 0 15px; font-size: 24px; font-weight: 600; color: #FFFFFF; line-height: 1.2;">Governance Starts <em style="font-style: italic; color: #C9A84C;">Now.</em></h2>
             <p style="color: #C2D4E4; font-weight: 300; font-size: 15px; margin-bottom: 20px;">Dear ${name || 'Project Sponsor'},</p>
             <p style="color: #C2D4E4; font-weight: 300; font-size: 15px; margin-bottom: 20px;">Thank you for downloading the <strong style="color: #FFFFFF;">Before You Break Ground: Pre-Construction Governance Checklist</strong>.</p>
-            <p style="color: #C2D4E4; font-weight: 300; font-size: 15px; margin-bottom: 20px;">70% of construction project problems in Africa are created before ground is broken. This checklist is your first step in ensuring a structured governance command is in place to protect your capital from day one.</p>
+            <p style="color: #C2D4E4; font-weight: 300; font-size: 15px; margin-bottom: 20px;">Most construction project problems in Africa are created before ground is broken — in the decisions, appointments and approvals made before a contractor mobilises. This checklist is your first step in ensuring a structured governance command is in place to protect your capital from day one.</p>
             <p style="color: #C2D4E4; font-weight: 300; font-size: 15px; margin-bottom: 20px;">You can access your checklist at any time using the link below:</p>
             <div style="text-align: center; margin: 30px 0;">
               <a href="https://proconixpmc.com/proconix-checklist.pdf" style="display: inline-block; padding: 16px 36px; background: #C9A84C; color: #0B1D35; text-decoration: none; font-size: 13px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase;">View Your Checklist</a>
@@ -156,6 +196,12 @@ function getUserEmailTemplate(name: string) {
 export async function POST(req: Request) {
   try {
     const body = await req.json();
+    // F18: Form validation, spam blocking and honeypot
+    const validation = validateLead(body);
+    if (!validation.valid) {
+      return NextResponse.json({ error: validation.error }, { status: 400 });
+    }
+
     const { name, email, country, sector, budget, type, details: incomingDetails } = body;
     
     console.log('API Contact Route: Processing submission for', email);

@@ -242,7 +242,7 @@ export default function PageComponent() {
         <p>Your contractor and consultant are pointing at each other. No single catastrophic failure. <strong>Just a system with no one governing it.</strong></p>
 
         <div className="vacuum-quote">
-          <p>"This is the governance vacuum. It exists on most high-stakes African construction projects — and it quietly consumes 20–40% of planned project value before sponsors see the damage on paper, long after the decisions that caused it were made."</p>
+          <p>"This is the governance vacuum. It exists on most high-stakes African construction projects — and it quietly consumes 30% or more of planned project value through The 30% Hidden Cost Trap before sponsors see the damage on paper, long after the decisions that caused it were made."</p>
         </div>
 
         <p>African construction markets move fast. <em>Verbal mobilisation, evolving scope, multiple stakeholders with competing agendas,</em> and limited institutional oversight create conditions where even well-funded projects bleed capital silently.</p>
@@ -254,7 +254,7 @@ export default function PageComponent() {
             <li><strong>Direct Losses —</strong> time delays, cost overruns, late-stage quality defects and rework</li>
             <li><strong>Indirect Losses —</strong> lost revenue windows, extended financing costs, operator penalties</li>
             <li><strong>Reputation Damage —</strong> handover failure, market credibility erosion, investor confidence loss</li>
-            <li><strong>Time Opportunity Cost —</strong> 8–16 hours per week of executive bandwidth consumed by site firefighting that should never have reached you</li>
+            <li><strong>Time Opportunity Cost —</strong> 15–20 hours per week of executive bandwidth consumed by site firefighting that should never have reached you</li>
           </ul>
         </div>
       </div>
@@ -267,7 +267,7 @@ export default function PageComponent() {
           <div className="pc-text">
             <h3>Cost Overruns You Didn&apos;t See Coming</h3>
             <p>The first integrated cost report reveals $3–5M in growth. The board calls. You realise the governance wasn&apos;t there. Variations that should have been blocked are already approved.</p>
-            <span className="pc-signal">→ 20–40% overrun typical without structured governance</span>
+            <span className="pc-signal">→ The 30% Hidden Cost Trap — typical without structured construction project governance</span>
           </div>
         </div>
 
@@ -276,7 +276,7 @@ export default function PageComponent() {
           <div className="pc-text">
             <h3>Schedule Slippage With No Recovery Path</h3>
             <p>The critical path slips 4–8 weeks. Contractors blame design. Engineers blame contractors. You spend 12–14 hours weekly in conflict resolution that no one is equipped to resolve.</p>
-            <span className="pc-signal">→ 30–50% slippage typical by construction midpoint</span>
+            <span className="pc-signal">→ Schedule slippage compounds long before it shows in the programme</span>
           </div>
         </div>
 

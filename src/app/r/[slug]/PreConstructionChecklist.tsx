@@ -317,7 +317,7 @@ export default function PreConstructionChecklist({ slug, utm }: PreConstructionC
     <div className="credentials">
       <span className="tag">19+ yrs multinational</span>
       <span className="tag">19+ / 15+ yrs Multinational / Africa On-Ground</span>
-      <span className="tag">$250M+ governed</span>
+      <span className="tag">$250M+ Construction Projects Delivered</span>
       <span className="tag">Up to 97% on-time delivery</span>
       <span className="tag">Up to 20% cost savings</span>
     </div>

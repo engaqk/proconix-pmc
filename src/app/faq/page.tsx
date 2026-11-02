@@ -161,6 +161,8 @@ export default function PageComponent() {
 
 
 <main>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: "{\"@context\":\"https://schema.org\",\"@type\":\"FAQPage\",\"mainEntity\":[{\"@type\":\"Question\",\"name\":\"Isn't Proconix just another project management consultant?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"No. Proconix PMC is an owner-side construction project delivery partner. A conventional consultant observes and reports. We direct, manage and execute end-to-end construction project governance across the full EPCM lifecycle, from inception to successful handover — working inside the sponsor's decision structure, so problems are prevented before they reach site rather than reported after they have cost money.\"}},{\"@type\":\"Question\",\"name\":\"I already have a project manager and site engineers. Why do I need Proconix?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Your site engineers execute the works and your project manager coordinates the parties. Neither is normally given the authority, or the independence, to protect the sponsor's capital (CAPEX) across every decision. Proconix adds that construction project governance layer — across cost, schedule, procurement, quality, construction project risk and stakeholder alignment — working alongside your in-house team, never replacing it.\"}},{\"@type\":\"Question\",\"name\":\"What does a Proconix mandate actually cost?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Every mandate is structured around the project's size and scope, so there is no standard price list. The mandate structure is discussed in the Executive Governance Briefing Call, once we understand your project.\"}},{\"@type\":\"Question\",\"name\":\"My project is already under construction. Is it too late?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"No. Construction project governance can be installed mid-construction to bring cost reporting, the schedule and procurement back under the sponsor's control. The earlier it is installed, the more project value it protects, because most construction cost is fixed by early decisions — but a project already on site still benefits.\"}},{\"@type\":\"Question\",\"name\":\"I am based in the GCC or overseas. Can Proconix still govern my project in Africa?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Yes. You run your business, anywhere — we run your construction projects, in Africa. Proconix works on-site, hybrid, or through our Virtual Governance Control Room™, so sponsors based in the GCC, Europe or elsewhere keep decision-grade visibility of their project without being on site.\"}},{\"@type\":\"Question\",\"name\":\"How quickly can Proconix mobilise?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Proconix mobilises once the mandate is agreed and the project information is shared. Because the practice is Principal-led, we take on a limited number of concurrent mandates — raise your timeline in the Executive Governance Briefing Call and we will confirm availability.\"}},{\"@type\":\"Question\",\"name\":\"What is construction project governance?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Construction project governance is the sponsor-side authority structure that controls how cost, schedule, procurement, quality and construction project risk are decided on a project. It sits above day-to-day project management. Proconix PMC provides Sponsor-Aligned Construction Project Governance in Africa for real estate, hospitality and industrial projects from USD 5 million to over USD 100 million.\"}},{\"@type\":\"Question\",\"name\":\"Who leads Proconix PMC?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Proconix PMC is founded and led by Talibbhai Khanji — Strategic Project Leader. He is a registered civil engineer (P.Eng Civil, ERB Tanzania & Zambia) with an MBA in Project Management and the PMP® credential from the Project Management Institute, USA, and brings 19+ years of multinational experience, of which 15+ years are on the ground in Africa. In his words: \\\"Most recently, I led the Meliá Zanzibar and Four Seasons builds.\\\"\"}}]}" }} />
+
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({
         "@context": "https://schema.org",
         "@type": "BreadcrumbList",
@@ -183,67 +185,101 @@ export default function PageComponent() {
       </div>
 
       <div className="faq-list">
-
         <div className="faq-item">
           <div className="faq-q" onClick={toggleFaq}>
-            Isn&apos;t Proconix just another project management consultant?
+            <h3 style={{ fontSize: '1.05rem', fontWeight: 600, margin: 0, color: 'inherit', display: 'inline' }}>
+              Isn&apos;t Proconix just another project management consultant?
+            </h3>
             <div className="faq-chevron">+</div>
           </div>
           <div className="faq-a">
-            <strong>No.</strong> The consulting industry in construction has earned its reputation for generating reports and avoiding accountability. Proconix is not that model. When we take on a mandate, we are the Strategic Project Leader — with governance authority inside the project&apos;s decision structure. We are in the decision room, not the observation room. That is a structural difference. A monitoring consultant tells you what went wrong last month. A Proconix mandate prevents it from happening in the first place — and when the unexpected occurs, resolves it with the full authority of a structured governance mandate behind the decision.
+            No. Proconix PMC is an owner-side construction project delivery partner. A conventional consultant observes and reports. We direct, manage and execute end-to-end construction project governance across the full EPCM lifecycle, from inception to successful handover — working inside the sponsor&apos;s decision structure, so problems are prevented before they reach site rather than reported after they have cost money.
           </div>
         </div>
 
         <div className="faq-item">
           <div className="faq-q" onClick={toggleFaq}>
-            I already have a project manager and site engineers. Why do I need Proconix?
+            <h3 style={{ fontSize: '1.05rem', fontWeight: 600, margin: 0, color: 'inherit', display: 'inline' }}>
+              I already have a project manager and site engineers. Why do I need Proconix?
+            </h3>
             <div className="faq-chevron">+</div>
           </div>
           <div className="faq-a">
-            Your site engineers execute. Your project manager coordinates. <strong>Neither role carries the governance authority to protect your capital at the decision-making level.</strong> Proconix governs across cost, schedule, procurement, quality, risk, and stakeholder alignment — simultaneously — with a mandate that comes from the sponsor. This is not a layer over your team. It is the governance architecture that makes your existing team more effective, more accountable, and more focused on execution rather than escalation.
+            Your site engineers execute the works and your project manager coordinates the parties. Neither is normally given the authority, or the independence, to protect the sponsor&apos;s capital (CAPEX) across every decision. Proconix adds that construction project governance layer — across cost, schedule, procurement, quality, construction project risk and stakeholder alignment — working alongside your in-house team, never replacing it.
           </div>
         </div>
 
         <div className="faq-item">
           <div className="faq-q" onClick={toggleFaq}>
-            What does a Proconix mandate actually cost?
+            <h3 style={{ fontSize: '1.05rem', fontWeight: 600, margin: 0, color: 'inherit', display: 'inline' }}>
+              What does a Proconix mandate actually cost?
+            </h3>
             <div className="faq-chevron">+</div>
           </div>
           <div className="faq-a">
-            Proconix fees are structured on a project-by-project basis. <strong>— depending on the mandate scope, deployment model, and project complexity. Pricing is discussed in the governance briefing after understanding your specific project. </strong> What is consistent: the governance mandate protects far more capital than it costs. The executive briefing is where that conversation begins.
+            Every mandate is structured around the project&apos;s size and scope, so there is no standard price list. The mandate structure is discussed in the Executive Governance Briefing Call, once we understand your project.
           </div>
         </div>
 
         <div className="faq-item">
           <div className="faq-q" onClick={toggleFaq}>
-            My project is already under construction. Is it too late?
+            <h3 style={{ fontSize: '1.05rem', fontWeight: 600, margin: 0, color: 'inherit', display: 'inline' }}>
+              My project is already under construction. Is it too late?
+            </h3>
             <div className="faq-chevron">+</div>
           </div>
           <div className="faq-a">
-            <strong>No — but every week without governance is compounding exposure.</strong> Governance installed mid-construction is more expensive to implement and less complete than governance installed at inception. However, the case studies above include projects rescued at crisis point. The earlier governance is installed, the greater the protection. If your project is already in execution and you are experiencing cost drift, schedule slippage, or procurement pressure — the briefing call is the first step to understanding what is recoverable.
+            No. Construction project governance can be installed mid-construction to bring cost reporting, the schedule and procurement back under the sponsor&apos;s control. The earlier it is installed, the more project value it protects, because most construction cost is fixed by early decisions — but a project already on site still benefits.
           </div>
         </div>
 
         <div className="faq-item">
           <div className="faq-q" onClick={toggleFaq}>
-            I am based in the GCC / overseas. Can Proconix still govern my Africa project?
+            <h3 style={{ fontSize: '1.05rem', fontWeight: 600, margin: 0, color: 'inherit', display: 'inline' }}>
+              I am based in the GCC or overseas. Can Proconix still govern my project in Africa?
+            </h3>
             <div className="faq-chevron">+</div>
           </div>
           <div className="faq-a">
-            <strong>Yes — this is exactly who the Virtual Governance Control Room™ and Hybrid Governance Model™ are built for.</strong> GCC-based, diaspora, and cross-border investors represent a significant portion of Proconix&apos;s mandate portfolio. You receive real-time financial reporting, risk heatmaps, procurement governance, and direct access to a senior consultant who is on the ground in Africa — so you maintain full executive visibility without needing to be physically present on site.
+            Yes. You run your business, anywhere — we run your construction projects, in Africa. Proconix works on-site, hybrid, or through our Virtual Governance Control Room™, so sponsors based in the GCC, Europe or elsewhere keep decision-grade visibility of their project without being on site.
           </div>
         </div>
 
         <div className="faq-item">
           <div className="faq-q" onClick={toggleFaq}>
-            How quickly can Proconix mobilise?
+            <h3 style={{ fontSize: '1.05rem', fontWeight: 600, margin: 0, color: 'inherit', display: 'inline' }}>
+              How quickly can Proconix mobilise?
+            </h3>
             <div className="faq-chevron">+</div>
           </div>
           <div className="faq-a">
-            Mobilisation timeline depends on the project stage and current mandate portfolio. <strong>Proconix accepts a maximum of four active Tier-1 mandates concurrently — one new engagement per quarter.</strong> This is a deliberate portfolio control decision that ensures every mandate receives undivided senior governance attention. The briefing call will confirm whether your project timeline aligns with current availability. If it does, governance architecture begins within the agreed mobilisation window.
+            Proconix mobilises once the mandate is agreed and the project information is shared. Because the practice is Principal-led, we take on a limited number of concurrent mandates — raise your timeline in the Executive Governance Briefing Call and we will confirm availability.
           </div>
         </div>
 
+        <div className="faq-item">
+          <div className="faq-q" onClick={toggleFaq}>
+            <h3 style={{ fontSize: '1.05rem', fontWeight: 600, margin: 0, color: 'inherit', display: 'inline' }}>
+              What is construction project governance?
+            </h3>
+            <div className="faq-chevron">+</div>
+          </div>
+          <div className="faq-a">
+            Construction project governance is the sponsor-side authority structure that controls how cost, schedule, procurement, quality and construction project risk are decided on a project. It sits above day-to-day project management. Proconix PMC provides Sponsor-Aligned Construction Project Governance in Africa for real estate, hospitality and industrial projects from USD 5 million to over USD 100 million.
+          </div>
+        </div>
+
+        <div className="faq-item">
+          <div className="faq-q" onClick={toggleFaq}>
+            <h3 style={{ fontSize: '1.05rem', fontWeight: 600, margin: 0, color: 'inherit', display: 'inline' }}>
+              Who leads Proconix PMC?
+            </h3>
+            <div className="faq-chevron">+</div>
+          </div>
+          <div className="faq-a">
+            Proconix PMC is founded and led by Talibbhai Khanji — Strategic Project Leader. He is a registered civil engineer (P.Eng Civil, ERB Tanzania & Zambia) with an MBA in Project Management and the PMP® credential from the Project Management Institute, USA, and brings 19+ years of multinational experience, of which 15+ years are on the ground in Africa. In his words: &quot;Most recently, I led the Meliá Zanzibar and Four Seasons builds.&quot;
+          </div>
+        </div>
       </div>
     </div>
   </div>

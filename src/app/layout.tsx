@@ -90,20 +90,36 @@ export default function RootLayout({
         <meta property="og:image:height" content="800" />
         <meta property="og:image:alt" content="Proconix PMC Logo" />
       
-        <script
+                <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(
   {
     "@context": "https://schema.org",
     "@type": "Organization",
+    "@id": "https://www.proconixpmc.com/#organization",
     "name": "Proconix PMC",
-    "url": "https://www.proconixpmc.com",
+    "legalName": "Proconix Project Management Consultancy",
+    "url": "https://www.proconixpmc.com/",
     "logo": "https://www.proconixpmc.com/icon.jpg",
+    "slogan": "Sponsor-Aligned Construction Project Governance in Africa",
+    "description": "Proconix PMC is an owner-side construction project delivery partner for real estate, hospitality and industrial project sponsors and investors with construction projects in Africa. We direct, manage and execute end-to-end construction project governance across the full EPCM lifecycle, from inception to successful handover, on projects from USD 5 million to over USD 100 million.",
+    "founder": { "@id": "https://www.proconixpmc.com/#talibbhai-khanji" },
+    "email": "info@proconixpmc.com",
+    "telephone": "+255695964527",
+    "areaServed": ["Tanzania", "Zanzibar", "Kenya", "Uganda", "Zambia", "Africa"],
+    "knowsAbout": [
+      "Construction project governance",
+      "Owner-side construction project management",
+      "EPCM lifecycle governance",
+      "Construction cost overrun control",
+      "Hospitality and resort construction projects",
+      "Real estate construction projects",
+      "Industrial construction projects"
+    ],
     "sameAs": [
       "https://www.linkedin.com/in/talibkhanjipmp/",
       "https://www.instagram.com/talibkhanji_pmp/"
-    ],
-    "areaServed": ["Tanzania", "Zanzibar", "Kenya", "Zambia", "Uganda"]
+    ]
   }
 ) }}
         />
@@ -113,86 +129,61 @@ export default function RootLayout({
   {
     "@context": "https://schema.org",
     "@type": "Person",
+    "@id": "https://www.proconixpmc.com/#talibbhai-khanji",
     "name": "Talibbhai Khanji",
+    "alternateName": "TAK",
     "jobTitle": "Founder & Principal Consultant",
+    "description": "Strategic Project Leader. Registered civil engineer (P.Eng Civil, ERB Tanzania & Zambia), MBA in Project Management and PMP®, with 19+ years of multinational experience, of which 15+ years are on the ground in Africa.",
+    "worksFor": { "@id": "https://www.proconixpmc.com/#organization" },
+    "url": "https://www.proconixpmc.com/about-talibbhai-khanji",
+    "image": "https://www.proconixpmc.com/talibbhai.jpg",
     "hasCredential": [
       {
         "@type": "EducationalOccupationalCredential",
-        "credentialCategory": "degree",
-        "name": "P.Eng Civil (ERB Tanzania & Zambia)"
+        "credentialCategory": "license",
+        "name": "P.Eng Civil — Engineers Registration Board (ERB), Tanzania & Zambia"
       },
       {
         "@type": "EducationalOccupationalCredential",
         "credentialCategory": "degree",
-        "name": "MBA"
+        "name": "MBA — Project Management"
       },
       {
         "@type": "EducationalOccupationalCredential",
-        "credentialCategory": "certificate",
-        "name": "PMP®"
+        "credentialCategory": "certification",
+        "name": "PMP® — Project Management Professional",
+        "recognizedBy": {
+          "@type": "Organization",
+          "name": "Project Management Institute (PMI), USA"
+        }
       }
     ],
-    "sameAs": "https://www.linkedin.com/in/talibkhanjipmp/"
+    "knowsAbout": [
+      "Construction project governance",
+      "EPCM",
+      "Hospitality construction",
+      "Real estate development",
+      "Industrial construction"
+    ],
+    "sameAs": [
+      "https://www.linkedin.com/in/talibkhanjipmp/",
+      "https://www.instagram.com/talibkhanji_pmp/"
+    ]
   }
 ) }}
         />
-
-              <script
+        <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(
   {
     "@context": "https://schema.org",
-    "@type": "FAQPage",
-    "mainEntity": [
-      {
-        "@type": "Question",
-        "name": "Isn't Proconix just another project management consultant?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "No. We are the Strategic Project Leader with governance authority inside the project's decision structure. We prevent errors rather than just reporting them."
-        }
-      },
-      {
-        "@type": "Question",
-        "name": "I already have a project manager and site engineers. Why do I need Proconix?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "Your site engineers execute. Your project manager coordinates. Neither carries governance authority to protect your capital. Proconix governs across cost, schedule, procurement, quality, risk, and stakeholder alignment."
-        }
-      },
-      {
-        "@type": "Question",
-        "name": "What does a Proconix mandate actually cost?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "Mandate structure is discussed in the Executive Governance Briefing Call, after understanding the specific project."
-        }
-      },
-      {
-        "@type": "Question",
-        "name": "My project is already under construction. Is it too late?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "No. Governance installed mid-construction rescues projects at crisis point. The earlier governance is installed, the greater the protection for your capital."
-        }
-      },
-      {
-        "@type": "Question",
-        "name": "I am based in the GCC / overseas. Can Proconix still govern my Africa project?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "Yes. GCC-based, diaspora, and cross-border investors use our Virtual Governance Control Room and Hybrid Governance Model for real-time financial reporting, risk heatmaps, and procurement governance."
-        }
-      },
-      {
-        "@type": "Question",
-        "name": "How quickly can Proconix mobilise?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "Proconix accepts a maximum of four active Tier-1 mandates concurrently to ensure every mandate receives undivided senior governance attention. Mobilisation begins within the agreed window."
-        }
-      }
-    ]
+    "@type": "WebSite",
+    "@id": "https://www.proconixpmc.com/#website",
+    "name": "Proconix PMC",
+    "url": "https://www.proconixpmc.com/",
+    "publisher": { "@id": "https://www.proconixpmc.com/#organization" },
+    "inLanguage": "en",
+    "dateModified": "2026-10-31"
   }
 ) }}
         />
@@ -223,6 +214,7 @@ export default function RootLayout({
             `
           }}
         />
+        <div style={{ textAlign: "center", fontSize: "0.75rem", color: "#455065", padding: "10px 0 20px" }}>Last updated: 31 October 2026</div>
       </body>
     </html>
   );

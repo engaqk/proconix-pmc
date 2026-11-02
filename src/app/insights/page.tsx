@@ -170,7 +170,14 @@ export default function PageComponent() {
 
   <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
     <h1 style={{ fontSize: '2.5rem', color: '#C9A84C', marginBottom: '20px' }}>Project Governance Insights</h1>
-    <p>This dedicated URL has been prepared for specialized content. Stay tuned.</p>
+    <p style={{ fontSize: '1.1rem', color: '#C2D4E4', lineHeight: 1.6, maxWidth: '750px' }}>
+        Executive articles and strategic construction project governance insights for sponsors and investors in Africa. Published periodically.
+      </p>
+      <div style={{ marginTop: '24px' }}>
+        <Link href="/executive-governance-briefing-call" className="btn-gold" style={{ display: 'inline-block' }}>
+          Book the Executive Governance Briefing Call &rarr;
+        </Link>
+      </div>
   </div>
 </main>
 <footer>

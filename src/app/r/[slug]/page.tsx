@@ -19,10 +19,10 @@ const CONTENT: Record<string, {
   'pre-construction-checklist': {
     badge: 'FREE CHECKLIST',
     assetTitle: 'Pre-Construction Governance Checklist',
-    headline: '70% of Capital Project Failures Are Determined Before Ground Breaks',
+    headline: 'Most Capital Project Failures Are Determined Before Ground Breaks',
     subheadline: 'If you are sponsoring a $5M–$100M+ construction project in Africa, the decisions made in the next 90 days will define whether your capital is protected or exposed.',
     stats: [
-      { value: '70%', label: 'of failures happen before site mobilisation' },
+      { value: 'Major', label: 'failures happen before site mobilisation' },
       { value: '10×', label: 'cost to fix issues post-ground-break vs. pre-design' },
       { value: '13', label: 'governance checkpoints covered in this resource' },
     ],
@@ -465,7 +465,7 @@ export default function ResourcePage() {
           <div style={{ width: '1px', height: '60px', background: 'rgba(201,168,76,0.2)', flex: '0 0 auto' }}></div>
           <div style={{ textAlign: 'center', flex: '0 0 auto' }}>
             <div style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: '36px', fontWeight: 700, color: '#C9A84C' }}>$500M+</div>
-            <div style={{ fontSize: '12px', color: '#8EA8C3', marginTop: '4px' }}>Capital Projects Governed</div>
+            <div style={{ fontSize: '12px', color: '#8EA8C3', marginTop: '4px' }}>Construction Projects Delivered</div>
           </div>
           <div style={{ width: '1px', height: '60px', background: 'rgba(201,168,76,0.2)', flex: '0 0 auto' }}></div>
           <div style={{ textAlign: 'center', flex: '0 0 auto' }}>

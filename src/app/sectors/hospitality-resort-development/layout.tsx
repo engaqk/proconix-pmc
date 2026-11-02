@@ -1,8 +1,9 @@
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Hospitality Resort Development | Proconix PMC',
-  description: 'Sponsor-aligned construction project governance for $5M-$100M+ CAPEX projects in Africa. Learn more about Hospitality Resort Development.',
+  title: "Hotel Construction Project Governance in Africa | Proconix",
+  description: "Owner-side construction project governance for hotel, resort and serviced-apartment sponsors in Africa — from inception to operator handover.",
+  robots: { index: false, follow: true },
   alternates: { canonical: 'https://www.proconixpmc.com/sectors/hospitality-resort-development' },
   openGraph: {
     title: 'Hospitality Resort Development | Proconix PMC',

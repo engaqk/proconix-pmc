@@ -1,8 +1,9 @@
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Real Estate | Proconix PMC',
-  description: 'Sponsor-aligned construction project governance for $5M-$100M+ CAPEX projects in Africa. Learn more about Real Estate.',
+  title: "Real Estate Construction Governance in Africa | Proconix",
+  description: "Owner-side construction project governance for residential, mixed-use and commercial real estate projects in Africa, USD 5M to over 100M.",
+  robots: { index: false, follow: true },
   alternates: { canonical: 'https://www.proconixpmc.com/sectors/real-estate' },
   openGraph: {
     title: 'Real Estate | Proconix PMC',

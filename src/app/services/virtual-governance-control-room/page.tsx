@@ -173,6 +173,7 @@ export default function PageComponent() {
     <h1 className="section-title">Virtual Governance Control Room&trade; &mdash; Remote Construction Project Governance in Africa</h1>
     <p className="section-intro">Most project problems are created before construction begins. Proconix governance starts at inception — where protection is built, not discovered too late on site.</p>
 
+    <h2 style={{ fontSize: '1.3rem', color: 'var(--amber-bright)', margin: '24px 0 16px', textAlign: 'center' }}>Full EPCM Governance Lifecycle</h2>
     <div className="lifecycle">
       <div className="lc-step"><div className="lc-dot"></div><div className="lc-label">Inception</div><div className="lc-sub">Architecture Setup</div></div>
       <div className="lc-step"><div className="lc-dot"></div><div className="lc-label">Engineering</div><div className="lc-sub">Design &amp; Constructability</div></div>
@@ -182,6 +183,7 @@ export default function PageComponent() {
     </div>
     <p className="lifecycle-note"><strong>Pre-construction governance begins before your contractor mobilises.</strong> That is where the real protection is built.</p>
 
+    <h2 style={{ fontSize: '1.3rem', color: 'var(--amber-bright)', margin: '40px 0 20px', textAlign: 'center' }}>Proconix Governance Deployment Models</h2>
     <div className="deploy-grid">
       <div className="deploy-card">
         <div className="di">🖥️</div>

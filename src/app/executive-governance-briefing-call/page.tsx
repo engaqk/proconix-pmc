@@ -178,13 +178,15 @@ export default function PageComponent() {
         <form className="capture-form" onSubmit={handleFormSubmit} style={{ margin: 0, padding: 0, background: 'transparent', boxShadow: 'none', display: 'flex', flexDirection: 'column', gap: '8px', alignItems: 'center' }}>
           <p style={{ fontSize: '0.75rem', color: '#C9A84C', marginBottom: '4px', fontStyle: 'italic' }}>Enter your email address below to receive the checklist.</p>
           <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', justifyContent: 'center' }}>
-            <input type="text" placeholder="Your Full Name" name="name" required style={{ padding: '12px', borderRadius: '4px', border: '1px solid rgba(255,255,255,0.2)', background: 'rgba(0,0,0,0.2)', color: '#fff', minWidth: '180px' }} />
+            <input type="text" name="_hp" style={{ display: 'none' }} tabIndex={-1} autoComplete="off" />
+          <input type="text" placeholder="Your Full Name" name="name" required style={{ padding: '12px', borderRadius: '4px', border: '1px solid rgba(255,255,255,0.2)', background: 'rgba(0,0,0,0.2)', color: '#fff', minWidth: '180px' }} />
             <input type="email" placeholder="Your Email Address" name="email" required style={{ padding: '12px', borderRadius: '4px', border: '1px solid rgba(255,255,255,0.2)', background: 'rgba(0,0,0,0.2)', color: '#fff', minWidth: '180px' }} />
             <button type="submit" className="btn-outline" style={{ whiteSpace: 'nowrap' }}>Download Free Checklist</button>
           </div>
           {formStatus && <div className={`form-status ${formStatus.type}`} style={{ fontSize: '0.85rem' }}>{formStatus.message}</div>}
         </form>
       </div>
+      <h2 style={{ fontSize: '1.15rem', color: 'var(--amber-bright)', margin: '24px 0 8px' }}>Mandate Availability &amp; Next Steps</h2>
       <p className="cta-scarcity"><strong>Mandate Availability:</strong> Maximum 4 active Tier-1 mandates. One new engagement per quarter. Enquire to confirm current availability.</p>
     </div>
   </div>

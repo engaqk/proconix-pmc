@@ -170,12 +170,11 @@ export default function PageComponent() {
 <section className="cases-section" id="cases">
   <div className="container">
     <div className="section-eyebrow">Anonymised Case Evidence</div>
-    <h1 className="section-title">Governance That Changed<br/><em>the Project Outcome</em></h1>
+    <h1 className="section-title" style={{ fontSize: '2rem', lineHeight: '1.25' }}>Case Evidence 01 — High-Specification Resort, Zanzibar (Hospitality, USD 50M+)</h1>
     <p className="section-intro">These are not case studies built around a single metric. They are governance situations — real African construction environments — where the absence of a structured authority layer was creating compounding capital exposure.</p>
 
     <div className="cases-grid">
-
-      <div className="case-card">
+      <div className="case-card" style={{ maxWidth: '800px', margin: '0 auto' }}>
         <div className="case-number">01</div>
         <div className="case-tag">Hospitality · Zanzibar · $50M+</div>
         <h4>High-Specification Resort — Multi-Stakeholder, International Operator Commitment</h4>
@@ -190,39 +189,24 @@ export default function PageComponent() {
           <li>Zero major quality issues raised at operator handover inspection</li>
         </ul>
       </div>
+    </div>
 
-      <div className="case-card">
-        <div className="case-number">02</div>
-        <div className="case-tag">Real Estate · Tanzania · $15M</div>
-        <h4>Residential Development — Governance Rescue at Crisis Point</h4>
-        <p className="case-situation">
-          A residential development 3 months into construction with no formal governance structure. Cost reporting was absent, the schedule was based on contractor verbal commitments, and procurement decisions were being made reactively. Quality accountability was distributed — meaning no party owned it. The sponsor was spending 12–14 hours weekly in conflict resolution.
-        </p>
-        <ul className="case-results">
-          <li>Full governance architecture installed mid-construction — cost reporting, schedule baseline, procurement governance</li>
-          <li>QS, Planning, and Procurement functions restructured</li>
-          <li>Financial leakage eliminated — project cash flow stabilised within 60 days</li>
-          <li>Contractor payment linked to stage-wise verification and billing control</li>
-          <li>Project used as flagship portfolio piece to secure subsequent high-value contracts</li>
-        </ul>
+    <div style={{ marginTop: '48px', paddingTop: '32px', borderTop: '1px solid var(--border)' }}>
+      <h3 style={{ fontSize: '1.2rem', color: 'var(--amber-bright)', marginBottom: '20px', textAlign: 'center' }}>
+        Other Case Evidence
+      </h3>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '20px', maxWidth: '800px', margin: '0 auto' }}>
+        
+        <a href="/case-evidence/case-2" style={{ display: 'block', padding: '20px', background: 'var(--bg-card)', border: '1px solid var(--border)', borderRadius: '8px', textDecoration: 'none' }}>
+          <div style={{ fontSize: '0.75rem', color: '#8EA8C3', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '8px' }}>Real Estate · Tanzania · $15M</div>
+          <div style={{ fontSize: '1rem', color: '#FFFFFF', fontWeight: 600 }}>Case Evidence 02 — Residential Development, Tanzania (Governance Installed Mid-Construction) &rarr;</div>
+        </a>
+
+        <a href="/case-evidence/case-3" style={{ display: 'block', padding: '20px', background: 'var(--bg-card)', border: '1px solid var(--border)', borderRadius: '8px', textDecoration: 'none' }}>
+          <div style={{ fontSize: '0.75rem', color: '#8EA8C3', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '8px' }}>Industrial · Zambia · $100M+</div>
+          <div style={{ fontSize: '1rem', color: '#FFFFFF', fontWeight: 600 }}>Case Evidence 03 — Multi-EPC Industrial Build, Zambia &rarr;</div>
+        </a>
       </div>
-
-      <div className="case-card">
-        <div className="case-number">03</div>
-        <div className="case-tag">Industrial · Zambia · $100M+</div>
-        <h4>Large-Scale Industrial Build — Multi-EPC Complexity</h4>
-        <p className="case-situation">
-          A $100M+ industrial construction project involving multiple EPC packages across civil, structural, MEP, and infrastructure disciplines simultaneously. Design information evolving across packages, reactive procurement, and no consolidated financial reporting. The sponsor was the only entity absorbing the full weight of cross-package coordination — at the direct cost of strategic business attention.
-        </p>
-        <ul className="case-results">
-          <li>End-to-end governance architecture integrated all project dimensions into a single sponsor-facing control environment</li>
-          <li>Consolidated cost visibility framework established — early warning of budget drift across packages</li>
-          <li>Escalation structure removed ownership from project coordination role entirely</li>
-          <li>Procurement governed by structured supply chain timeline — not reactive to site demand</li>
-          <li>Quality accountability unified across all specialist packages with single non-conformance framework</li>
-        </ul>
-      </div>
-
     </div>
   </div>
 </section>

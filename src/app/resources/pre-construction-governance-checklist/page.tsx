@@ -171,10 +171,46 @@ export default function PageComponent() {
   <div className="container">
     <div className="lead-grid">
 
-      <div className="lead-left">
+      <div className="lead-left" style={{ flex: '1.2' }}>
         <div className="section-eyebrow">Free Resource</div>
         <h1 className="section-title">Pre-Construction Governance Checklist for Project Sponsors in Africa</h1>
-        <p className="section-intro">70% of construction project problems are created before ground is broken. This checklist ensures you have a structured governance command in place before your contractor mobilises.</p>
+
+        <div className="checklist-body" style={{ marginTop: '24px', display: 'flex', flexDirection: 'column', gap: '20px', color: '#C2D4E4', lineHeight: 1.6 }}>
+          <div>
+            <h2 style={{ fontSize: '1.25rem', color: 'var(--amber-bright)', marginBottom: '8px' }}>Before You Break Ground</h2>
+            <p style={{ margin: 0 }}>
+              Most construction project problems are created before ground is broken &mdash; in the decisions, appointments and approvals made before a contractor mobilises. By the time they show on site, they are expensive to undo.
+            </p>
+          </div>
+
+          <div>
+            <h2 style={{ fontSize: '1.25rem', color: 'var(--amber-bright)', marginBottom: '8px' }}>Who it is for</h2>
+            <p style={{ margin: 0 }}>
+              Real estate, hospitality and industrial project sponsors and investors preparing a construction project in Africa, from USD 5 million to over USD 100 million CAPEX &mdash; including sponsors based in the GCC, Europe or the diaspora who will not be on site every week.
+            </p>
+          </div>
+
+          <div>
+            <h2 style={{ fontSize: '1.25rem', color: 'var(--amber-bright)', marginBottom: '8px' }}>What it helps you see</h2>
+            <p style={{ margin: 0 }}>
+              The checklist is a self-assessment across 13 governance readiness areas. In about fifteen minutes it shows you where your project already stands on firm ground, where a gap may exist, and which questions to put to your team before mobilisation &mdash; so you walk into contractor negotiations knowing your own position.
+            </p>
+          </div>
+
+          <div>
+            <h2 style={{ fontSize: '1.25rem', color: 'var(--amber-bright)', marginBottom: '8px' }}>What you get</h2>
+            <p style={{ margin: 0 }}>
+              A three-page PDF you can complete yourself, keep, and share with your board, co-investors or project team. No sales call is required to use it.
+            </p>
+          </div>
+
+          <div>
+            <h2 style={{ fontSize: '1.25rem', color: 'var(--amber-bright)', marginBottom: '8px' }}>From Proconix PMC</h2>
+            <p style={{ margin: 0 }}>
+              Prepared by Proconix PMC &mdash; Sponsor-Aligned Construction Project Governance in Africa &mdash; led by Talibbhai Khanji, Strategic Project Leader: registered civil engineer, MBA in Project Management and PMP&reg;, with 19+ years of multinational experience, of which 15+ years are on the ground in Africa.
+            </p>
+          </div>
+        </div>
       </div>
 
       <div className="lead-form-box">
@@ -183,6 +219,7 @@ export default function PageComponent() {
         <p>Built for $5M–$100M+ CAPEX project sponsors in Africa. 13 governance readiness areas. Readiness score output. No theory. No filler.</p>
         <form className="lead-form" onSubmit={handleFormSubmit}>
           <p style={{ fontSize: '0.75rem', color: '#C9A84C', marginBottom: '10px', fontStyle: 'italic' }}>Enter your email address below to receive the checklist.</p>
+          <input type="text" name="_hp" style={{ display: 'none' }} tabIndex={-1} autoComplete="off" />
           <input type="text" placeholder="Your Full Name" name="name" required/>
           <input type="email" placeholder="Your Email Address" name="email" required />
           <input type="text" placeholder="Project Country (Where in Africa?)" name="country" required/>

@@ -1,8 +1,9 @@
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Hybrid Governance Model | Proconix PMC',
-  description: 'Sponsor-aligned construction project governance for $5M-$100M+ CAPEX projects in Africa. Learn more about Hybrid Governance Model.',
+  title: "Hybrid Governance Model™ | Proconix PMC",
+  description: "Remote construction project governance with planned on-site presence, for sponsors with construction projects in Africa.",
+  robots: { index: false, follow: true },
   alternates: { canonical: 'https://www.proconixpmc.com/services/hybrid-governance-model' },
   openGraph: {
     title: 'Hybrid Governance Model | Proconix PMC',

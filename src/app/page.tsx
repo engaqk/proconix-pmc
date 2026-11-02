@@ -195,10 +195,12 @@ export default function Home() {
         <h1>Construction Project Governance in Africa &mdash; Built Around the Sponsor&apos;s Interests</h1>
           <h2 style={{fontSize: "1.2rem", fontWeight: 500, color: "#C2D4E4", marginTop: "10px"}}>Your Project Deserves a Governance Command &mdash; Not a Supervision Service.</h2>
 
-        <p className="hero-sub">
-          African construction projects lose 20–40% of planned project value to overruns, unchecked variations,
-          and procurement failures — silently, before sponsors see it on paper. Proconix installs the
-          governance architecture that protects your capital (CAPEX) from day one.
+        <p className="hero-sub" style={{ fontSize: '1.05rem', lineHeight: '1.6', marginBottom: '14px' }}>
+          Proconix PMC is an owner-side construction project delivery partner for real estate, hospitality and industrial project sponsors and investors with construction projects in Africa. We direct, manage and execute end-to-end construction project governance across the full EPCM lifecycle &mdash; from inception to successful handover &mdash; on projects from USD 5 million to over USD 100 million: on time, within approved cost, quality and scope. Founded and led by Talibbhai Khanji &mdash; Strategic Project Leader.
+        </p>
+
+        <p className="hero-sub" style={{ fontSize: '0.95rem', color: '#8EA8C3', marginTop: '0' }}>
+          Without structured construction project governance, sponsors typically lose 30% or more of planned project value to overruns, unchecked variations and procurement leakage &mdash; The 30% Hidden Cost Trap. Proconix installs the governance architecture that protects your capital (CAPEX) from day one.
         </p>
 
         <div className="hero-ctas">
@@ -208,7 +210,7 @@ export default function Home() {
 
         <div className="hero-metrics">
           <div className="hero-metric">
-            <strong>$250M+</strong><span>Portfolio Governed</span>
+            <strong>$250M+</strong><span>Construction Projects Delivered</span>
           </div>
           <div className="hero-metric">
             <strong>Up to 97%</strong><span>On-Time Delivery</span>
@@ -227,18 +229,17 @@ export default function Home() {
         <div className="card-tag">Free Resource — Download Instantly</div>
         <h3>Before You Break Ground:<br/>Pre-Construction Governance Checklist — Africa</h3>
         <p>13 governance readiness areas. Know exactly where you stand before your contractor mobilises.</p>
-        <div className="stat-rows">
-          <div className="stat-row">
-            <span className="val">70%</span>
-            <span className="lbl">of project problems are created before ground is broken</span>
-          </div>
-          <div className="stat-row">
-            <span className="val">30%+</span>
-            <span className="lbl">cost variation exposure from incomplete pre-construction governance</span>
-          </div>
+        <div className="stat-rows" style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginBottom: '16px' }}>
+          <p style={{ margin: 0, fontSize: '0.9rem', color: '#DCE4EF', lineHeight: 1.4 }}>
+            <strong style={{ color: 'var(--amber-bright)' }}>Most construction project problems are created before ground is broken</strong> &mdash; in the decisions, appointments and approvals made before a contractor mobilises.
+          </p>
+          <p style={{ margin: 0, fontSize: '0.85rem', color: '#8EA8C3', lineHeight: 1.4 }}>
+            Protecting your project against The 30% Hidden Cost Trap before site mobilisation.
+          </p>
         </div>
         <form className="capture-form" onSubmit={handleFormSubmit}>
           <p style={{ fontSize: '0.75rem', color: '#C9A84C', marginBottom: '10px', fontStyle: 'italic' }}>Enter your email address below to receive the checklist.</p>
+          <input type="text" name="_hp" style={{ display: 'none' }} tabIndex={-1} autoComplete="off" />
           <input type="text" placeholder="Your Full Name" name="name" required/>
           <input type="email" placeholder="Your Email Address" name="email" required />
           <button type="submit" className="btn-gold">Download Free Checklist →</button>
@@ -343,7 +344,7 @@ export default function Home() {
         <p>Your contractor and consultant are pointing at each other. No single catastrophic failure. <strong>Just a system with no one governing it.</strong></p>
 
         <div className="vacuum-quote">
-          <p>"This is the governance vacuum. It exists on most high-stakes African construction projects — and it quietly consumes 20–40% of planned project value before sponsors see the damage on paper, long after the decisions that caused it were made."</p>
+          <p>"This is the governance vacuum. It exists on most high-stakes African construction projects — and it quietly consumes 30% or more of planned project value through The 30% Hidden Cost Trap before sponsors see the damage on paper, long after the decisions that caused it were made."</p>
         </div>
 
         <p>African construction markets move fast. <em>Verbal mobilisation, evolving scope, multiple stakeholders with competing agendas,</em> and limited institutional oversight create conditions where even well-funded projects bleed capital silently.</p>
@@ -355,7 +356,7 @@ export default function Home() {
             <li><strong>Direct Losses —</strong> time delays, cost overruns, late-stage quality defects and rework</li>
             <li><strong>Indirect Losses —</strong> lost revenue windows, extended financing costs, operator penalties</li>
             <li><strong>Reputation Damage —</strong> handover failure, market credibility erosion, investor confidence loss</li>
-            <li><strong>Time Opportunity Cost —</strong> 8–16 hours per week of executive bandwidth consumed by site firefighting that should never have reached you</li>
+            <li><strong>Time Opportunity Cost —</strong> 15–20 hours per week of executive bandwidth consumed by site firefighting that should never have reached you</li>
           </ul>
         </div>
       </div>
@@ -368,7 +369,7 @@ export default function Home() {
           <div className="pc-text">
             <h3>Cost Overruns You Didn&apos;t See Coming</h3>
             <p>The first integrated cost report reveals $3–5M in growth. The board calls. You realise the governance wasn&apos;t there. Variations that should have been blocked are already approved.</p>
-            <span className="pc-signal">→ 20–40% overrun typical without structured governance</span>
+            <span className="pc-signal">→ The 30% Hidden Cost Trap — typical without structured construction project governance</span>
           </div>
         </div>
 
@@ -377,7 +378,7 @@ export default function Home() {
           <div className="pc-text">
             <h3>Schedule Slippage With No Recovery Path</h3>
             <p>The critical path slips 4–8 weeks. Contractors blame design. Engineers blame contractors. You spend 12–14 hours weekly in conflict resolution that no one is equipped to resolve.</p>
-            <span className="pc-signal">→ 30–50% slippage typical by construction midpoint</span>
+            <span className="pc-signal">→ Schedule slippage compounds long before it shows in the programme</span>
           </div>
         </div>
 
@@ -419,11 +420,11 @@ export default function Home() {
     <div className="section-eyebrow">Proven Outcomes</div>
     <h2 className="section-title">What Changes When<br/><em>Governance Is In Place</em></h2>
     <div className="metrics-grid">
-      <div className="m-tile"><div className="mnum">$250M+</div><div className="mdesc">Portfolio Governed — Africa, GCC &amp; International</div></div>
+      <div className="m-tile"><div className="mnum">$250M+</div><div className="mdesc">Construction Projects Delivered — Africa, GCC &amp; International</div></div>
       <div className="m-tile"><div className="mnum">Up to 97%</div><div className="mdesc">On-Time Delivery Rate — Structured Programme Management</div></div>
       <div className="m-tile"><div className="mnum">Up to 20%</div><div className="mdesc">Total Cost Savings — Direct + Indirect Through Governance</div></div>
-      <div className="m-tile"><div className="mnum">8–16 hrs</div><div className="mdesc">Executive Hours Reclaimed Per Week — Returned to Strategy</div></div>
-      <div className="m-tile"><div className="mnum">Zero</div><div className="mdesc">Major Quality Issues at Handover — Across All Governed Projects</div></div>
+      <div className="m-tile"><div className="mnum">15–20 hrs</div><div className="mdesc">Executive Hours Reclaimed Per Week — Returned to Strategy</div></div>
+      <div className="m-tile"><div className="mnum">Zero</div><div className="mdesc">Major Quality Issues at Handover — Across All Delivered Projects</div></div>
     </div>
   </div>
 </section>
@@ -433,7 +434,7 @@ export default function Home() {
   <div className="container">
     <div className="section-eyebrow">Ideal Client Profile</div>
     <h2 className="section-title">Built for <em>Project Sponsors</em></h2>
-    <p className="section-intro">Proconix serves real estate, hospitality, and industrial project sponsors and investors — with construction projects in Africa. GCC-based, diaspora, and African-domiciled investors who need their capital governed, not just managed.</p>
+    <p className="section-intro">Proconix serves real estate, hospitality, and industrial project sponsors and investors — with construction projects in Africa. GCC-based, diaspora and African-domiciled investors who need their capital (CAPEX) governed, not just managed.</p>
     <div className="who-grid">
       <div className="who-card">
         <div className="who-icon">🏨</div>
@@ -465,7 +466,7 @@ export default function Home() {
       <div className="lead-left">
         <div className="section-eyebrow">Free Resource</div>
         <h2 className="section-title">Know Where You Stand<br/><em>Before It Costs You On Site</em></h2>
-        <p className="section-intro">70% of construction project problems are created before ground is broken. This checklist ensures you have a structured governance command in place before your contractor mobilises.</p>
+        <p className="section-intro">Most construction project problems are created before ground is broken. This checklist ensures you have a structured governance command in place before your contractor mobilises.</p>
       </div>
 
       <div className="lead-form-box">
@@ -587,7 +588,7 @@ export default function Home() {
           <div className="about-photo">
             <img 
               src="/_next/image?url=%2Ftalibbhai.jpg&w=828&q=75" 
-              alt="Talibbhai Khanji" 
+              alt="Talibbhai Khanji — Strategic Project Leader, founder of Proconix PMC" 
               style={{ width: '100%', height: '100%', objectFit: 'cover' }} 
             loading="lazy" decoding="async" />
           </div>
@@ -727,67 +728,101 @@ export default function Home() {
       </div>
 
       <div className="faq-list">
-
         <div className="faq-item">
           <div className="faq-q" onClick={toggleFaq}>
-            Isn&apos;t Proconix just another project management consultant?
+            <h3 style={{ fontSize: '1.05rem', fontWeight: 600, margin: 0, color: 'inherit', display: 'inline' }}>
+              Isn&apos;t Proconix just another project management consultant?
+            </h3>
             <div className="faq-chevron">+</div>
           </div>
           <div className="faq-a">
-            <strong>No.</strong> The consulting industry in construction has earned its reputation for generating reports and avoiding accountability. Proconix is not that model. When we take on a mandate, we are the Strategic Project Leader — with governance authority inside the project&apos;s decision structure. We are in the decision room, not the observation room. That is a structural difference. A monitoring consultant tells you what went wrong last month. A Proconix mandate prevents it from happening in the first place — and when the unexpected occurs, resolves it with the full authority of a structured governance mandate behind the decision.
+            No. Proconix PMC is an owner-side construction project delivery partner. A conventional consultant observes and reports. We direct, manage and execute end-to-end construction project governance across the full EPCM lifecycle, from inception to successful handover — working inside the sponsor&apos;s decision structure, so problems are prevented before they reach site rather than reported after they have cost money.
           </div>
         </div>
 
         <div className="faq-item">
           <div className="faq-q" onClick={toggleFaq}>
-            I already have a project manager and site engineers. Why do I need Proconix?
+            <h3 style={{ fontSize: '1.05rem', fontWeight: 600, margin: 0, color: 'inherit', display: 'inline' }}>
+              I already have a project manager and site engineers. Why do I need Proconix?
+            </h3>
             <div className="faq-chevron">+</div>
           </div>
           <div className="faq-a">
-            Your site engineers execute. Your project manager coordinates. <strong>Neither role carries the governance authority to protect your capital at the decision-making level.</strong> Proconix governs across cost, schedule, procurement, quality, risk, and stakeholder alignment — simultaneously — with a mandate that comes from the sponsor. This is not a layer over your team. It is the governance architecture that makes your existing team more effective, more accountable, and more focused on execution rather than escalation.
+            Your site engineers execute the works and your project manager coordinates the parties. Neither is normally given the authority, or the independence, to protect the sponsor&apos;s capital (CAPEX) across every decision. Proconix adds that construction project governance layer — across cost, schedule, procurement, quality, construction project risk and stakeholder alignment — working alongside your in-house team, never replacing it.
           </div>
         </div>
 
         <div className="faq-item">
           <div className="faq-q" onClick={toggleFaq}>
-            What does a Proconix mandate actually cost?
+            <h3 style={{ fontSize: '1.05rem', fontWeight: 600, margin: 0, color: 'inherit', display: 'inline' }}>
+              What does a Proconix mandate actually cost?
+            </h3>
             <div className="faq-chevron">+</div>
           </div>
           <div className="faq-a">
-            Proconix fees are structured on a project-by-project basis. <strong>— depending on the mandate scope, deployment model, and project complexity. Pricing is discussed in the governance briefing after understanding your specific project. </strong> What is consistent: the governance mandate protects far more capital than it costs. The executive briefing is where that conversation begins.
+            Every mandate is structured around the project&apos;s size and scope, so there is no standard price list. The mandate structure is discussed in the Executive Governance Briefing Call, once we understand your project.
           </div>
         </div>
 
         <div className="faq-item">
           <div className="faq-q" onClick={toggleFaq}>
-            My project is already under construction. Is it too late?
+            <h3 style={{ fontSize: '1.05rem', fontWeight: 600, margin: 0, color: 'inherit', display: 'inline' }}>
+              My project is already under construction. Is it too late?
+            </h3>
             <div className="faq-chevron">+</div>
           </div>
           <div className="faq-a">
-            <strong>No — but every week without governance is compounding exposure.</strong> Governance installed mid-construction is more expensive to implement and less complete than governance installed at inception. However, the case studies above include projects rescued at crisis point. The earlier governance is installed, the greater the protection. If your project is already in execution and you are experiencing cost drift, schedule slippage, or procurement pressure — the briefing call is the first step to understanding what is recoverable.
+            No. Construction project governance can be installed mid-construction to bring cost reporting, the schedule and procurement back under the sponsor&apos;s control. The earlier it is installed, the more project value it protects, because most construction cost is fixed by early decisions — but a project already on site still benefits.
           </div>
         </div>
 
         <div className="faq-item">
           <div className="faq-q" onClick={toggleFaq}>
-            I am based in the GCC / overseas. Can Proconix still govern my Africa project?
+            <h3 style={{ fontSize: '1.05rem', fontWeight: 600, margin: 0, color: 'inherit', display: 'inline' }}>
+              I am based in the GCC or overseas. Can Proconix still govern my project in Africa?
+            </h3>
             <div className="faq-chevron">+</div>
           </div>
           <div className="faq-a">
-            <strong>Yes — this is exactly who the Virtual Governance Control Room™ and Hybrid Governance Model™ are built for.</strong> GCC-based, diaspora, and cross-border investors represent a significant portion of Proconix&apos;s mandate portfolio. You receive real-time financial reporting, risk heatmaps, procurement governance, and direct access to a senior consultant who is on the ground in Africa — so you maintain full executive visibility without needing to be physically present on site.
+            Yes. You run your business, anywhere — we run your construction projects, in Africa. Proconix works on-site, hybrid, or through our Virtual Governance Control Room™, so sponsors based in the GCC, Europe or elsewhere keep decision-grade visibility of their project without being on site.
           </div>
         </div>
 
         <div className="faq-item">
           <div className="faq-q" onClick={toggleFaq}>
-            How quickly can Proconix mobilise?
+            <h3 style={{ fontSize: '1.05rem', fontWeight: 600, margin: 0, color: 'inherit', display: 'inline' }}>
+              How quickly can Proconix mobilise?
+            </h3>
             <div className="faq-chevron">+</div>
           </div>
           <div className="faq-a">
-            Mobilisation timeline depends on the project stage and current mandate portfolio. <strong>Proconix accepts a maximum of four active Tier-1 mandates concurrently — one new engagement per quarter.</strong> This is a deliberate portfolio control decision that ensures every mandate receives undivided senior governance attention. The briefing call will confirm whether your project timeline aligns with current availability. If it does, governance architecture begins within the agreed mobilisation window.
+            Proconix mobilises once the mandate is agreed and the project information is shared. Because the practice is Principal-led, we take on a limited number of concurrent mandates — raise your timeline in the Executive Governance Briefing Call and we will confirm availability.
           </div>
         </div>
 
+        <div className="faq-item">
+          <div className="faq-q" onClick={toggleFaq}>
+            <h3 style={{ fontSize: '1.05rem', fontWeight: 600, margin: 0, color: 'inherit', display: 'inline' }}>
+              What is construction project governance?
+            </h3>
+            <div className="faq-chevron">+</div>
+          </div>
+          <div className="faq-a">
+            Construction project governance is the sponsor-side authority structure that controls how cost, schedule, procurement, quality and construction project risk are decided on a project. It sits above day-to-day project management. Proconix PMC provides Sponsor-Aligned Construction Project Governance in Africa for real estate, hospitality and industrial projects from USD 5 million to over USD 100 million.
+          </div>
+        </div>
+
+        <div className="faq-item">
+          <div className="faq-q" onClick={toggleFaq}>
+            <h3 style={{ fontSize: '1.05rem', fontWeight: 600, margin: 0, color: 'inherit', display: 'inline' }}>
+              Who leads Proconix PMC?
+            </h3>
+            <div className="faq-chevron">+</div>
+          </div>
+          <div className="faq-a">
+            Proconix PMC is founded and led by Talibbhai Khanji — Strategic Project Leader. He is a registered civil engineer (P.Eng Civil, ERB Tanzania & Zambia) with an MBA in Project Management and the PMP® credential from the Project Management Institute, USA, and brings 19+ years of multinational experience, of which 15+ years are on the ground in Africa. In his words: &quot;Most recently, I led the Meliá Zanzibar and Four Seasons builds.&quot;
+          </div>
+        </div>
       </div>
     </div>
   </div>

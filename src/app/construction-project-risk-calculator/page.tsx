@@ -78,25 +78,14 @@ export default function FeaturesPage() {
             <span className="hero-badge-dot"></span> 
             Project Governance Lab
           </div>
-          <h1 style={{ marginBottom: '20px', fontSize: '2.8rem' }}>Construction Project Risk Exposure Calculator for Sponsors in Africa</h1>
+          <h1 style={{ marginBottom: "20px", fontSize: "2.8rem" }}>Construction Project Governance Tools for Sponsors in Africa</h1>
 <h2 style={{ fontSize: '1.4rem', color: '#8EA8C3', marginTop: '10px' }}>The Sponsor&apos;s <em>Command Center</em></h2>
           <p className="hero-sub" style={{ margin: '0 auto 60px', maxWidth: '750px', fontSize: '1.1rem', opacity: 0.8 }}>
             Advanced governance readiness tools and authority-based frameworks designed to provide 
             total visibility and protection to high-stakes project sponsors in Africa.
           </p>
           
-          <div className="calculation-container" style={{ 
-            maxWidth: '700px', 
-            margin: '0 auto', 
-            background: '#0B1D35', 
-            borderRadius: '16px', 
-            overflow: 'hidden',
-            border: '1px solid rgba(201,168,76,0.3)', 
-            boxShadow: '0 30px 60px rgba(0,0,0,0.5)', 
-            position: 'relative' 
-          }}>
-            <GovernanceSimulator />
-          </div>
+          
         </div>
       </section>
 
@@ -122,7 +111,7 @@ export default function FeaturesPage() {
             <div className="f-card">
               <div className="f-icon">⛓️</div>
               <h4>Supply Chain Governance</h4>
-              <p>Direct oversight of long-lead procurement and logistics, mitigating the 10-15% "silent inflation" typical in African procurement.</p>
+              <p>Direct oversight of long-lead procurement and logistics, reducing the silent inflation that builds up in long-lead procurement and logistics.</p>
             </div>
             <div className="f-card">
               <div className="f-icon">📜</div>

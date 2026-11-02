@@ -1,8 +1,9 @@
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Industrial | Proconix PMC',
-  description: 'Sponsor-aligned construction project governance for $5M-$100M+ CAPEX projects in Africa. Learn more about Industrial.',
+  title: "Industrial Construction Project Governance Africa | Proconix",
+  description: "Owner-side construction project governance for factories, plants and industrial parks in Africa, across the full EPCM lifecycle.",
+  robots: { index: false, follow: true },
   alternates: { canonical: 'https://www.proconixpmc.com/sectors/industrial' },
   openGraph: {
     title: 'Industrial | Proconix PMC',

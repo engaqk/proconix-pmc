@@ -170,8 +170,8 @@ export default function PageComponent() {
 <section className="who-section">
   <div className="container">
     <div className="section-eyebrow">Ideal Client Profile</div>
-    <h2 className="section-title">Built for <em>Project Sponsors</em></h2>
-    <p className="section-intro">Proconix serves real estate, hospitality, and industrial project sponsors and investors — with construction projects in Africa. GCC-based, diaspora, and African-domiciled investors who need their capital governed, not just managed.</p>
+    <h1 className="section-title" style={{ fontSize: '2rem', lineHeight: 1.25 }}>Construction Project Governance for Hospitality and Resort Developments in Africa</h1>
+    <p className="section-intro">Proconix serves real estate, hospitality, and industrial project sponsors and investors — with construction projects in Africa. GCC-based, diaspora and African-domiciled investors who need their capital (CAPEX) governed, not just managed.</p>
     <div className="who-grid">
       <div className="who-card">
         <div className="who-icon">🏨</div>

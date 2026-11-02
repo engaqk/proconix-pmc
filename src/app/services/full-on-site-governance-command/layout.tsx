@@ -1,8 +1,9 @@
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Full On Site Governance Command | Proconix PMC',
-  description: 'Sponsor-aligned construction project governance for $5M-$100M+ CAPEX projects in Africa. Learn more about Full On Site Governance Command.',
+  title: "Full On-Site Governance Command™ | Proconix PMC",
+  description: "Embedded senior construction project governance on site, for sponsors of complex construction projects in Africa.",
+  robots: { index: false, follow: true },
   alternates: { canonical: 'https://www.proconixpmc.com/services/full-on-site-governance-command' },
   openGraph: {
     title: 'Full On Site Governance Command | Proconix PMC',

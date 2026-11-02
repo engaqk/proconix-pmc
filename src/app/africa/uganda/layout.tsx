@@ -3,6 +3,7 @@ import type { Metadata } from 'next';
 export const metadata: Metadata = {
   title: 'Uganda | Proconix PMC',
   description: 'Sponsor-aligned construction project governance for $5M-$100M+ CAPEX projects in Africa. Learn more about Uganda.',
+  robots: { index: false, follow: true },
   alternates: { canonical: 'https://www.proconixpmc.com/africa/uganda' },
   openGraph: {
     title: 'Uganda | Proconix PMC',
