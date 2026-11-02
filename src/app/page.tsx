@@ -713,6 +713,76 @@ export default function Home() {
 
 
 <section className="faq-section">
+  <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "Isn't Proconix just another project management consultant?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "No. Proconix PMC is an owner-side construction project delivery partner. A conventional consultant observes and reports. We direct, manage and execute end-to-end construction project governance across the full EPCM lifecycle, from inception to successful handover — working inside the sponsor's decision structure, so problems are prevented before they reach site rather than reported after they have cost money."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "I already have a project manager and site engineers. Why do I need Proconix?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Your site engineers execute the works and your project manager coordinates the parties. Neither is normally given the authority, or the independence, to protect the sponsor's capital (CAPEX) across every decision. Proconix adds that construction project governance layer — across cost, schedule, procurement, quality, construction project risk and stakeholder alignment — working alongside your in-house team, never replacing it."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "What does a Proconix mandate actually cost?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Every mandate is structured around the project's size and scope, so there is no standard price list. The mandate structure is discussed in the Executive Governance Briefing Call, once we understand your project."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "My project is already under construction. Is it too late?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "No. Construction project governance can be installed mid-construction to bring cost reporting, the schedule and procurement back under the sponsor's control. The earlier it is installed, the more project value it protects, because most construction cost is fixed by early decisions — but a project already on site still benefits."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "I am based in the GCC or overseas. Can Proconix still govern my project in Africa?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes. You run your business, anywhere — we run your construction projects, in Africa. Proconix works on-site, hybrid, or through our Virtual Governance Control Room™, so sponsors based in the GCC, Europe or elsewhere keep decision-grade visibility of their project without being on site."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "How quickly can Proconix mobilise?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Proconix mobilises once the mandate is agreed and the project information is shared. Because the practice is Principal-led, we take on a limited number of concurrent mandates — raise your timeline in the Executive Governance Briefing Call and we will confirm availability."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "What is construction project governance?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Construction project governance is the sponsor-side authority structure that controls how cost, schedule, procurement, quality and construction project risk are decided on a project. It sits above day-to-day project management. Proconix PMC provides Sponsor-Aligned Construction Project Governance in Africa for real estate, hospitality and industrial projects from USD 5 million to over USD 100 million."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Who leads Proconix PMC?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Proconix PMC is founded and led by Talibbhai Khanji — Strategic Project Leader. He is a registered civil engineer (P.Eng Civil, ERB Tanzania & Zambia) with an MBA in Project Management and the PMP® credential from the Project Management Institute, USA, and brings 19+ years of multinational experience, of which 15+ years are on the ground in Africa. In his words: \"Most recently, I led the Meliá Zanzibar and Four Seasons builds.\""
+        }
+      }
+    ]
+  }) }} />
   <div className="container">
     <div className="section-eyebrow">Frequently Asked Questions</div>
     <h2 className="section-title">Questions Serious<br/><em>Project Sponsors Ask</em></h2>

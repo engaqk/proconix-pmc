@@ -169,6 +169,7 @@ export default function PageComponent() {
 
 <section className="how-section">
   <div className="container">
+    <h1 className="section-title" style={{ fontSize: '2rem', lineHeight: 1.25, marginBottom: '16px' }}>Hybrid Governance Model™ — Remote and On-Site Construction Governance Africa</h1>
     <div className="section-eyebrow">The Executive Construction Project Governance Architecture™</div>
     <h2 className="section-title">One Governance Framework.<br/><em>Across Your Full EPCM Lifecycle.</em></h2>
     <p className="section-intro">Most project problems are created before construction begins. Proconix governance starts at inception — where protection is built, not discovered too late on site.</p>
