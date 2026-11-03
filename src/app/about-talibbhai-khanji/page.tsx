@@ -1,5 +1,6 @@
 "use client";
 
+import VideoSection from '../VideoSection';
 import { useEffect, useState, FormEvent } from 'react';
 import Link from 'next/link';
 import dynamic from 'next/dynamic';
@@ -259,6 +260,8 @@ export default function PageComponent() {
     </div>
   </div>
 </section>
+
+<VideoSection />
 </main>
 <footer>
   <div className="container">

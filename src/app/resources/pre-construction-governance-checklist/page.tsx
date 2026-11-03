@@ -73,6 +73,9 @@ export default function PageComponent() {
         setFormStatus({ type: 'success', message: 'Success! You will shortly receive your downloadable checklist copy via your registered email. Please check your inbox (or spam folder) to get the checklist.' });
         setTimeout(() => setFormStatus(null), 6000);
         (e.target as HTMLFormElement).reset();
+      } else {
+        const errData = await res.json().catch(() => ({}));
+        setFormStatus({ type: 'error', message: errData.error || 'Submission rejected: Please provide a valid business or personal email address.' });
       }
     } catch {
       // Silently ignore capture errors to ensure user gets the file

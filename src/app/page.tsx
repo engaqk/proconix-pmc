@@ -1,5 +1,6 @@
 "use client";
 
+import VideoSection from './VideoSection';
 import { useEffect, useState, FormEvent } from 'react';
 import Link from 'next/link';
 import dynamic from 'next/dynamic';
@@ -73,6 +74,9 @@ export default function Home() {
         setFormStatus({ type: 'success', message: 'Success! You will shortly receive your downloadable checklist copy via your registered email. Please check your inbox (or spam folder) to get the checklist.' });
         setTimeout(() => setFormStatus(null), 6000);
         (e.target as HTMLFormElement).reset();
+      } else {
+        const errData = await res.json().catch(() => ({}));
+        setFormStatus({ type: 'error', message: errData.error || 'Submission rejected: Please provide a valid business or personal email address.' });
       }
     } catch {
       // Silently ignore capture errors to ensure user gets the file
@@ -316,6 +320,7 @@ export default function Home() {
   </div>
 </section>
 
+<VideoSection />
 
 <div className="cred-bar">
   <div className="container">

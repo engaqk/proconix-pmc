@@ -73,6 +73,9 @@ export default function PageComponent() {
         setFormStatus({ type: 'success', message: 'Success! You will shortly receive your downloadable checklist copy via your registered email. Please check your inbox (or spam folder) to get the checklist.' });
         setTimeout(() => setFormStatus(null), 6000);
         (e.target as HTMLFormElement).reset();
+      } else {
+        const errData = await res.json().catch(() => ({}));
+        setFormStatus({ type: 'error', message: errData.error || 'Submission rejected: Please provide a valid business or personal email address.' });
       }
     } catch {
       // Silently ignore capture errors to ensure user gets the file
@@ -173,6 +176,7 @@ export default function PageComponent() {
     <h1>Your Project Has a Window.<br/><em>Governance Has a Starting Point.</em></h1>
     <div>
       <p>Every day a construction project runs without a structured governance architecture is a day of compounding exposure. The briefing call is where we determine whether Proconix is the right governance partner for your project — and whether your project falls within our current mandate window.</p>
+      <h2 style={{ fontSize: '1.35rem', color: '#FFFFFF', fontWeight: 600, margin: '28px 0 16px', textAlign: 'center' }}>Schedule Your Executive Briefing</h2>
       <div className="cta-pair">
         <button onClick={handleDiscoveryClick} className="btn-gold">Executive Governance Briefing Call</button>
         <form className="capture-form" onSubmit={handleFormSubmit} style={{ margin: 0, padding: 0, background: 'transparent', boxShadow: 'none', display: 'flex', flexDirection: 'column', gap: '8px', alignItems: 'center' }}>

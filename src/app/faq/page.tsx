@@ -172,11 +172,12 @@ export default function PageComponent() {
 <section className="faq-section">
   <div className="container">
     <div className="section-eyebrow">Frequently Asked Questions</div>
-    <h1 className="section-title">Questions Serious<br/><em>Project Sponsors Ask</em></h1>
+    <h1 className="section-title">Construction Project Governance FAQ</h1>
 
     <div className="faq-grid">
 
       <div className="faq-intro">
+        <h2 style={{ fontSize: '1.25rem', color: '#FFFFFF', fontWeight: 600, marginBottom: '12px' }}>Direct Answers for Project Sponsors</h2>
         <p>The most common questions project sponsors ask before engaging Proconix — answered directly, without consulting jargon.</p>
         <br/>
         <p>If you have a question not addressed here, the briefing call is the right place to ask it. There is no obligation and no pitch — only a structured conversation about whether Proconix is the right governance partner for your specific project.</p>
@@ -185,6 +186,7 @@ export default function PageComponent() {
       </div>
 
       <div className="faq-list">
+        <h2 style={{ fontSize: '1.4rem', color: '#FFFFFF', fontWeight: 600, marginBottom: '20px' }}>Questions Serious Project Sponsors Ask</h2>
         <div className="faq-item">
           <div className="faq-q" onClick={toggleFaq}>
             <h3 style={{ fontSize: '1.05rem', fontWeight: 600, margin: 0, color: 'inherit', display: 'inline' }}>
