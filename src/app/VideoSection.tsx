@@ -36,7 +36,7 @@ const videoSchema = {
   "name": "What Proconix PMC Does — Talibbhai Khanji, Strategic Project Leader",
   "description": "Talibbhai Khanji explains how Proconix PMC, an owner-side construction project delivery partner, directs, manages and executes end-to-end construction project governance for project sponsors with construction projects in Africa.",
   "thumbnailUrl": "https://www.proconixpmc.com/talibbhai.jpg",
-  "uploadDate": "2026-10-31",
+  "uploadDate": "2026-10-23",
   "embedUrl": "https://www.linkedin.com/embed/feed/update/urn:li:ugcPost:7519311133703467008",
   "contentUrl": "https://www.linkedin.com/feed/update/urn:li:activity:7519311230508101633/",
   "transcript": TRANSCRIPT_TEXT,

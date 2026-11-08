@@ -204,7 +204,7 @@ export default function Home() {
         </p>
 
         <p className="hero-sub" style={{ fontSize: '0.95rem', color: '#8EA8C3', marginTop: '0' }}>
-          Without structured construction project governance, sponsors typically lose 30% or more of planned project value to overruns, unchecked variations and procurement leakage &mdash; The 30% Hidden Cost Trap. Proconix installs the governance architecture that protects your capital (CAPEX) from day one.
+          Without structured construction project governance, sponsors can lose up to 30% of planned project value to overruns, unchecked variations and procurement leakage &mdash; The 30% Hidden Cost Trap. Proconix installs the governance architecture that protects your capital (CAPEX) from day one.
         </p>
 
         <div className="hero-ctas">
@@ -349,7 +349,7 @@ export default function Home() {
         <p>Your contractor and consultant are pointing at each other. No single catastrophic failure. <strong>Just a system with no one governing it.</strong></p>
 
         <div className="vacuum-quote">
-          <p>"This is the governance vacuum. It exists on most high-stakes African construction projects — and it quietly consumes 30% or more of planned project value through The 30% Hidden Cost Trap before sponsors see the damage on paper, long after the decisions that caused it were made."</p>
+          <p>"This is the governance vacuum. It exists on most high-stakes African construction projects — and it can quietly consume up to 30% of planned project value through The 30% Hidden Cost Trap before sponsors see the damage on paper, long after the decisions that caused it were made."</p>
         </div>
 
         <p>African construction markets move fast. <em>Verbal mobilisation, evolving scope, multiple stakeholders with competing agendas,</em> and limited institutional oversight create conditions where even well-funded projects bleed capital silently.</p>

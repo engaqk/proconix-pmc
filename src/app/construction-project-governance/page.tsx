@@ -242,7 +242,7 @@ export default function PageComponent() {
         <p>Your contractor and consultant are pointing at each other. No single catastrophic failure. <strong>Just a system with no one governing it.</strong></p>
 
         <div className="vacuum-quote">
-          <p>"This is the governance vacuum. It exists on most high-stakes African construction projects — and it quietly consumes 30% or more of planned project value through The 30% Hidden Cost Trap before sponsors see the damage on paper, long after the decisions that caused it were made."</p>
+          <p>"This is the governance vacuum. It exists on most high-stakes African construction projects — and it can quietly consume up to 30% of planned project value through The 30% Hidden Cost Trap before sponsors see the damage on paper, long after the decisions that caused it were made."</p>
         </div>
 
         <p>African construction markets move fast. <em>Verbal mobilisation, evolving scope, multiple stakeholders with competing agendas,</em> and limited institutional oversight create conditions where even well-funded projects bleed capital silently.</p>
